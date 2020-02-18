@@ -117,8 +117,8 @@ class _AddTestPageState extends State<AddTestPage> {
                 Container(
                   child: new ListView(
                     children: _questions,
-                    scrollDirection: Axis.vertical,
                     shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
                   ),
                 ),
                 Material(

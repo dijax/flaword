@@ -97,7 +97,8 @@ class _AddQuestionState extends State<AddQuestion> {
                         children: <Widget>[
                           ListView(
                             children: _answers,
-                            scrollDirection: Axis.vertical,
+                            physics: const NeverScrollableScrollPhysics(),
+//                            scrollDirection: Axis.vertical,,
                             shrinkWrap: true,
                           ),
                           Padding(

@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:flashcards/screens/addDeckPage.dart';
-import 'package:flashcards/screens/AddTestPage.dart';
+import 'package:flashcards/screens/addTestPage.dart';
 import 'package:flashcards/screens/decksPage.dart';
 import 'package:flashcards/screens/homePage.dart';
 import 'package:flashcards/screens/statisticsPage.dart';

@@ -46,7 +46,7 @@ class _CardViewState extends State<CardView> {
                                 blurRadius: 15,
                               ),]),
                         child: Center(
-                            child: Text(cards.elementAt(_counter).front)),
+                            child: Text(cards.elementAt(_counter)?.front)),
                       )
                   ),
                 ),
@@ -67,7 +67,7 @@ class _CardViewState extends State<CardView> {
                         ],
                       ),
                       child: Center(
-                          child: Text(cards.elementAt(_counter).back)),
+                          child: Text(cards?.elementAt(_counter)?.back)),
                     ),
                   ),
                 ),
@@ -76,8 +76,17 @@ class _CardViewState extends State<CardView> {
             RaisedButton(
               onPressed: pressed,
             ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                SizedBox(width: 1,),
+                Icon(Icons.sentiment_very_satisfied, size: 50, color: CustomColors.DeepBlue,),
+                Icon(Icons.sentiment_neutral, size: 50, color: CustomColors.DeepBlue),
+                Icon(Icons.sentiment_very_dissatisfied, size: 50, color: CustomColors.DeepBlue),
+                SizedBox(width: 1,),
+              ],
+            ),
           ],
-//
         )
     );
   }

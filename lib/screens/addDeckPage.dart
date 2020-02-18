@@ -1,4 +1,4 @@
-import 'package:flashcards/screens/AddTestPage.dart';
+import 'package:flashcards/screens/addTestPage.dart';
 import 'package:flashcards/screens/addCardPage.dart';
 import 'package:flashcards/utils/customColors.dart';
 import 'package:flutter/material.dart';
