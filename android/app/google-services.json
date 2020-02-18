@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "751133110310",
+    "firebase_url": "https://flaworld.firebaseio.com",
+    "project_id": "flaworld",
+    "storage_bucket": "flaworld.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:751133110310:android:54741371f443007ccdb6e7",
+        "android_client_info": {
+          "package_name": "com.rac.flashcards"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "751133110310-a18agtffiai5nrhtihp8k32c5nsdjvq1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0PYedQCAIOghejiyjT5XwzM2qCTUYX5Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "751133110310-a18agtffiai5nrhtihp8k32c5nsdjvq1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
