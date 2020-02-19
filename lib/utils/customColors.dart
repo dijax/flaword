@@ -163,4 +163,5 @@ class CustomColors {
     letterSpacing: 0.2,
     color: LightText, // was lightText
   );
+
 }

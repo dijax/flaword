@@ -4,6 +4,7 @@ import 'package:flashcards/screens/settingsMenu.dart';
 import 'package:flashcards/utils/customColors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -49,13 +50,35 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin{
                     padding: const EdgeInsets.fromLTRB(0.0, 16.0, 0.0, 12.0),
                     child: Text("Hello, Dija.", style: TextStyle(fontSize: 30.0, color: CustomColors.BlueCiel, fontFamily: 'Montserrat', fontWeight: FontWeight.bold),),
                   ),
-                  Text("Nice to see you again.", style:  TextStyle(fontSize: 16.0, color: Colors.white, fontFamily: 'Montserrat')),
-                  Text("Keep the good work, keep learning.", style: TextStyle(fontSize: 16.0, color: Colors.white, fontFamily: 'Montserrat'),),
+                  Text("Nice to see you again.", style:  TextStyle(fontSize: 16.0, color: Colors.white, fontFamily: 'Poppins')),
+                  Text("Keep the good work, keep learning.", style: TextStyle(fontSize: 16.0, color: Colors.white, fontFamily: 'Poppins'),),
                 ],
               ),
             ),
+//            StreamBuilder<QuerySnapshot>(
+//              stream: Firestore.instance.collection("deck").snapshots(),
+//              builder: (context, snapshot) {
+//                if(!snapshot.hasData) return LinearProgressIndicator();
+//                final record = Record.fromSnapshot(snapshot.data.documents.elementAt(0));
+//                return Column(
+//                  children: <Widget>[
+//                    InkWell(
+//                      onTap: () => record.reference.updateData({'name': "Deckk"}),
+//                      child: Text("change the name"),
+//                    ),
+//                    Padding(
+//                      padding: EdgeInsets.all(10),
+//                      key: ValueKey(record.name),
+//                      child: Container(
+//                        child: Text(record.description),
+//                      ),
+//                    ),
+//                  ],
+//                );
+//              },
+//            ),
             Column(
-              crossAxisAlignment:  CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.fromLTRB(24.0, 36.0, 24.0, 0.0),
@@ -132,7 +155,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin{
                                                     Row(
                                                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                       children: <Widget>[
-                                                        Text("${decks[position].tests.length.toString()}", style: TextStyle(fontSize: 25.0, fontFamily: 'Montserrat', fontWeight: FontWeight.w600 , color: CustomColors.BlueCiel),),
+                                                        Text("${decks[position].tests.length.toString()}", style: TextStyle(fontSize: 25.0, fontFamily: 'Poppins', fontWeight: FontWeight.w600 , color: CustomColors.BlueCiel),),
                                                         Padding(
                                                             padding: const EdgeInsets.fromLTRB(5.0, 0.0, 0.0, 0.0),
                                                             child: Icon(Icons.thumbs_up_down, color: CustomColors.BlueCiel, size: 20.0,)
@@ -196,9 +219,31 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin{
                   ),
                 )
               ],
-            )
+            ),
           ]
       ),
     );
   }
+}
+
+class Record{
+  final String name;
+  final String description;
+  final int completion;
+  final DocumentReference reference;
+
+  Record.fromMap(Map<String, dynamic> map, {this.reference})
+    : assert(map['completion'] != null),
+      assert(map['description'] != null),
+      assert(map['name'] != null),
+
+      completion = map['completion'],
+      description = map['description'],
+      name = map['name'];
+
+  Record.fromSnapshot(DocumentSnapshot snapshot)
+      :this.fromMap(snapshot.data, reference: snapshot.reference);
+
+  @override
+  String toString() => "Record<$name:$description:$completion>";
 }

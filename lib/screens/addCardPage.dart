@@ -137,7 +137,7 @@ class _AddCardPageState extends State<AddCardPage> {
                             style: TextStyle(
                               color: CustomColors.PurpleLight,
                               fontSize: 20,
-                              fontFamily: 'Monsterrat',
+                              fontFamily: 'Poppins',
                               fontWeight: FontWeight.w500,
                             ),
                           ),

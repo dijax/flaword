@@ -2,6 +2,7 @@ import 'package:flashcards/Test/mockData.dart';
 import 'package:flashcards/models/CardModel.dart';
 import 'package:flashcards/models/TestModel.dart';
 import 'package:flashcards/screens/cardView.dart';
+import 'package:flashcards/screens/questionView.dart';
 import 'package:flashcards/screens/testView.dart';
 import 'package:flashcards/utils/customColors.dart';
 import 'package:flutter/material.dart';
@@ -56,7 +57,7 @@ class _DeckViewState extends State<DeckView> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           // TODO add statistics (progressbar) und settings menu
-                          Text("Flashcards", style: TextStyle(fontFamily: 'Monsterrat', fontSize: 20, fontWeight: FontWeight.bold),),
+                          Text("Flashcards", style: TextStyle(fontFamily: 'Poppins', fontSize: 20, fontWeight: FontWeight.bold),),
                           IconButton(
                             icon: Icon(Icons.play_arrow, size: 40,),
                             onPressed: (){Navigator.of(context).push(MaterialPageRoute(builder: (context) => CardView(widget.index)));},
@@ -96,7 +97,7 @@ class _DeckViewState extends State<DeckView> {
                                 ]
                             ),
                             child: Center(
-                              child: Text(cards.elementAt(index).cardTitle, style: TextStyle(color: CustomColors.White, fontSize: 20, fontFamily: 'Monsterrat', fontWeight: FontWeight.bold),),
+                              child: Text(cards.elementAt(index).cardTitle, style: TextStyle(color: CustomColors.White, fontSize: 20, fontFamily: 'Poppins', fontWeight: FontWeight.bold),),
                             ),
                           ),
                         ),
@@ -129,10 +130,11 @@ class _DeckViewState extends State<DeckView> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           // TODO: add number of tests and progressbar and settings menu
-                          Text("Tests", style: TextStyle(fontFamily: 'Monsterrat', fontSize: 20, fontWeight: FontWeight.bold),),
+                          Text("Tests", style: TextStyle(fontFamily: 'Poppins', fontSize: 20, fontWeight: FontWeight.bold),),
                           IconButton(
                             icon: Icon(Icons.play_arrow, size: 40,),
-                              onPressed: (){},
+                              onPressed: (){
+                              },
                           ),
                         ],
                       ),
@@ -171,8 +173,17 @@ class _DeckViewState extends State<DeckView> {
                                   ),
                                 ]
                             ),
-                            child: Center(
-                              child: Text(tests?.elementAt(testIndex)?.testTitle, style: TextStyle(color: CustomColors.White, fontSize: 20, fontFamily: 'Monsterrat', fontWeight: FontWeight.bold),),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Center(
+                                  child: Text(tests?.elementAt(testIndex)?.testTitle, style: TextStyle(color: CustomColors.White, fontSize: 17, fontFamily: 'Poppins', fontWeight: FontWeight.bold),),
+                                ),
+                                IconButton(
+                                  icon: Icon(Icons.play_arrow, size: 30, ),
+                                  onPressed: (){Navigator.of(context).push(MaterialPageRoute(builder: (context) => QuestionView(tests.elementAt(testIndex), 0, testIndex)));},
+                                ),
+                              ],
                             ),
                           ),
                         ),

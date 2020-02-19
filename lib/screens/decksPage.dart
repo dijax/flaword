@@ -53,7 +53,7 @@ class _DecksPageState extends State<DecksPage> {
                                     fontSize: 17,
                                     color: CustomColors.PurpleDark.withOpacity(0.8),
                                     fontWeight: FontWeight.w600,
-                                    fontFamily: 'Monsterrat',
+                                    fontFamily: 'Poppins',
                                   ),
                                 ),
                                 SizedBox(height: 8,),
