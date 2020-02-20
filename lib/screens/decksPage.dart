@@ -15,8 +15,12 @@ class _DecksPageState extends State<DecksPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Decks",),
+        backgroundColor: CustomColors.DeepBlue,
+      ),
       body: Container(
-        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 50),
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         width: MediaQuery.of(context).size.width,
         child: CustomScrollView(
           slivers: <Widget>[

@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flip_card/flip_card.dart';
 
 class TestView extends StatefulWidget {
-  final int index;
+  final int deckIndex;
   final int testIndex;
-  TestView(this.index, this.testIndex);
+  TestView(this.deckIndex, this.testIndex);
   _TestViewState createState() => _TestViewState();
 }
 class _TestViewState extends State<TestView> {
@@ -18,7 +18,7 @@ class _TestViewState extends State<TestView> {
 
   @override
   Widget build(BuildContext context) {
-    tests = MockData.getDecksList()?.elementAt(widget.index)?.tests;
+    tests = MockData.getDecksList()?.elementAt(widget.deckIndex)?.tests;
     // TODO: implement build
     return Scaffold(
         appBar: AppBar(
@@ -34,8 +34,8 @@ class _TestViewState extends State<TestView> {
                 child: new ListView.builder(
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
-                    itemCount: tests?.elementAt(widget.index)?.questions?.length,
-                    itemBuilder: (BuildContext context, int index) {
+                    itemCount: tests?.elementAt(widget.testIndex)?.questions?.length,
+                    itemBuilder: (BuildContext context, int quIndex) {
                       return new InkWell(
                         child: Center(
                           child: Card(
@@ -55,7 +55,7 @@ class _TestViewState extends State<TestView> {
                                     ),
                                   ]
                               ),
-                              child: Text(tests?.elementAt(widget.testIndex)?.questions?.elementAt(index)?.question, style: TextStyle(fontSize: 20, fontFamily: 'Monsterrat'),),
+                              child: Text(tests?.elementAt(widget.testIndex)?.questions?.elementAt(quIndex)?.question, style: TextStyle(fontSize: 20, fontFamily: 'Poppins'),),
                             ),
                           ),
                         ),

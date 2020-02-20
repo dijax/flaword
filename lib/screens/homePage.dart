@@ -1,5 +1,6 @@
 import 'package:flashcards/Test/mockData.dart';
 import 'package:flashcards/models/DeckModel.dart';
+import 'package:flashcards/screens/deckView.dart';
 import 'package:flashcards/screens/settingsMenu.dart';
 import 'package:flashcards/utils/customColors.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +15,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin{
   //TODO use the Random color generator
   final appColors = [Color.fromRGBO(231, 129, 109, 1.0),Color.fromRGBO(99, 138, 223, 1.0),Color.fromRGBO(111, 194, 173, 1.0)];
-  int cardIndex = 0;
+  int deckIndex = 0;
   ScrollController scrollController;
   var currentColor = Color.fromRGBO(231, 129, 109, 1.0);
 
@@ -81,12 +82,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin{
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(24.0, 36.0, 24.0, 0.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                    Text("Last used Decks", style: TextStyle(fontSize: 16.0, fontFamily: 'Montserrat', fontWeight: FontWeight.w500, color: CustomColors.PurpleLight),),
-                  ],)
+                    padding: const EdgeInsets.fromLTRB(24.0, 36.0, 24.0, 0.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text("Last used Decks", style: TextStyle(fontSize: 16.0, fontFamily: 'Montserrat', fontWeight: FontWeight.w500, color: CustomColors.PurpleLight),),
+                      ],)
                 ),
                 Container(
                   height: 300.0,
@@ -101,82 +102,87 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin{
                             padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0 , 8.0),
                             child: Container(
                               child: new Card(
-                                child: Container(
-                                  width: 250.0,
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: <Widget>[
-                                            Padding(
-                                              padding: const EdgeInsets.fromLTRB(12.0, 0.0, 0.0, 0.0),
+                                child: InkWell(
+                                  onTap: () {
+                                    Navigator.of(context).push(MaterialPageRoute(builder: (context)=>DeckView(position)));
+                                  },
+                                    child: Container(
+                                      width: 250.0,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: <Widget>[
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: <Widget>[
+                                                Padding(
+                                                  padding: const EdgeInsets.fromLTRB(12.0, 0.0, 0.0, 0.0),
 //                                              child: Icon(Icons.fullscreen, color: Colors.black,),
+                                                ),
+                                                SettingsMenu(
+                                                  onDeckSelect: (List<DeckModel> decks) {
+                                                    setState(() {
+                                                      this.decks = decks;
+                                                    });
+                                                  },
+                                                  index: position,
+                                                ),
+                                              ],
                                             ),
-                                            SettingsMenu(
-                                                onDeckSelect: (List<DeckModel> decks) {
-                                                  setState(() {
-                                                    this.decks = decks;
-                                                  });
-                                                },
-                                              index: position,
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              children: <Widget>[
+                                                Padding(
+                                                  padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 40.0),
+                                                  child: Text("${decks[position].deckTitle}", style: TextStyle(fontSize: 28.0, fontWeight: FontWeight.bold, fontFamily: 'Montserrat'), textAlign: TextAlign.center,),
+                                                ),
+                                                Padding(
+                                                    padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                                                    child:Row(
+                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                      children: <Widget>[
+                                                        Row(
+                                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                          children: <Widget>[
+                                                            Text("${decks[position].cards.length.toString()}", style: TextStyle(color: CustomColors.BlueCiel, fontSize: 25.0, fontFamily: 'Montserrat', fontWeight: FontWeight.w600 ),),
+                                                            Padding(
+                                                                padding: const EdgeInsets.fromLTRB(5.0, 0.0, 0.0, 0.0),
+                                                                child: Icon(Icons.perm_media, color: CustomColors.BlueCiel, size: 20.0,)
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        Row(
+                                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                          children: <Widget>[
+                                                            Text("${decks[position].tests.length.toString()}", style: TextStyle(fontSize: 25.0, fontFamily: 'Poppins', fontWeight: FontWeight.w600 , color: CustomColors.BlueCiel),),
+                                                            Padding(
+                                                                padding: const EdgeInsets.fromLTRB(5.0, 0.0, 0.0, 0.0),
+                                                                child: Icon(Icons.thumbs_up_down, color: CustomColors.BlueCiel, size: 20.0,)
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    )
+                                                ),
+                                                Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: LinearProgressIndicator(
+                                                    value: decks[position].deckCompletion,
+                                                    backgroundColor: CustomColors.DeeppurlpleBackground,
+                                                    valueColor: AlwaysStoppedAnimation<Color>(CustomColors.PurpleLight),),
+                                                ),
+                                              ],
                                             ),
-                                          ],
-                                        ),
+                                          )
+                                        ],
                                       ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          children: <Widget>[
-                                            Padding(
-                                              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 40.0),
-                                              child: Text("${decks[position].deckTitle}", style: TextStyle(fontSize: 28.0, fontWeight: FontWeight.bold, fontFamily: 'Montserrat'), textAlign: TextAlign.center,),
-                                            ),
-                                            Padding(
-                                                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                                                child:Row(
-                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                  children: <Widget>[
-                                                    Row(
-                                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                      children: <Widget>[
-                                                        Text("${decks[position].cards.length.toString()}", style: TextStyle(color: CustomColors.BlueCiel, fontSize: 25.0, fontFamily: 'Montserrat', fontWeight: FontWeight.w600 ),),
-                                                        Padding(
-                                                            padding: const EdgeInsets.fromLTRB(5.0, 0.0, 0.0, 0.0),
-                                                            child: Icon(Icons.perm_media, color: CustomColors.BlueCiel, size: 20.0,)
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    Row(
-                                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                      children: <Widget>[
-                                                        Text("${decks[position].tests.length.toString()}", style: TextStyle(fontSize: 25.0, fontFamily: 'Poppins', fontWeight: FontWeight.w600 , color: CustomColors.BlueCiel),),
-                                                        Padding(
-                                                            padding: const EdgeInsets.fromLTRB(5.0, 0.0, 0.0, 0.0),
-                                                            child: Icon(Icons.thumbs_up_down, color: CustomColors.BlueCiel, size: 20.0,)
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ],
-                                                )
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: LinearProgressIndicator(
-                                                value: decks[position].deckCompletion,
-                                                backgroundColor: CustomColors.DeeppurlpleBackground,
-                                                valueColor: AlwaysStoppedAnimation<Color>(CustomColors.PurpleLight),),
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                    ],
-                                  ),
+                                    ),
                                 ),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0),
@@ -195,22 +201,22 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin{
                                 .fastOutSlowIn);
                             animationController.addListener(() {
                               setState(() {
-                                currentColor = colorTween.evaluate(curvedAnimation);
+//                                currentColor = colorTween.evaluate(curvedAnimation);
                               });
                             });
                             if(details.velocity.pixelsPerSecond.dx > 0) {
-                              if(cardIndex > 0) {
-                                cardIndex--;
-                                colorTween = ColorTween(begin: currentColor, end: appColors[cardIndex]);
+                              if(deckIndex > 0) {
+                                deckIndex--;
+                                colorTween = ColorTween(begin: currentColor, end: appColors[deckIndex]);
                               }
                             } else {
-                              if (cardIndex < 2) {
-                                cardIndex ++;
-                                colorTween = ColorTween(begin: currentColor, end: appColors[cardIndex]);
+                              if (deckIndex < 2) {
+                                deckIndex ++;
+                                colorTween = ColorTween(begin: currentColor, end: appColors[deckIndex]);
                               }
                             }
                             setState(() {
-                              scrollController.animateTo(cardIndex*256.0, duration: Duration(milliseconds: 500), curve: Curves.fastOutSlowIn);
+                              scrollController.animateTo(deckIndex*256.0, duration: Duration(milliseconds: 500), curve: Curves.fastOutSlowIn);
                             }
                             );
                           }
@@ -233,13 +239,13 @@ class Record{
   final DocumentReference reference;
 
   Record.fromMap(Map<String, dynamic> map, {this.reference})
-    : assert(map['completion'] != null),
-      assert(map['description'] != null),
-      assert(map['name'] != null),
+      : assert(map['completion'] != null),
+        assert(map['description'] != null),
+        assert(map['name'] != null),
 
-      completion = map['completion'],
-      description = map['description'],
-      name = map['name'];
+        completion = map['completion'],
+        description = map['description'],
+        name = map['name'];
 
   Record.fromSnapshot(DocumentSnapshot snapshot)
       :this.fromMap(snapshot.data, reference: snapshot.reference);

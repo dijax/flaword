@@ -8,8 +8,8 @@ import 'package:flashcards/utils/customColors.dart';
 import 'package:flutter/material.dart';
 
 class DeckView extends StatefulWidget {
-  final int index;
-  DeckView(this.index);
+  final int deckIndex;
+  DeckView(this.deckIndex);
   _DeckViewState createState() => _DeckViewState();
 }
 class _DeckViewState extends State<DeckView> {
@@ -18,11 +18,11 @@ class _DeckViewState extends State<DeckView> {
   bool flashcardClicked = false;
   @override
   Widget build(BuildContext context) {
-    List<TestModel> tests = MockData.getDecksList().elementAt(widget.index).tests;
-    List<CardModel> cards = MockData.getDecksList().elementAt(widget.index).cards;
+    List<TestModel> tests = MockData.getDecksList().elementAt(widget.deckIndex).tests;
+    List<CardModel> cards = MockData.getDecksList().elementAt(widget.deckIndex).cards;
     return Scaffold(
       appBar: AppBar(
-        title: Text(_getDeckTitle(widget.index)),
+        title: Text(_getDeckTitle(widget.deckIndex)),
         backgroundColor: CustomColors.DeepBlue,
       ),
       backgroundColor: CustomColors.White,
@@ -60,7 +60,7 @@ class _DeckViewState extends State<DeckView> {
                           Text("Flashcards", style: TextStyle(fontFamily: 'Poppins', fontSize: 20, fontWeight: FontWeight.bold),),
                           IconButton(
                             icon: Icon(Icons.play_arrow, size: 40,),
-                            onPressed: (){Navigator.of(context).push(MaterialPageRoute(builder: (context) => CardView(widget.index)));},
+                            onPressed: (){Navigator.of(context).push(MaterialPageRoute(builder: (context) => CardView(widget.deckIndex, null)));},
                           ),
                         ],
                       ),
@@ -77,8 +77,13 @@ class _DeckViewState extends State<DeckView> {
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     itemCount: cards.length,
-                    itemBuilder: (BuildContext context, int index) {
+                    itemBuilder: (BuildContext context, int cardIndex) {
                       return new InkWell(
+                        onTap: () {
+                          setState(() {
+                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => CardView(widget.deckIndex, cardIndex)));
+                          });
+                        },
                         child: Center(
                           child: Container(
                             padding: EdgeInsets.all(20.0),
@@ -97,7 +102,7 @@ class _DeckViewState extends State<DeckView> {
                                 ]
                             ),
                             child: Center(
-                              child: Text(cards.elementAt(index).cardTitle, style: TextStyle(color: CustomColors.White, fontSize: 20, fontFamily: 'Poppins', fontWeight: FontWeight.bold),),
+                              child: Text(cards.elementAt(cardIndex).cardTitle, style: TextStyle(color: CustomColors.White, fontSize: 20, fontFamily: 'Poppins', fontWeight: FontWeight.bold),),
                             ),
                           ),
                         ),
@@ -124,22 +129,22 @@ class _DeckViewState extends State<DeckView> {
                   child: Column(
                     children: <Widget>[
                       Padding(
-                        padding: EdgeInsets.symmetric(vertical: 4),
+                        padding: EdgeInsets.symmetric(vertical: 10),
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           // TODO: add number of tests and progressbar and settings menu
                           Text("Tests", style: TextStyle(fontFamily: 'Poppins', fontSize: 20, fontWeight: FontWeight.bold),),
-                          IconButton(
-                            icon: Icon(Icons.play_arrow, size: 40,),
-                              onPressed: (){
-                              },
-                          ),
+//                          IconButton(
+//                            icon: Icon(Icons.play_arrow, size: 40,),
+//                              onPressed: (){
+//                              },
+//                          ),
                         ],
                       ),
                       Padding(
-                        padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                        padding: EdgeInsets.fromLTRB(0, 0, 0, 20),
                       ),
                     ],
                   ),
@@ -154,7 +159,7 @@ class _DeckViewState extends State<DeckView> {
                     itemBuilder: (BuildContext context, int testIndex) {
                       return new InkWell(
                         onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => TestView(widget.index, testIndex)));
+                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => TestView(widget.deckIndex, testIndex)));
                         },
                         child: Center(
                           child: Container(
@@ -173,17 +178,20 @@ class _DeckViewState extends State<DeckView> {
                                   ),
                                 ]
                             ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Center(
-                                  child: Text(tests?.elementAt(testIndex)?.testTitle, style: TextStyle(color: CustomColors.White, fontSize: 17, fontFamily: 'Poppins', fontWeight: FontWeight.bold),),
-                                ),
-                                IconButton(
-                                  icon: Icon(Icons.play_arrow, size: 30, ),
-                                  onPressed: (){Navigator.of(context).push(MaterialPageRoute(builder: (context) => QuestionView(tests.elementAt(testIndex), 0, testIndex)));},
-                                ),
-                              ],
+                            child: Padding(
+                              padding: EdgeInsets.fromLTRB(15, 0, 15,5),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Center(
+                                    child: Text(tests?.elementAt(testIndex)?.testTitle, style: TextStyle(color: CustomColors.White, fontSize: 17, fontFamily: 'Poppins', fontWeight: FontWeight.bold),),
+                                  ),
+                                  IconButton(
+                                    icon: Icon(Icons.play_arrow, size: 30, color: CustomColors.White, ),
+                                    onPressed: (){Navigator.of(context).push(MaterialPageRoute(builder: (context) => QuestionView(tests.elementAt(testIndex), 0, testIndex)));},
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),

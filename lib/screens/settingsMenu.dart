@@ -27,8 +27,6 @@ class _SettingsMenuState extends State<SettingsMenu> {
               child: const Text('Hide'), value: Settings.Hide),
           new PopupMenuItem<Settings>(
             child: const Text('Delete'), value: Settings.Delete,),
-          new PopupMenuItem<Settings>(
-            child: const Text('Show'), value: Settings.Show,),
         ],
         onSelected: menuItemClicked,
         ); //TODO: implement the settings
@@ -60,9 +58,6 @@ class _SettingsMenuState extends State<SettingsMenu> {
         print("Delete has been pressed");
         decks.removeAt(widget.index);
         widget.onDeckSelect(decks);
-        break;
-      case Settings.Show:
-        print("Show has been pressed");
         break;
     }
   }

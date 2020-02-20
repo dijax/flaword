@@ -31,7 +31,7 @@ class _AddCardPageState extends State<AddCardPage> {
       body: SingleChildScrollView(
         padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
         child: Container(
-          padding: EdgeInsets.fromLTRB(15, 30, 15, 110),
+          padding: EdgeInsets.fromLTRB(15, 10, 15, 50),
           decoration: BoxDecoration(color: CustomColors.White),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,

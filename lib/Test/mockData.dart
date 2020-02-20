@@ -95,12 +95,20 @@ class MockData{
     TestModel("Math test5", "this is the math test5", mathQuestionsList, 0.0),
   ];
 
+  static List<AnswerModel> phyAnswers = [AnswerModel("this is the first correct answer of the 1st physics question", true)];
+
   static List<TestModel> physicsTestsList = [
-    TestModel("Physics test1", "this is the math test1", null, 0.0),
+    TestModel("Physics test1", "this is the math test1", phyQuestionsList, 0.0),
   ];
+  static List<QuestionModel> phyQuestionsList = [
+  QuestionModel("this is the 1st phy question", phyAnswers, false),];
+
+  static List<AnswerModel> bioAnswers = [AnswerModel("this is the first correct answer of the 1st bio question", true)];
+  static List<QuestionModel> bioQuestionsList = [
+  QuestionModel("this is the 1st phy question", phyAnswers, false),];
 
   static List<TestModel> biologyTestsList = [
-    TestModel("Biology test1", "this is the math test1", null, 0.0),
+    TestModel("Biology test1", "this is the math test1", bioQuestionsList, 0.0),
   ];
 
   static List<DeckModel> decksList = [
