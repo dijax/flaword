@@ -1,13 +1,12 @@
-import 'package:flashcards/Test/mockData.dart';
 import 'package:flashcards/models/TestModel.dart';
 import 'package:flashcards/utils/customColors.dart';
 import 'package:flutter/material.dart';
 import 'package:flip_card/flip_card.dart';
 
 class TestView extends StatefulWidget {
-  final int deckIndex;
+  final List<TestModel> tests;
   final int testIndex;
-  TestView(this.deckIndex, this.testIndex);
+  TestView(this.tests, this.testIndex);
   _TestViewState createState() => _TestViewState();
 }
 class _TestViewState extends State<TestView> {
@@ -18,7 +17,6 @@ class _TestViewState extends State<TestView> {
 
   @override
   Widget build(BuildContext context) {
-    tests = MockData.getDecksList()?.elementAt(widget.deckIndex)?.tests;
     // TODO: implement build
     return Scaffold(
         appBar: AppBar(

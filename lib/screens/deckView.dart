@@ -1,5 +1,5 @@
-import 'package:flashcards/Test/mockData.dart';
 import 'package:flashcards/models/CardModel.dart';
+import 'package:flashcards/models/DeckModel.dart';
 import 'package:flashcards/models/TestModel.dart';
 import 'package:flashcards/screens/cardView.dart';
 import 'package:flashcards/screens/questionView.dart';
@@ -8,8 +8,9 @@ import 'package:flashcards/utils/customColors.dart';
 import 'package:flutter/material.dart';
 
 class DeckView extends StatefulWidget {
-  final int deckIndex;
-  DeckView(this.deckIndex);
+  final DeckModel deck;
+  final DateTime visitDate;
+  DeckView(this.deck, this.visitDate);
   _DeckViewState createState() => _DeckViewState();
 }
 class _DeckViewState extends State<DeckView> {
@@ -18,11 +19,11 @@ class _DeckViewState extends State<DeckView> {
   bool flashcardClicked = false;
   @override
   Widget build(BuildContext context) {
-    List<TestModel> tests = MockData.getDecksList().elementAt(widget.deckIndex).tests;
-    List<CardModel> cards = MockData.getDecksList().elementAt(widget.deckIndex).cards;
+    List<TestModel> tests = widget.deck.tests;
+    List<CardModel> cards = widget.deck.cards;
     return Scaffold(
       appBar: AppBar(
-        title: Text(_getDeckTitle(widget.deckIndex)),
+        title: Text(widget.deck.deckTitle),
         backgroundColor: CustomColors.DeepBlue,
       ),
       backgroundColor: CustomColors.White,
@@ -60,7 +61,7 @@ class _DeckViewState extends State<DeckView> {
                           Text("Flashcards", style: TextStyle(fontFamily: 'Poppins', fontSize: 20, fontWeight: FontWeight.bold),),
                           IconButton(
                             icon: Icon(Icons.play_arrow, size: 40,),
-                            onPressed: (){Navigator.of(context).push(MaterialPageRoute(builder: (context) => CardView(widget.deckIndex, null)));},
+                            onPressed: (){Navigator.of(context).push(MaterialPageRoute(builder: (context) => CardView(widget.deck.cards, null)));},
                           ),
                         ],
                       ),
@@ -81,7 +82,7 @@ class _DeckViewState extends State<DeckView> {
                       return new InkWell(
                         onTap: () {
                           setState(() {
-                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => CardView(widget.deckIndex, cardIndex)));
+                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => CardView(widget.deck.cards, cardIndex)));
                           });
                         },
                         child: Center(
@@ -159,7 +160,7 @@ class _DeckViewState extends State<DeckView> {
                     itemBuilder: (BuildContext context, int testIndex) {
                       return new InkWell(
                         onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => TestView(widget.deckIndex, testIndex)));
+                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => TestView(tests, testIndex)));
                         },
                         child: Center(
                           child: Container(
@@ -206,8 +207,4 @@ class _DeckViewState extends State<DeckView> {
       //bottomNavigationBar: BottomNavBar(),
     );
   }
-}
-
-String _getDeckTitle(int index) {
-  return MockData.decksList.elementAt(index).deckTitle;
 }

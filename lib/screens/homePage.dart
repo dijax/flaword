@@ -22,7 +22,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin{
   AnimationController animationController;
   ColorTween colorTween;
   CurvedAnimation curvedAnimation;
-  List<DeckModel> decks = MockData.getDecksList();
+  List<DeckModel> decks = MockData.sortedDecks;
 
   @override
   void initState() {
@@ -34,8 +34,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin{
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: CustomColors.DeepBlue,
-      body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+//      resizeToAvoidBottomPadding: false, // used to fix the pixels overflow
+      body: ListView(
+//          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Row(),
             Padding(
@@ -104,7 +105,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin{
                               child: new Card(
                                 child: InkWell(
                                   onTap: () {
-                                    Navigator.of(context).push(MaterialPageRoute(builder: (context)=>DeckView(position)));
+                                    var selectedDeck = MockData.sortedDecks[position];
+                                    Navigator.of(context).push(MaterialPageRoute(builder: (context)=>DeckView(selectedDeck, DateTime.now())));
+                                    MockData.last3Decks(position);
                                   },
                                     child: Container(
                                       width: 250.0,
@@ -140,7 +143,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin{
                                               children: <Widget>[
                                                 Padding(
                                                   padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 40.0),
-                                                  child: Text("${decks[position].deckTitle}", style: TextStyle(fontSize: 28.0, fontWeight: FontWeight.bold, fontFamily: 'Montserrat'), textAlign: TextAlign.center,),
+                                                  child: Text("${MockData.sortedDecks[position].deckTitle}", style: TextStyle(fontSize: 28.0, fontWeight: FontWeight.bold, fontFamily: 'Montserrat'), textAlign: TextAlign.center,),
                                                 ),
                                                 Padding(
                                                     padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),

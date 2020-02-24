@@ -1,51 +1,48 @@
-import 'package:flashcards/Test/mockData.dart';
+import 'dart:math';
+
 import 'package:flashcards/models/CardModel.dart';
+import 'package:flashcards/screens/flipCard.dart';
 import 'package:flashcards/utils/customColors.dart';
 import 'package:flutter/material.dart';
 import 'package:flip_card/flip_card.dart';
+import 'package:flutter_swiper/flutter_swiper.dart';
 
 class CardView extends StatefulWidget {
-  final int deckIndex;
+  final List<CardModel> cards;
   final int cardIndex;
-  CardView(this.deckIndex, this.cardIndex);
+  CardView(this.cards, this.cardIndex);
   _CardViewState createState() => _CardViewState();
 }
 class _CardViewState extends State<CardView> with TickerProviderStateMixin{
+  Color _color = CustomColors.White;
+
   int _counter = 0;
   GlobalKey<FlipCardState> cardKey = GlobalKey<FlipCardState>();
-  List<CardModel> cards;
-  AnimationController animationController;
-  Animation<double> rotate;
-  Animation<double> right;
-  Animation<double> bottom;
 
-  @override
-  void initState() {
-    super.initState();
-    animationController = new AnimationController(duration: Duration(milliseconds: 1000), vsync: this);
-  }
+//  @override
+//  void initState() {
+//    super.initState();
+//    _controller = AnimationController(
+//      duration: const Duration(seconds: 2),
+//      vsync: this,
+//    );
+//    _offsetAnimation = Tween<Offset>(
+//      begin: Offset.zero,
+//      end: const Offset(1.5, 0.0),
+//    ).animate(CurvedAnimation(
+//      parent: _controller,
+//      curve: Curves.easeOut
+//    ));
+//  }
+//
+//  @override
+//  void dispose(){
+//    super.dispose();
+//    _controller.dispose();
+//  }
 
   @override
   Widget build(BuildContext context) {
-    cards = MockData.getDecksList().elementAt(widget.deckIndex).cards;
-    rotate = new Tween<double>(
-     begin: -0.0, // specifies where the animation starts
-      end: -40.0, // and where it ends
-    ).animate(new CurvedAnimation(parent: animationController, curve: Curves.ease),);
-    rotate.addListener((){});
-
-    right = new Tween<double>(
-     begin: 0.0,
-      end: 400.0,
-    ).animate(new CurvedAnimation(parent: animationController, curve: Curves.ease),);
-    rotate.addListener((){});
-
-    rotate = new Tween<double>(
-     begin: 15.0,
-      end: 100.0,
-    ).animate(new CurvedAnimation(parent: animationController, curve: Curves.ease),);
-    rotate.addListener((){});
-
     return Scaffold(
         appBar: AppBar(
           title: Text("Flashcards"), //TODO: Deck name dynamisch ändern
@@ -54,18 +51,29 @@ class _CardViewState extends State<CardView> with TickerProviderStateMixin{
         backgroundColor: CustomColors.White,
         body: Column(
           children: <Widget>[
-            new Transform(
-              alignment: Alignment.bottomLeft,
-              transform: Matrix4.skewX(50.0),
-              child: new RotationTransition(
-                  turns: AlwaysStoppedAnimation(-50/360),
-                  child: new GestureDetector(
-                    onTap: (){},
-                    child: Padding(
-                      padding: EdgeInsets.all(20),
-                      child: getFlipCard(),
-                    ),
-                  )),
+            Expanded(
+              child: AnimatedContainer(
+                width: 300,
+                height: 300,
+                decoration: BoxDecoration(
+                  color: _color,
+                ),
+
+                duration: Duration(seconds: 1),
+                curve: Curves.fastOutSlowIn,
+                child: new Swiper(
+                  itemBuilder: (BuildContext context, index) {
+                    return getFlipCard(index);
+                  },
+                  index: widget.cardIndex,
+                  itemCount: widget.cards.length,
+                  itemWidth: 300.0,
+                  itemHeight: 500.0,
+
+                  layout: SwiperLayout.DEFAULT,
+                ),
+
+              ),
             ),
 
 //            RaisedButton(
@@ -77,97 +85,11 @@ class _CardViewState extends State<CardView> with TickerProviderStateMixin{
     );
   }
 
-  Widget getFlipCard(){
+  Widget getFlipCard(int index){
     if(widget.cardIndex != null){
-      return FlipCard(
-        key: cardKey,
-        flipOnTouch: false,
-        back: SizedBox(
-          height: 400,
-          child: InkWell(
-              onTap: () => cardKey.currentState.toggleCard(),
-              child: Container(
-                padding: EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                    color: CustomColors.White,
-                    boxShadow: [
-                      BoxShadow(
-                        color: CustomColors.LightGrey,
-                        offset: Offset(5,5),
-                        blurRadius: 15,
-                      ),]),
-                child: Center(
-                    child: Text(cards.elementAt(widget.cardIndex)?.front)),
-              )
-          ),
-        ),
-        front: SizedBox(
-          height: 400,
-          child: InkWell(
-            onTap: () => cardKey.currentState.toggleCard(),
-            child: Container(
-              padding: EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: CustomColors.White,
-                boxShadow: [
-                  BoxShadow(
-                    color: CustomColors.LightGrey,
-                    offset: Offset(5,5),
-                    blurRadius: 15,
-                  ),
-                ],
-              ),
-              child: Center(
-                  child: Text(cards?.elementAt(widget.cardIndex)?.back)),
-            ),
-          ),
-        ),
-      );
+      return FlipCardView(widget.cards.elementAt(index));
     }
-    return FlipCard(
-      key: cardKey,
-      flipOnTouch: false,
-      back: SizedBox(
-        height: 400,
-        child: InkWell(
-            onTap: () => cardKey.currentState.toggleCard(),
-            child: Container(
-              padding: EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                  color: CustomColors.White,
-                  boxShadow: [
-                    BoxShadow(
-                      color: CustomColors.LightGrey,
-                      offset: Offset(5,5),
-                      blurRadius: 15,
-                    ),]),
-              child: Center(
-                  child: Text(cards.elementAt(_counter)?.front)),
-            )
-        ),
-      ),
-      front: SizedBox(
-        height: 400,
-        child: InkWell(
-          onTap: () => cardKey.currentState.toggleCard(),
-          child: Container(
-            padding: EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: CustomColors.White,
-              boxShadow: [
-                BoxShadow(
-                  color: CustomColors.LightGrey,
-                  offset: Offset(5,5),
-                  blurRadius: 15,
-                ),
-              ],
-            ),
-            child: Center(
-                child: Text(cards?.elementAt(_counter)?.back)),
-          ),
-        ),
-      ),
-    );
+    return FlipCardView(widget.cards.elementAt(index));
   }
 
   Widget getIconsBar(){
@@ -179,7 +101,12 @@ class _CardViewState extends State<CardView> with TickerProviderStateMixin{
           children: <Widget>[
             IconButton(
               icon: Icon(Icons.sentiment_very_satisfied, size: 50, color: CustomColors.GreenAccent,),
-              onPressed: (){},
+              onPressed: (){
+                setState(() {
+                  final random = Random();
+                  _color = Color.fromRGBO(random.nextInt(256), random.nextInt(256), random.nextInt(256), 1);
+                });
+              },
             ),
             SizedBox(height: 8,),
             Padding(
@@ -221,7 +148,7 @@ class _CardViewState extends State<CardView> with TickerProviderStateMixin{
 
   void pressed() {
     setState(() {
-      if(_counter < cards.length-1) {
+      if(_counter < widget.cards.length-1) {
         _counter++;
         return;
       }
@@ -229,9 +156,4 @@ class _CardViewState extends State<CardView> with TickerProviderStateMixin{
     });
   }
 
-  Future<Null> _swipeAnimation() async {
-    try{
-      await animationController.forward();
-    } on TickerCanceled{}
-  }
 }

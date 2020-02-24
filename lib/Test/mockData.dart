@@ -10,7 +10,7 @@ class MockData{
   // Flashcards for the Math deck
   static List<CardModel> mathCardsList = [
     CardModel("first card", "first card", "this the front side of the first Card", "this is the back side of the first card", false, CardUnderstanding.none),
-    CardModel("second card", "second card","this the front side of the first card", "this is the back side of the second card", false, CardUnderstanding.none),
+    CardModel("second card", "second card","this the front side of the second card", "this is the back side of the second card", false, CardUnderstanding.none),
     CardModel("3rd card", "3rd card", "this the front side of the 3rd Card", "this is the back side of the 3rd card", false, CardUnderstanding.none),
     CardModel("4th card", "4th card", "this the front side of the 4th Card", "this is the back side of the 4th card", false, CardUnderstanding.none),
     CardModel("5th card", "5th card", "this the front side of the 5th Card", "this is the back side of the 5th card", false, CardUnderstanding.none),
@@ -22,8 +22,8 @@ class MockData{
 
   // Flashcards for the physics deck
   static List<CardModel> physicsCardsList = [
-    CardModel("first card", "first card", "this the front side of the first Card", "this is the back side of the second card", false, CardUnderstanding.none),
-    CardModel("second card", "second card", "this the front side of the first card", "this is the back side of the second card", false, CardUnderstanding.none),
+    CardModel("first card", "first card", "this the front side of the first Card", "this is the back side of the first card", false, CardUnderstanding.none),
+    CardModel("second card", "second card", "this the front side of the 2nd card", "this is the back side of the second card", false, CardUnderstanding.none),
     CardModel("3rd card", "3rd card", "this the front side of the 3rd Card", "this is the back side of the 3rd card", false, CardUnderstanding.none),
     CardModel("4th card", "4th card", "this the front side of the 4th Card", "this is the back side of the 4th card", false, CardUnderstanding.none),
     CardModel("5th card", "5th card", "this the front side of the 5th Card", "this is the back side of the 5th card", false, CardUnderstanding.none),
@@ -36,8 +36,8 @@ class MockData{
 
   // Flashcards for the biology deck
   static List<CardModel> biologyCardsList = [
-    CardModel("first card", "first card", "this the front side of the first Card", "this is the back side of the second card", false, CardUnderstanding.none),
-    CardModel("second card", "second card", "this the front side of the first card", "this is the back side of the second card", false, CardUnderstanding.none),
+    CardModel("first card", "first card", "this the front side of the first Card", "this is the back side of the first card", false, CardUnderstanding.none),
+    CardModel("second card", "second card", "this the front side of the 2nd card", "this is the back side of the second card", false, CardUnderstanding.none),
     CardModel("3rd card", "3rd card", "this the front side of the 3rd Card", "this is the back side of the 3rd card", false, CardUnderstanding.none),
     CardModel("4th card", "4th card", "this the front side of the 4th Card", "this is the back side of the 4th card", false, CardUnderstanding.none),
     CardModel("5th card", "5th card", "this the front side of the 5th Card", "this is the back side of the 5th card", false, CardUnderstanding.none),
@@ -112,9 +112,18 @@ class MockData{
   ];
 
   static List<DeckModel> decksList = [
-    DeckModel("Math deck", mathCardsList, mathTestsList, 0.4),
-    DeckModel("Physics Deck", physicsCardsList, physicsTestsList, 0.1),
-    DeckModel("Biology Deck", biologyCardsList, biologyTestsList, 0.2),
+    DeckModel("Math deck", mathCardsList, mathTestsList, 0.4, null),
+    DeckModel("Physics Deck", physicsCardsList, physicsTestsList, 0.1, null),
+    DeckModel("Biology Deck", biologyCardsList, biologyTestsList, 0.2, null),
+    DeckModel("Geo deck", mathCardsList, mathTestsList, 0.4, null),
+    DeckModel("Chemie Deck", physicsCardsList, physicsTestsList, 0.1, null),
+    DeckModel("Deutsch Deck", biologyCardsList, biologyTestsList, 0.2, null),
+  ];
+
+  static List<DeckModel> sortedDecks = [
+    DeckModel("Physics Deck", physicsCardsList, physicsTestsList, 0.1, null),
+    DeckModel("Math deck", mathCardsList, mathTestsList, 0.4, null),
+    DeckModel("Biology Deck", biologyCardsList, biologyTestsList, 0.2, null),
   ];
 
   static List<DeckModel> getDecksList() {
@@ -124,4 +133,26 @@ class MockData{
   static List<TestModel> getTestList() {
     return mathTestsList;
   }
+
+  static void setVisitDate(int index, DateTime date){
+    decksList.elementAt(index).visitDate = date;
+  }
+
+  static last3Decks(int index) {
+    switch(index){
+      case 0:
+        return;
+        break;
+      case 1:
+        var element1 = sortedDecks.elementAt(1);
+        var element0 = sortedDecks.elementAt(0);
+        sortedDecks.replaceRange(0, 2, [element1, element0]);
+        break;
+      case 2:
+        sortedDecks = sortedDecks.reversed.toList();
+        sortedDecks.replaceRange(1, 3, [sortedDecks.elementAt(2), sortedDecks.elementAt(1)]);
+        break;
+    }
+  }
+
 }

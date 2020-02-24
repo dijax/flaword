@@ -28,7 +28,9 @@ class _DecksPageState extends State<DecksPage> {
               delegate: SliverChildBuilderDelegate(
                       (BuildContext context, int index) => GestureDetector(
                         onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => DeckView(index)));
+                          MockData.setVisitDate(index, DateTime.now());
+                          print(DateTime.now());
+                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => DeckView(decks[index], DateTime.now())));
                         }, //TODO: the deck widget to implement
                         child: Container(
                           child: Center(
