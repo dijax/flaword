@@ -15,7 +15,7 @@ class _AddQuestionState extends State<AddQuestion> {
         child: Column(children: <Widget>[
           Padding(padding: EdgeInsets.all(8),),
           TextField(
-            cursorWidth: 300,
+//            cursorWidth: 300,
             decoration: InputDecoration(
               labelText: 'Enter another answer',
 //                border: OutlineInputBorder(
@@ -123,7 +123,11 @@ class _AddQuestionState extends State<AddQuestion> {
           Positioned(
             right: 0.0,
             child: InkWell(
-              onTap: widget.onDeleteSelected,
+              onTap: (){
+                setState(() {
+                  _answersCount = _answersCount - 1; //TODO: Fix
+                });
+              },
               child: Align(
                 alignment: Alignment.topRight,
                 child: CircleAvatar(

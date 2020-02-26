@@ -9,4 +9,12 @@ class CardModel {
   CardUnderstanding cardUnderstanding;
 
   CardModel(this.cardTitle, this.cardDescription, this.back, this.front, this.hidden, this.cardUnderstanding);
+
+  CardUnderstanding get understand{
+    return cardUnderstanding;
+  }
+
+  void set understand(CardUnderstanding understanding) {
+    this.cardUnderstanding = understanding;
+  }
 }

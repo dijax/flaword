@@ -13,14 +13,13 @@ class _TestViewState extends State<TestView> {
 //  int _counter = 0;
 //  int _counter2 = 0;
   GlobalKey<FlipCardState> cardKey = GlobalKey<FlipCardState>();
-  List<TestModel> tests;
 
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
         appBar: AppBar(
-          title: Text(tests?.elementAt(widget.testIndex)?.testTitle),
+          title: Text(widget.tests?.elementAt(widget.testIndex)?.testTitle),
           backgroundColor: CustomColors.DeepBlue,
         ),
         backgroundColor: CustomColors.White,
@@ -32,7 +31,7 @@ class _TestViewState extends State<TestView> {
                 child: new ListView.builder(
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
-                    itemCount: tests?.elementAt(widget.testIndex)?.questions?.length,
+                    itemCount: widget.tests?.elementAt(widget.testIndex)?.questions?.length,
                     itemBuilder: (BuildContext context, int quIndex) {
                       return new InkWell(
                         child: Center(
@@ -53,7 +52,7 @@ class _TestViewState extends State<TestView> {
                                     ),
                                   ]
                               ),
-                              child: Text(tests?.elementAt(widget.testIndex)?.questions?.elementAt(quIndex)?.question, style: TextStyle(fontSize: 20, fontFamily: 'Poppins'),),
+                              child: Text(widget.tests?.elementAt(widget.testIndex)?.questions?.elementAt(quIndex)?.question, style: TextStyle(fontSize: 20, fontFamily: 'Poppins'),),
                             ),
                           ),
                         ),

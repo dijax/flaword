@@ -46,35 +46,35 @@ class MockData{
     CardModel("8th card", "8th card", "this the front side of the 8th Card", "this is the back side of the 8th card", false, CardUnderstanding.none),
   ];
 
-  static List<AnswerModel> answers1 = [AnswerModel("this is the first correct answer of the first math question", true),
-                                       AnswerModel("this is the second correct answer of the first math question", true),
-                                       AnswerModel("this is the first false answer of the first math question", false),
-                                       AnswerModel("this is the second false answer of the first math question", false)];
+  static List<AnswerModel> answers1 = [AnswerModel("this is the first correct answer of the first math question", true, false),
+                                       AnswerModel("this is the second correct answer of the first math question", true, false),
+                                       AnswerModel("this is the first false answer of the first math question", false, false),
+                                       AnswerModel("this is the second false answer of the first math question", false, false)];
 
-  static List<AnswerModel> answers2 = [AnswerModel("this is the first correct answer of the 2nd math question", true),
-                                       AnswerModel("this is the second correct answer of the 2nd math question", true),
-                                       AnswerModel("this is the first false answer of the 2nd math question", false),
-                                       AnswerModel("this is the second false answer of the 2nd math question", false)];
+  static List<AnswerModel> answers2 = [AnswerModel("this is the first correct answer of the 2nd math question", true, false),
+                                       AnswerModel("this is the second correct answer of the 2nd math question", true, false),
+                                       AnswerModel("this is the first false answer of the 2nd math question", false, false),
+                                       AnswerModel("this is the second false answer of the 2nd math question", false, false)];
 
-  static List<AnswerModel> answers3 = [AnswerModel("this is the first correct answer of the 3rd math question", true),
-                                       AnswerModel("this is the second correct answer of the 3rd math question", true),
-                                       AnswerModel("this is the first false answer of the 3rd math question", false),
-                                       AnswerModel("this is the second false answer of the 3rd math question", false)];
+  static List<AnswerModel> answers3 = [AnswerModel("this is the first correct answer of the 3rd math question", true, false),
+                                       AnswerModel("this is the second correct answer of the 3rd math question", true, false),
+                                       AnswerModel("this is the first false answer of the 3rd math question", false, false),
+                                       AnswerModel("this is the second false answer of the 3rd math question", false, false)];
 
-  static List<AnswerModel> answers4 = [AnswerModel("this is the first correct answer of the 4th math question", true),
-                                       AnswerModel("this is the second correct answer of the 4th math question", true),
-                                       AnswerModel("this is the first false answer of the 4th math question", false),
-                                       AnswerModel("this is the second false answer of the 4th math question", false)];
+  static List<AnswerModel> answers4 = [AnswerModel("this is the first correct answer of the 4th math question", true, false),
+                                       AnswerModel("this is the second correct answer of the 4th math question", true, false),
+                                       AnswerModel("this is the first false answer of the 4th math question", false, false),
+                                       AnswerModel("this is the second false answer of the 4th math question", false, false)];
 
-  static List<AnswerModel> answers5 = [AnswerModel("this is the first correct answer of the 5th math question", true),
-                                       AnswerModel("this is the second correct answer of the 5th math question", true),
-                                       AnswerModel("this is the first false answer of the 5th math question", false),
-                                       AnswerModel("this is the second false answer of the 5th math question", false)];
+  static List<AnswerModel> answers5 = [AnswerModel("this is the first correct answer of the 5th math question", true, false),
+                                       AnswerModel("this is the second correct answer of the 5th math question", true, false),
+                                       AnswerModel("this is the first false answer of the 5th math question", false, false),
+                                       AnswerModel("this is the second false answer of the 5th math question", false, false)];
 
-  static List<AnswerModel> answers6 = [AnswerModel("this is the first correct answer of the 6th math question", true),
-                                       AnswerModel("this is the second correct answer of the 6th math question", true),
-                                       AnswerModel("this is the first false answer of the 6th math question", false),
-                                       AnswerModel("this is the second false answer of the 6th math question", false)];
+  static List<AnswerModel> answers6 = [AnswerModel("this is the first correct answer of the 6th math question", true, false),
+                                       AnswerModel("this is the second correct answer of the 6th math question", true, false),
+                                       AnswerModel("this is the first false answer of the 6th math question", false, false),
+                                       AnswerModel("this is the second false answer of the 6th math question", false, false)];
 
   // Questionlist for the math deck
   static List<QuestionModel> mathQuestionsList = [
@@ -95,7 +95,7 @@ class MockData{
     TestModel("Math test5", "this is the math test5", mathQuestionsList, 0.0),
   ];
 
-  static List<AnswerModel> phyAnswers = [AnswerModel("this is the first correct answer of the 1st physics question", true)];
+  static List<AnswerModel> phyAnswers = [AnswerModel("this is the first correct answer of the 1st physics question", true, false)];
 
   static List<TestModel> physicsTestsList = [
     TestModel("Physics test1", "this is the math test1", phyQuestionsList, 0.0),
@@ -103,7 +103,7 @@ class MockData{
   static List<QuestionModel> phyQuestionsList = [
   QuestionModel("this is the 1st phy question", phyAnswers, false),];
 
-  static List<AnswerModel> bioAnswers = [AnswerModel("this is the first correct answer of the 1st bio question", true)];
+  static List<AnswerModel> bioAnswers = [AnswerModel("this is the first correct answer of the 1st bio question", true, false)];
   static List<QuestionModel> bioQuestionsList = [
   QuestionModel("this is the 1st phy question", phyAnswers, false),];
 
@@ -154,5 +154,4 @@ class MockData{
         break;
     }
   }
-
 }

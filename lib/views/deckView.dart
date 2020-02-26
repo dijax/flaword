@@ -1,10 +1,11 @@
 import 'package:flashcards/models/CardModel.dart';
 import 'package:flashcards/models/DeckModel.dart';
 import 'package:flashcards/models/TestModel.dart';
-import 'package:flashcards/screens/cardView.dart';
-import 'package:flashcards/screens/questionView.dart';
-import 'package:flashcards/screens/testView.dart';
+import 'package:flashcards/views/cardView.dart';
+import 'package:flashcards/views/questionView.dart';
+import 'package:flashcards/views/testView.dart';
 import 'package:flashcards/utils/customColors.dart';
+import 'package:flashcards/widgets/settingsMenu.dart';
 import 'package:flutter/material.dart';
 
 class DeckView extends StatefulWidget {
@@ -102,8 +103,13 @@ class _DeckViewState extends State<DeckView> {
                                   ),
                                 ]
                             ),
-                            child: Center(
-                              child: Text(cards.elementAt(cardIndex).cardTitle, style: TextStyle(color: CustomColors.White, fontSize: 20, fontFamily: 'Poppins', fontWeight: FontWeight.bold),),
+                            child: Row(
+                              children: <Widget>[
+                                Center(
+                                  child: Text(cards.elementAt(cardIndex).cardTitle, style: TextStyle(color: CustomColors.White, fontSize: 20, fontFamily: 'Poppins', fontWeight: FontWeight.bold),),
+                                ),
+                                SettingsMenu(),
+                              ],
                             ),
                           ),
                         ),

@@ -1,7 +1,6 @@
-import 'dart:math';
-
 import 'package:flashcards/models/CardModel.dart';
-import 'package:flashcards/screens/flipCard.dart';
+import 'package:flashcards/models/CardUnderstanding.dart';
+import 'package:flashcards/widgets/flipCard.dart';
 import 'package:flashcards/utils/customColors.dart';
 import 'package:flutter/material.dart';
 import 'package:flip_card/flip_card.dart';
@@ -14,11 +13,15 @@ class CardView extends StatefulWidget {
   _CardViewState createState() => _CardViewState();
 }
 class _CardViewState extends State<CardView> with TickerProviderStateMixin{
-  Color _color = CustomColors.White;
-
-  int _counter = 0;
+  int _cardValue = 0;
+  bool indexChanged = false;
   GlobalKey<FlipCardState> cardKey = GlobalKey<FlipCardState>();
 
+  @override
+  void initState() {
+    if(widget.cardIndex != null) _cardValue = widget.cardIndex;
+    else _cardValue = 0;
+  }
 //  @override
 //  void initState() {
 //    super.initState();
@@ -52,27 +55,27 @@ class _CardViewState extends State<CardView> with TickerProviderStateMixin{
         body: Column(
           children: <Widget>[
             Expanded(
-              child: AnimatedContainer(
-                width: 300,
-                height: 300,
-                decoration: BoxDecoration(
-                  color: _color,
-                ),
-
-                duration: Duration(seconds: 1),
-                curve: Curves.fastOutSlowIn,
-                child: new Swiper(
-                  itemBuilder: (BuildContext context, index) {
-                    return getFlipCard(index);
-                  },
-                  index: widget.cardIndex,
-                  itemCount: widget.cards.length,
-                  itemWidth: 300.0,
-                  itemHeight: 500.0,
-
-                  layout: SwiperLayout.DEFAULT,
-                ),
-
+              child: Stack(
+//                duration: Duration(seconds: 2),
+//                curve: Curves.fastOutSlowIn,
+                children: <Widget>[
+                  new Swiper(
+                    itemBuilder: (BuildContext context, index) {
+                      return getFlipCard(index);
+                    },
+                    index: swiperIndex(),
+                    onIndexChanged: updateCardIndex,
+                    itemCount: widget.cards.length,
+                    itemWidth: 300.0,
+                    itemHeight: 500.0,
+                    layout: SwiperLayout.DEFAULT,
+                  ),
+                  Positioned(
+                    right: 40,
+                    top: 40,
+                    child: getUnderstandingIcon(),
+                  ),
+                ],
               ),
             ),
 
@@ -86,9 +89,6 @@ class _CardViewState extends State<CardView> with TickerProviderStateMixin{
   }
 
   Widget getFlipCard(int index){
-    if(widget.cardIndex != null){
-      return FlipCardView(widget.cards.elementAt(index));
-    }
     return FlipCardView(widget.cards.elementAt(index));
   }
 
@@ -103,8 +103,7 @@ class _CardViewState extends State<CardView> with TickerProviderStateMixin{
               icon: Icon(Icons.sentiment_very_satisfied, size: 50, color: CustomColors.GreenAccent,),
               onPressed: (){
                 setState(() {
-                  final random = Random();
-                  _color = Color.fromRGBO(random.nextInt(256), random.nextInt(256), random.nextInt(256), 1);
+                  widget.cards.elementAt(_cardValue).cardUnderstanding = CardUnderstanding.clear;
                 });
               },
             ),
@@ -119,7 +118,11 @@ class _CardViewState extends State<CardView> with TickerProviderStateMixin{
           children: <Widget>[
             IconButton(
               icon: Icon(Icons.sentiment_neutral, size: 50, color: CustomColors.OrangeIcon),
-              onPressed: (){},
+              onPressed: (){
+                setState(() {
+                  widget.cards.elementAt(_cardValue).cardUnderstanding = CardUnderstanding.unsure;
+                });
+              },
             ),
             SizedBox(height: 8,),
             Padding(
@@ -132,7 +135,11 @@ class _CardViewState extends State<CardView> with TickerProviderStateMixin{
           children: <Widget>[
             IconButton(
               icon: Icon(Icons.sentiment_very_dissatisfied, size: 50, color: CustomColors.TrashRed),
-              onPressed: (){},
+              onPressed: (){
+                setState(() {
+                  widget.cards.elementAt(_cardValue).cardUnderstanding = CardUnderstanding.problematic;
+                });
+              },
             ),
             SizedBox(height: 8,),
             Padding(
@@ -146,14 +153,46 @@ class _CardViewState extends State<CardView> with TickerProviderStateMixin{
     );
   }
 
-  void pressed() {
+  Widget getUnderstandingIcon(){
+    print(_cardValue);
+    print(widget.cards.elementAt(_cardValue).cardUnderstanding);
+    switch(widget.cards.elementAt(_cardValue).cardUnderstanding){
+      case CardUnderstanding.clear:
+        return Icon(Icons.sentiment_very_satisfied, size: 30,color: CustomColors.GreenAccent,);
+        break;
+      case CardUnderstanding.none:
+//        print("no data");
+        return Icon(Icons.sentiment_neutral, size: 30,color: CustomColors.White.withOpacity(0.1),);
+        break;
+      case CardUnderstanding.unsure:
+        return Icon(Icons.sentiment_neutral, size: 30,color: CustomColors.OrangeIcon,);
+        break;
+      case CardUnderstanding.problematic:
+        return Icon(Icons.sentiment_very_dissatisfied, size: 30,color: CustomColors.TrashRed,);
+        break;
+    }
+    return Icon(Icons.sentiment_neutral, size: 30,color: CustomColors.White.withOpacity(0.1),);
+  }
+
+//  void pressed() {
+//    setState(() {
+////      if(_counter < widget.cards.length-1) {
+////        _counter++;
+//        return;
+////      }
+//      print("done");
+//    });
+//  }
+
+  void updateCardIndex(int value) {
     setState(() {
-      if(_counter < widget.cards.length-1) {
-        _counter++;
-        return;
-      }
-      print("done");
+      indexChanged = true;
+      _cardValue = value;
     });
   }
 
+  swiperIndex() {
+    if(!indexChanged && widget.cardIndex!=0) return widget.cardIndex;
+    else return _cardValue;
+  }
 }

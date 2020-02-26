@@ -1,3 +1,5 @@
+import 'package:flashcards/models/AnswerModel.dart';
+import 'package:flashcards/models/QuestionModel.dart';
 import 'package:flashcards/models/TestModel.dart';
 import 'package:flashcards/utils/customColors.dart';
 import 'package:flutter/material.dart';
@@ -11,10 +13,16 @@ class QuestionView extends StatefulWidget {
 }
 class _QuestionViewState extends State<QuestionView> {
   bool show = false;
+  int _queIndex = 0;
+  bool _false = false;
+
+  @override void initState() {
+    // TODO: implement initState
+    _queIndex = widget.quIndex;
+  }
   @override
   Widget build(BuildContext context) {
-
-    // TODO: implement build
+    List<AnswerModel> answers = widget.test.questions.elementAt(_queIndex).answers;
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.test.testTitle),
@@ -40,18 +48,24 @@ class _QuestionViewState extends State<QuestionView> {
                   ],
                 ),
                 child: Center(
-                  child: Text(widget.test?.questions?.elementAt(widget.quIndex)?.question, style: TextStyle(fontSize: 18, fontFamily: 'Poppins'),),
+                  child: Text(widget.test?.questions?.elementAt(_queIndex)?.question, style: TextStyle(fontSize: 18, fontFamily: 'Poppins'),),
                 ),
               ),
             ),
             SizedBox(height: 40,),
-            (widget.test.questions.elementAt(widget.quIndex).answers.length > 1)? Container(
+            (_false && answers.length > 1)? Container(
+              child: Column(children: <Widget>[
+                Text("false answer, try again", style: TextStyle(color: CustomColors.TrashRed),),
+                Icon(Icons.cancel, color: CustomColors.TrashRed,)
+              ],)
+            ):Container(),
+            (widget.test.questions.elementAt(_queIndex).answers.length > 1)? Container(
               color: CustomColors.White,
               child: new ListView.builder(
                   physics: const NeverScrollableScrollPhysics(),
                   scrollDirection: Axis.vertical,
                   shrinkWrap: true,
-                  itemCount: widget.test?.questions?.elementAt(widget.quIndex)?.answers?.length,
+                  itemCount: widget.test?.questions?.elementAt(_queIndex)?.answers?.length,
                   itemBuilder: (BuildContext context, int index) {
                     return new Center(
                       child: Column(
@@ -60,12 +74,17 @@ class _QuestionViewState extends State<QuestionView> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               Checkbox(
-                                checkColor: CustomColors.PurpleLight,
-                                value: false,
-//                                  onChanged: (){},
+                                checkColor: CustomColors.White,
+                                value: answers.elementAt(index).checked,
+                                onChanged: (bool value) {
+                                  setState(() {
+                                    answers.elementAt(index).checked = value;
+                                  });
+                                },
                               ),
                               Flexible(
-                                child: Text(widget.test?.questions?.elementAt(widget.quIndex)?.answers?.elementAt(index)?.answer, style: TextStyle(fontSize: 16, fontFamily: 'Poppins'),),
+
+                                child: Text(widget.test?.questions?.elementAt(_queIndex)?.answers?.elementAt(index)?.answer, style: TextStyle(fontSize: 16, fontFamily: 'Poppins',),),
                               ),
                             ],
                           ),
@@ -76,13 +95,11 @@ class _QuestionViewState extends State<QuestionView> {
                   }),
             ):Container(),
             Container(
-              child:(widget.test.questions.elementAt(widget.quIndex).answers.length == 1) ? Container(
+              child:(widget.test.questions.elementAt(_queIndex).answers.length == 1) ? Container(
                 child: InkWell(
                   onTap: () {
                     setState(() {
                       show = !show;
-                      print("print");
-                      print(show);
                     });
                   },
                   child: Column(
@@ -94,7 +111,7 @@ class _QuestionViewState extends State<QuestionView> {
               ): Container(),
             ),
             show ? Center(
-                child: Text(widget.test.questions.elementAt(widget.quIndex).answers.elementAt(0).answer,
+                child: Text(widget.test.questions.elementAt(_queIndex).answers.elementAt(0).answer,
                   textAlign: TextAlign.center,)):Center(),
             show ? SizedBox(height: 20,):SizedBox(),
             InkWell(
@@ -119,7 +136,11 @@ class _QuestionViewState extends State<QuestionView> {
                   IconButton(
                     icon: Icon(Icons.arrow_back_ios),
                     color: CustomColors.PurpleAccent,
-                    onPressed: (){},
+                    onPressed: (){
+                      if(_queIndex > 0) setState(() {
+                        _queIndex = _queIndex - 1;
+                      });
+                    },
                   ),
                   Text("last question", style: TextStyle(color: CustomColors.PurpleAccent),),
                 ],
@@ -130,7 +151,18 @@ class _QuestionViewState extends State<QuestionView> {
                   IconButton(
                     icon: Icon(Icons.arrow_forward_ios),
                     color: CustomColors.PurpleAccent,
-                    onPressed: (){},
+                    onPressed: (){
+                      if(isCorrect(_queIndex)){
+                        if(_queIndex < widget.test.questions.length - 1)
+                          setState(() {
+                            _false = false;
+                            _queIndex = _queIndex +1 ;
+                          });
+                      }
+                      else setState(() {
+                        _false = true;
+                      });
+                    },
                   ),
                 ],
               ),
@@ -138,5 +170,13 @@ class _QuestionViewState extends State<QuestionView> {
           ),
         ),
     );
+  }
+
+  bool isCorrect(int queIndex) {
+    List<AnswerModel> answers = widget.test.questions.elementAt(queIndex).answers;
+    for(int i=0; i<answers.length; i++) {
+      if(answers[i].checked != answers[i].correct) return false;
+    }
+    return true;
   }
 }

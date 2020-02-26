@@ -1,7 +1,7 @@
 import 'package:flashcards/Test/mockData.dart';
 import 'package:flashcards/models/DeckModel.dart';
-import 'package:flashcards/screens/deckView.dart';
-import 'package:flashcards/screens/settingsMenu.dart';
+import 'package:flashcards/views/deckView.dart';
+import 'package:flashcards/widgets/settingsMenu.dart';
 import 'package:flashcards/utils/customColors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
