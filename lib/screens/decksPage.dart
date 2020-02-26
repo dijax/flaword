@@ -15,12 +15,23 @@ class _DecksPageState extends State<DecksPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Decks",),
-        backgroundColor: CustomColors.DeepBlue,
-      ),
+//      appBar: AppBar(
+//        title: Text("Decks",),
+//        backgroundColor: Colors.black,
+//      ),
       body: Container(
-        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: ExactAssetImage('assets/graphics/mountain.jpg'),
+            fit: BoxFit.cover,
+            colorFilter: ColorFilter.mode(
+                Colors.black.withOpacity(0.6),
+                BlendMode.dstIn
+            ),
+          ),
+
+        ),
+        padding: EdgeInsets.fromLTRB(10, 80, 10, 10),
         width: MediaQuery.of(context).size.width,
         child: CustomScrollView(
           slivers: <Widget>[
@@ -34,16 +45,16 @@ class _DecksPageState extends State<DecksPage> {
                         }, //TODO: the deck widget to implement
                         child: Stack(
                           children: <Widget>[
-                            Container(
-                              width: 382,
-                              height: 150,
-                              color: CustomColors.White,
-                            ),
-                            Container(
-                              width: 382,
-                              height: 155,
-                              color: CustomColors.White,
-                            ),
+//                            Container(
+//                              width: 382,
+//                              height: 150,
+//                              color: CustomColors.White,
+//                            ),
+//                            Container(
+//                              width: 382,
+//                              height: 155,
+//                              color: CustomColors.White,
+//                            ),
                             Container(
                               child: Center(
                                 child: Column(
@@ -52,7 +63,7 @@ class _DecksPageState extends State<DecksPage> {
                                     Container(
                                       width: 65,
                                       height: 65,
-                                      child: Icon(Icons.library_books, color: CustomColors.DeepBlue,),
+                                      child: Icon(Icons.library_books, color: Colors.black,),
                                       decoration: const BoxDecoration(
                                         color: CustomColors.White,
                                         borderRadius: BorderRadius.all(Radius.circular(50.0),),
@@ -69,7 +80,7 @@ class _DecksPageState extends State<DecksPage> {
                                     Text("${decks[index].deckTitle.toString().toUpperCase()}",
                                       style: TextStyle(
                                         fontSize: 17,
-                                        color: CustomColors.PurpleDark.withOpacity(0.8),
+                                        color: CustomColors.PurpleDark,
                                         fontWeight: FontWeight.w600,
                                         fontFamily: 'Poppins',
                                       ),
@@ -85,7 +96,7 @@ class _DecksPageState extends State<DecksPage> {
                                             style: TextStyle(
                                               fontSize: 14,
                                               fontWeight: FontWeight.bold,
-                                              color: CustomColors.BlueCiel,
+                                              color: Colors.black,
                                             ),
                                           ),
                                           Text(
@@ -93,7 +104,7 @@ class _DecksPageState extends State<DecksPage> {
                                             style: TextStyle(
                                               fontSize: 14,
                                               fontWeight: FontWeight.bold,
-                                              color: CustomColors.BlueCiel,
+                                              color: Colors.black,
                                             ),
                                           ),
                                         ],
@@ -126,7 +137,7 @@ class _DecksPageState extends State<DecksPage> {
           ],
         ),
       ),
-      backgroundColor: CustomColors.DeepBlue,
+      backgroundColor: Colors.black,
     );
   }
 }

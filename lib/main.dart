@@ -1,8 +1,9 @@
 import 'dart:io';
 
-import 'package:flashcards/routes/routeGenerator.dart';
-import 'package:flutter/material.dart';
 import 'package:flashcards/bottomNavBar.dart';
+import 'package:flashcards/routes/routeGenerator.dart';
+import 'package:flashcards/screens/loginPage.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 void main() => runApp(MyApp());
@@ -37,7 +38,9 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Poppins',
       ),
       onGenerateRoute: RouteGenerator.generateRoute,
+//      home: LoginPage(),
       home: BottomNavBar(),
+
     );
   }
 }

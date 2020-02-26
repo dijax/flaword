@@ -53,11 +53,11 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
                 ),
                 child:  new FloatingActionButton(
                   heroTag: null,
-                  backgroundColor: CustomColors.NearlyBlack,
+                  backgroundColor: CustomColors.black,
                   mini: true,
                   tooltip: 'Add Button',
                   focusColor: Colors.white,
-                  child:  new Icon(icons[index], color: CustomColors.PurpleLight,),
+                  child:  new Icon(icons[index], color: CustomColors.Purple,),
                   onPressed: () {
                     menuChildPressed(index);
                   },
@@ -94,14 +94,14 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
       bottomNavigationBar: CurvedNavigationBar(
         height: 50.0,
         items: <Widget>[
-          Icon(Icons.home, size: 30),
-          Icon(Icons.library_books, size: 30,),
-          Icon(Icons.trending_up, size: 30),
+          Icon(Icons.home, size: 30, color: CustomColors.black,),
+          Icon(Icons.library_books, size: 30, color: CustomColors.black),
+          Icon(Icons.trending_up, size: 30, color: CustomColors.black),
           Icon(Icons.person, size: 30),
         ],
         color: Colors.white,
-        buttonBackgroundColor: Colors.white,
-        backgroundColor: CustomColors.DeepBlue,
+        buttonBackgroundColor: CustomColors.White,
+        backgroundColor: CustomColors.black,
         animationCurve: Curves.easeInOutCirc,
         animationDuration: Duration(milliseconds: 600),
         onTap: onTappedBar,

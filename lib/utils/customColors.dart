@@ -13,6 +13,7 @@ class CustomColors {
   static const Color NotWhite = Color(0xFFEDF0F2);
   static const Color DeepBlue = const Color(0xff262545);
   static const Color BlueCiel = const Color(0xff6f6f97);
+  static const Color black = Colors.black;
 
   static const Color MistyRose = Color.fromRGBO(255,228,225,1);
 
@@ -20,9 +21,9 @@ class CustomColors {
   static const Color OrangeBackground = Color.fromRGBO(255, 208, 155, 0.36); // 36%
 
   static const Color PurpleLight = Color.fromRGBO(248, 87, 195, 1);
-  static const Color PurpleDark = Color.fromRGBO(224, 19, 156, 1);
+  static const Color Purple = Color.fromRGBO(224, 19, 156, 1);
   static const Color PurpleIcon = Color.fromRGBO(209, 2, 99, 1);
-  static const Color PurpleAccent = Color.fromRGBO(209, 2, 99, 1);
+  static const Color PurpleDark = Color.fromRGBO(209, 2, 99, 1);
   static const Color PurpleShadow = Color.fromRGBO(209, 2, 99, 0.27); // 27%
   static const Color PurpleBackground = Color.fromRGBO(255, 155, 205, 0.36); // 36%
 

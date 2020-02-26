@@ -104,7 +104,7 @@ class _AddQuestionState extends State<AddQuestion> {
                           Padding(
                             padding: EdgeInsets.symmetric(vertical: 5),
                           ),
-                          Icon(Icons.add_circle, color: CustomColors.DeepBlue, size: 30, ),
+                          Icon(Icons.add_circle, color: CustomColors.black, size: 30, ),
                           FittedBox(
                             fit:BoxFit.contain,
                             child: Text("Add other answers", style: TextStyle(fontFamily: 'Monsterrat', fontSize: 12, fontWeight: FontWeight.bold, ), textWidthBasis: TextWidthBasis.parent,),
@@ -133,7 +133,7 @@ class _AddQuestionState extends State<AddQuestion> {
                 child: CircleAvatar(
                   radius: 14.0,
                   backgroundColor: CustomColors.White,
-                  child: Icon(Icons.delete, color: CustomColors.DeepBlue,),
+                  child: Icon(Icons.delete, color: CustomColors.black,),
                 ),
               ),
             ),

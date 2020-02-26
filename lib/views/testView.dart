@@ -20,7 +20,7 @@ class _TestViewState extends State<TestView> {
     return Scaffold(
         appBar: AppBar(
           title: Text(widget.tests?.elementAt(widget.testIndex)?.testTitle),
-          backgroundColor: CustomColors.DeepBlue,
+          backgroundColor: CustomColors.black,
         ),
         backgroundColor: CustomColors.White,
         body: SingleChildScrollView(

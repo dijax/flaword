@@ -16,48 +16,88 @@ class _AddDeckPageState extends State<AddDeckPage> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-        backgroundColor: CustomColors.DeepBlue,
+        backgroundColor: CustomColors.black,
         appBar: AppBar(
           title: Text('Add Deck'),
-          backgroundColor: CustomColors.DeepBlue,
+          backgroundColor: CustomColors.black,
         ),
         body: SingleChildScrollView(
-          padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
           child: Container(
-            padding: EdgeInsets.fromLTRB(15, 10, 15, 30),
-            decoration: BoxDecoration(color: CustomColors.White),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                TextField(
-                  controller: deckTitleController,
-                  decoration: InputDecoration(
-                    labelText: 'Enter a deck title',
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: CustomColors.DeepBlue, width: 1.5),
-                      borderRadius: BorderRadius.circular(25.0),
-                    ),
-                  ),
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: ExactAssetImage('assets/graphics/mountain.jpg'),
+                fit: BoxFit.cover,
+                colorFilter: ColorFilter.mode(
+                    Colors.black.withOpacity(0.6),
+                    BlendMode.dstIn
                 ),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30),
-                ),
-                TextField(
-                  decoration: InputDecoration(
-                    labelText: 'Enter a deck description',
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: CustomColors.DeepBlue, width: 2.0),
-                      borderRadius: BorderRadius.circular(25.0),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 12),
-                ),
-                Material(
-                  child: InkWell(
-                    onTap: () {this.addCard();},
+              ),
 
+            ),
+            padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
+            child: Container(
+              padding: EdgeInsets.fromLTRB(15, 10, 15, 30),
+              decoration: BoxDecoration(color: CustomColors.White),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  TextField(
+                    controller: deckTitleController,
+                    decoration: InputDecoration(
+                      labelText: 'Enter a deck title',
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(color: CustomColors.DeepBlue, width: 1.5),
+                        borderRadius: BorderRadius.circular(25.0),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30),
+                  ),
+                  TextField(
+                    decoration: InputDecoration(
+                      labelText: 'Enter a deck description',
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(color: CustomColors.DeepBlue, width: 2.0),
+                        borderRadius: BorderRadius.circular(25.0),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 12),
+                  ),
+                  Material(
+                    child: InkWell(
+                      onTap: () {this.addCard();},
+
+                      child: Container(
+                        padding: EdgeInsets.symmetric(vertical: 30, horizontal: 100),
+                        decoration: BoxDecoration(
+                          color: CustomColors.White,
+                          boxShadow: [
+                            BoxShadow(
+                              color: CustomColors.LightGrey,
+                              offset: Offset(5,5),
+                              blurRadius: 15,
+                            )
+                          ],
+                        ),
+                        child: Column(
+                          children: <Widget>[
+                            Icon(Icons.add_circle, color: CustomColors.black, size: 30, ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(vertical: 8),
+                            ),
+                            Text("Add a card", style: TextStyle(fontFamily: 'Monsterrat', fontSize: 20, fontWeight: FontWeight.bold, color: CustomColors.black),),
+                          ],
+                        ),
+                      ),
+                    ),),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 12),
+                  ),
+                  InkWell(
+                    onTap: (){this.addTest();},
                     child: Container(
                       padding: EdgeInsets.symmetric(vertical: 30, horizontal: 100),
                       decoration: BoxDecoration(
@@ -72,73 +112,46 @@ class _AddDeckPageState extends State<AddDeckPage> {
                       ),
                       child: Column(
                         children: <Widget>[
-                          Icon(Icons.add_circle, color: CustomColors.DeepBlue, size: 30, ),
+                          Icon(Icons.add_circle, color: CustomColors.black, size: 30, ),
                           Padding(
                             padding: EdgeInsets.symmetric(vertical: 8),
                           ),
-                          Text("Add a card", style: TextStyle(fontFamily: 'Monsterrat', fontSize: 20, fontWeight: FontWeight.bold),),
+                          Text("Add a test", style: TextStyle(fontFamily: 'Monsterrat', fontSize: 20, fontWeight: FontWeight.bold, color: CustomColors.black),),
                         ],
                       ),
                     ),
-                  ),),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 12),
-                ),
-                InkWell(
-                  onTap: (){this.addTest();},
-                  child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 30, horizontal: 100),
-                    decoration: BoxDecoration(
-                      color: CustomColors.White,
-                      boxShadow: [
-                        BoxShadow(
-                          color: CustomColors.LightGrey,
-                          offset: Offset(5,5),
-                          blurRadius: 15,
-                        )
-                      ],
-                    ),
-                    child: Column(
-                      children: <Widget>[
-                        Icon(Icons.add_circle, color: CustomColors.DeepBlue, size: 30, ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(vertical: 8),
-                        ),
-                        Text("Add a test", style: TextStyle(fontFamily: 'Monsterrat', fontSize: 20, fontWeight: FontWeight.bold),),
-                      ],
-                    ),
                   ),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 20),
-                ),
-                Material(
-                  child: InkWell(
-                    onTap: () {this.done();},
-                    child: Container(
-                      width: 120,
-                      child: Center(
-                        child: Column(
-                          children: <Widget>[
-                            Icon(Icons.check_circle, size: 30, color: CustomColors.PurpleLight,),
-                            SizedBox(height: 5,),
-                            Text(
-                              'Done',
-                              style: TextStyle(
-                                color: CustomColors.PurpleLight,
-                                fontSize: 20,
-                                fontFamily: 'Monsterrat',
-                                fontWeight: FontWeight.w500,
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 20),
+                  ),
+                  Material(
+                    child: InkWell(
+                      onTap: () {this.done();},
+                      child: Container(
+                        width: 120,
+                        child: Center(
+                          child: Column(
+                            children: <Widget>[
+                              Icon(Icons.check_circle, size: 30, color: CustomColors.PurpleDark,),
+                              SizedBox(height: 5,),
+                              Text(
+                                'Done',
+                                style: TextStyle(
+                                  color: CustomColors.PurpleDark,
+                                  fontSize: 20,
+                                  fontFamily: 'Monsterrat',
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ],
-            ), //bottom// NavigationBar: BottomNavBar(),
+                ],
+              ), //bottom// NavigationBar: BottomNavBar(),
+            ),
           ),
         )
     );

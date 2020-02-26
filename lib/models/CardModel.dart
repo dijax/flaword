@@ -14,7 +14,7 @@ class CardModel {
     return cardUnderstanding;
   }
 
-  void set understand(CardUnderstanding understanding) {
+  set understand(CardUnderstanding understanding) {
     this.cardUnderstanding = understanding;
   }
 }

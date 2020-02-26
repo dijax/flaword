@@ -1,5 +1,4 @@
 import 'package:flashcards/models/AnswerModel.dart';
-import 'package:flashcards/models/QuestionModel.dart';
 import 'package:flashcards/models/TestModel.dart';
 import 'package:flashcards/utils/customColors.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +16,7 @@ class _QuestionViewState extends State<QuestionView> {
   bool _false = false;
 
   @override void initState() {
+    super.initState(); //TODO ??
     // TODO: implement initState
     _queIndex = widget.quIndex;
   }
@@ -26,7 +26,7 @@ class _QuestionViewState extends State<QuestionView> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.test.testTitle),
-        backgroundColor: CustomColors.DeepBlue,
+        backgroundColor: CustomColors.black,
       ),
       backgroundColor: CustomColors.White,
       body: SingleChildScrollView(
@@ -104,7 +104,7 @@ class _QuestionViewState extends State<QuestionView> {
                   },
                   child: Column(
                     children: <Widget>[
-                      (!show)?Text("show Answer", style: TextStyle(color: CustomColors.PurpleAccent, fontSize: 15),):Text(""),
+                      (!show)?Text("show Answer", style: TextStyle(color: CustomColors.PurpleDark, fontSize: 15),):Text(""),
                     ],
                   ),
                 ),
@@ -120,7 +120,7 @@ class _QuestionViewState extends State<QuestionView> {
                   show = !show;
                 });
               },
-              child: show? Text("hide Answer", style: TextStyle(color: CustomColors.PurpleAccent, fontSize: 15)):Text(""),
+              child: show? Text("hide Answer", style: TextStyle(color: CustomColors.PurpleDark, fontSize: 15)):Text(""),
             ),
             SizedBox(height: 20,),
           ],
@@ -135,22 +135,22 @@ class _QuestionViewState extends State<QuestionView> {
                 children: <Widget>[
                   IconButton(
                     icon: Icon(Icons.arrow_back_ios),
-                    color: CustomColors.PurpleAccent,
+                    color: CustomColors.PurpleDark,
                     onPressed: (){
                       if(_queIndex > 0) setState(() {
                         _queIndex = _queIndex - 1;
                       });
                     },
                   ),
-                  Text("last question", style: TextStyle(color: CustomColors.PurpleAccent),),
+                  Text("last question", style: TextStyle(color: CustomColors.PurpleDark),),
                 ],
               ),
               Row(
                 children: <Widget>[
-                  Text("Next question", style: TextStyle(color: CustomColors.PurpleAccent),),
+                  Text("Next question", style: TextStyle(color: CustomColors.PurpleDark),),
                   IconButton(
                     icon: Icon(Icons.arrow_forward_ios),
-                    color: CustomColors.PurpleAccent,
+                    color: CustomColors.PurpleDark,
                     onPressed: (){
                       if(isCorrect(_queIndex)){
                         if(_queIndex < widget.test.questions.length - 1)

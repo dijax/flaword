@@ -25,7 +25,7 @@ class _DeckViewState extends State<DeckView> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.deck.deckTitle),
-        backgroundColor: CustomColors.DeepBlue,
+        backgroundColor: CustomColors.black,
       ),
       backgroundColor: CustomColors.White,
       body: SingleChildScrollView(
@@ -92,7 +92,7 @@ class _DeckViewState extends State<DeckView> {
                             height: 70,
                             width: 300,
                             decoration: BoxDecoration(
-                                color: CustomColors.DeepBlue,
+                                color: CustomColors.black,
                                 border: Border.all(color: CustomColors.LightGrey),
                                 borderRadius: BorderRadius.circular(20.0),
                                 boxShadow: [
@@ -174,7 +174,7 @@ class _DeckViewState extends State<DeckView> {
                             height: 70,
                             width: 300,
                             decoration: BoxDecoration(
-                                color: CustomColors.DeepBlue,
+                                color: CustomColors.black,
                                 border: Border.all(color: CustomColors.LightGrey),
                                 borderRadius: BorderRadius.circular(20.0),
                                 boxShadow: [

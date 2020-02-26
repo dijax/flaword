@@ -2,6 +2,7 @@ import 'package:flashcards/Test/mockData.dart';
 import 'package:flashcards/models/DeckModel.dart';
 import 'package:flashcards/models/settings.dart';
 import 'package:flashcards/screens/addDeckPage.dart';
+import 'package:flashcards/utils/customColors.dart';
 import 'package:flutter/material.dart';
 
 class SettingsMenu extends StatefulWidget {

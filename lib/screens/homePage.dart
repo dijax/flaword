@@ -33,30 +33,59 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: CustomColors.DeepBlue,
+      backgroundColor: Colors.black,
 //      resizeToAvoidBottomPadding: false, // used to fix the pixels overflow
-      body: ListView(
-//          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Row(),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0.0, 40.0, 0.0, 10.0),
-                    child: Icon(Icons.account_circle, size: 45.0, color: CustomColors.BlueCiel,),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0.0, 16.0, 0.0, 12.0),
-                    child: Text("Hello, Dija.", style: TextStyle(fontSize: 30.0, color: CustomColors.BlueCiel, fontFamily: 'Montserrat', fontWeight: FontWeight.bold),),
-                  ),
-                  Text("Nice to see you again.", style:  TextStyle(fontSize: 16.0, color: Colors.white, fontFamily: 'Poppins')),
-                  Text("Keep the good work, keep learning.", style: TextStyle(fontSize: 16.0, color: Colors.white, fontFamily: 'Poppins'),),
-                ],
-              ),
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: ExactAssetImage('assets/graphics/mountain.jpg'),
+            fit: BoxFit.cover,
+            colorFilter: ColorFilter.mode(
+                Colors.black.withOpacity(0.6),
+                BlendMode.dstIn
             ),
+          ),
+
+        ),
+        child: ListView(
+//          crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Row(),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 10.0),
+                      child: Row(
+                        children: <Widget>[
+                          CircleAvatar(
+                            radius: 30,
+                            backgroundColor: Colors.black.withOpacity(0.4),
+                            child: Icon(Icons.layers, color: CustomColors.White,),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text("FLAWORLD",
+                            style: TextStyle(
+                                fontFamily: 'MrDafoe',
+                                color: CustomColors.White,
+                                fontSize: 18),
+                          )
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0.0, 16.0, 0.0, 12.0),
+                      child: Text("Hello, Dija.", style: TextStyle(fontSize: 30.0, color: CustomColors.White, fontFamily: 'Montserrat', fontWeight: FontWeight.bold),),
+                    ),
+                    Text("Nice to see you again.", style:  TextStyle(backgroundColor: Colors.black.withOpacity(0.5),fontSize: 16.0, color: Colors.white, fontFamily: 'Poppins')),
+                    Text("Keep the good work, keep learning.", style: TextStyle(backgroundColor: Colors.black.withOpacity(0.5),fontSize: 16.0, color: Colors.white, fontFamily: 'Poppins'),),
+                  ],
+                ),
+              ),
 //            StreamBuilder<QuerySnapshot>(
 //              stream: Firestore.instance.collection("deck").snapshots(),
 //              builder: (context, snapshot) {
@@ -79,36 +108,36 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin{
 //                );
 //              },
 //            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Padding(
-                    padding: const EdgeInsets.fromLTRB(24.0, 36.0, 24.0, 0.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text("Last used Decks", style: TextStyle(fontSize: 16.0, fontFamily: 'Montserrat', fontWeight: FontWeight.w500, color: CustomColors.PurpleLight),),
-                      ],)
-                ),
-                Container(
-                  height: 300.0,
-                  child: ListView.builder(
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: decks.length,
-                    controller: scrollController,
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (context, position){
-                      return GestureDetector(
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0 , 8.0),
-                            child: Container(
-                              child: new Card(
-                                child: InkWell(
-                                  onTap: () {
-                                    var selectedDeck = MockData.sortedDecks[position];
-                                    Navigator.of(context).push(MaterialPageRoute(builder: (context)=>DeckView(selectedDeck, DateTime.now())));
-                                    MockData.last3Decks(position);
-                                  },
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Padding(
+                      padding: const EdgeInsets.fromLTRB(24.0, 36.0, 24.0, 0.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text("Last used Decks", style: TextStyle(backgroundColor: Colors.black.withOpacity(0.5), fontSize: 16.0, fontFamily: 'Montserrat', fontWeight: FontWeight.w500, color: CustomColors.White),),
+                        ],)
+                  ),
+                  Container(
+                    height: 300.0,
+                    child: ListView.builder(
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: decks.length,
+                      controller: scrollController,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, position){
+                        return GestureDetector(
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0 , 8.0),
+                              child: Container(
+                                child: new Card(
+                                  child: InkWell(
+                                    onTap: () {
+                                      var selectedDeck = MockData.sortedDecks[position];
+                                      Navigator.of(context).push(MaterialPageRoute(builder: (context)=>DeckView(selectedDeck, DateTime.now())));
+                                      MockData.last3Decks(position);
+                                    },
                                     child: Container(
                                       width: 250.0,
                                       child: Column(
@@ -143,7 +172,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin{
                                               children: <Widget>[
                                                 Padding(
                                                   padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 40.0),
-                                                  child: Text("${MockData.sortedDecks[position].deckTitle}", style: TextStyle(fontSize: 28.0, fontWeight: FontWeight.bold, fontFamily: 'Montserrat'), textAlign: TextAlign.center,),
+                                                  child: Text("${MockData.sortedDecks[position].deckTitle}", style: TextStyle(fontSize: 28.0, fontWeight: FontWeight.bold, fontFamily: 'Montserrat', color: CustomColors.black), textAlign: TextAlign.center,),
                                                 ),
                                                 Padding(
                                                     padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
@@ -153,20 +182,20 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin{
                                                         Row(
                                                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                           children: <Widget>[
-                                                            Text("${decks[position].cards.length.toString()}", style: TextStyle(color: CustomColors.BlueCiel, fontSize: 25.0, fontFamily: 'Montserrat', fontWeight: FontWeight.w600 ),),
+                                                            Text("${decks[position].cards.length.toString()}", style: TextStyle(color: CustomColors.black, fontSize: 25.0, fontFamily: 'Montserrat', fontWeight: FontWeight.w600 ),),
                                                             Padding(
                                                                 padding: const EdgeInsets.fromLTRB(5.0, 0.0, 0.0, 0.0),
-                                                                child: Icon(Icons.perm_media, color: CustomColors.BlueCiel, size: 20.0,)
+                                                                child: Icon(Icons.perm_media, color: CustomColors.black, size: 20.0,)
                                                             ),
                                                           ],
                                                         ),
                                                         Row(
                                                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                           children: <Widget>[
-                                                            Text("${decks[position].tests.length.toString()}", style: TextStyle(fontSize: 25.0, fontFamily: 'Poppins', fontWeight: FontWeight.w600 , color: CustomColors.BlueCiel),),
+                                                            Text("${decks[position].tests.length.toString()}", style: TextStyle(fontSize: 25.0, fontFamily: 'Montserrat', fontWeight: FontWeight.w600 , color: CustomColors.black),),
                                                             Padding(
                                                                 padding: const EdgeInsets.fromLTRB(5.0, 0.0, 0.0, 0.0),
-                                                                child: Icon(Icons.thumbs_up_down, color: CustomColors.BlueCiel, size: 20.0,)
+                                                                child: Icon(Icons.thumbs_up_down, color: CustomColors.black, size: 20.0,)
                                                             ),
                                                           ],
                                                         ),
@@ -178,7 +207,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin{
                                                   child: LinearProgressIndicator(
                                                     value: decks[position].deckCompletion,
                                                     backgroundColor: CustomColors.DeeppurlpleBackground,
-                                                    valueColor: AlwaysStoppedAnimation<Color>(CustomColors.PurpleLight),),
+                                                    valueColor: AlwaysStoppedAnimation<Color>(CustomColors.PurpleDark),),
                                                 ),
                                               ],
                                             ),
@@ -186,50 +215,51 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin{
                                         ],
                                       ),
                                     ),
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
                                 ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                ),
+                                decoration: new BoxDecoration(boxShadow: [
+                                ]),
                               ),
-                              decoration: new BoxDecoration(boxShadow: [
-                              ]),
                             ),
-                          ),
-                          onHorizontalDragEnd: (details) {
-                            animationController = AnimationController(
-                                vsync: this, duration: Duration(
-                                milliseconds: 500));
-                            curvedAnimation = CurvedAnimation(
-                                parent: animationController, curve: Curves
-                                .fastOutSlowIn);
-                            animationController.addListener(() {
-                              setState(() {
+                            onHorizontalDragEnd: (details) {
+                              animationController = AnimationController(
+                                  vsync: this, duration: Duration(
+                                  milliseconds: 500));
+                              curvedAnimation = CurvedAnimation(
+                                  parent: animationController, curve: Curves
+                                  .fastOutSlowIn);
+                              animationController.addListener(() {
+                                setState(() {
 //                                currentColor = colorTween.evaluate(curvedAnimation);
+                                });
                               });
-                            });
-                            if(details.velocity.pixelsPerSecond.dx > 0) {
-                              if(deckIndex > 0) {
-                                deckIndex--;
-                                colorTween = ColorTween(begin: currentColor, end: appColors[deckIndex]);
+                              if(details.velocity.pixelsPerSecond.dx > 0) {
+                                if(deckIndex > 0) {
+                                  deckIndex--;
+                                  colorTween = ColorTween(begin: currentColor, end: appColors[deckIndex]);
+                                }
+                              } else {
+                                if (deckIndex < 2) {
+                                  deckIndex ++;
+                                  colorTween = ColorTween(begin: currentColor, end: appColors[deckIndex]);
+                                }
                               }
-                            } else {
-                              if (deckIndex < 2) {
-                                deckIndex ++;
-                                colorTween = ColorTween(begin: currentColor, end: appColors[deckIndex]);
+                              setState(() {
+                                scrollController.animateTo(deckIndex*256.0, duration: Duration(milliseconds: 500), curve: Curves.fastOutSlowIn);
                               }
+                              );
                             }
-                            setState(() {
-                              scrollController.animateTo(deckIndex*256.0, duration: Duration(milliseconds: 500), curve: Curves.fastOutSlowIn);
-                            }
-                            );
-                          }
-                      );
-                    },
-                  ),
-                )
-              ],
-            ),
-          ]
+                        );
+                      },
+                    ),
+                  )
+                ],
+              ),
+            ]
+        ),
       ),
     );
   }

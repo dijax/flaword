@@ -11,7 +11,7 @@ class _StatisticsPageState extends State<StatisticsPage>{
   @override
   Widget build(BuildContext context) {
     return SfCartesianChart(
-      backgroundColor: CustomColors.DeepBlue,
+      backgroundColor: Colors.black,
       zoomPanBehavior: ZoomPanBehavior(enablePanning: true),
       title: ChartTitle(
         text: 'Statistics',
@@ -36,11 +36,11 @@ class _StatisticsPageState extends State<StatisticsPage>{
       ),
       primaryYAxis: NumericAxis(
         labelStyle: ChartTextStyle(color: Colors.white),
-        title: AxisTitle(
-          text: 'Hours',
-          textStyle: ChartTextStyle(color: Colors.white),
-          alignment: ChartAlignment.center,
-        ),
+//        title: AxisTitle(
+//          text: 'Hours',
+//          textStyle: ChartTextStyle(color: Colors.white),
+//          alignment: ChartAlignment.center,
+//        ),
       ),
       series: getRandomData(),
     );

@@ -9,31 +9,44 @@ class _UserPageState extends State<UserPage> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      backgroundColor: CustomColors.DeepBlue,
-      body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+      backgroundColor: CustomColors.black,
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: ExactAssetImage('assets/graphics/mountain.jpg'),
+            fit: BoxFit.cover,
+            colorFilter: ColorFilter.mode(
+                CustomColors.black.withOpacity(0.6),
+                BlendMode.dstIn
+            ),
+          ),
 
-          children: [
-            Card(
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
-                child: Text("UserName", style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'Monsterrat',),),
+        ),
+
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Card(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
+                  child: Text("UserName", style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'Monsterrat',),),
+                ),
               ),
-            ),
-            Card(
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
-                child: Text("Userpasswort", style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'Monsterrat'),),
+              Card(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
+                  child: Text("Password", style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'Monsterrat'),),
+                ),
               ),
-            ),
-            Card(
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
-                child: Text("Username", style: TextStyle(fontFamily: 'Monsterrat', fontWeight: FontWeight.bold,),),
+              Card(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
+                  child: Text("Email", style: TextStyle(fontFamily: 'Monsterrat', fontWeight: FontWeight.bold,),),
+                ),
               ),
-            ),
-          ]
+            ]
+        ),
       ),
       //bottomNavigationBar: BottomNavBar(),
     );

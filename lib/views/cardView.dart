@@ -19,6 +19,7 @@ class _CardViewState extends State<CardView> with TickerProviderStateMixin{
 
   @override
   void initState() {
+    super.initState(); //TODO ??
     if(widget.cardIndex != null) _cardValue = widget.cardIndex;
     else _cardValue = 0;
   }
@@ -49,7 +50,7 @@ class _CardViewState extends State<CardView> with TickerProviderStateMixin{
     return Scaffold(
         appBar: AppBar(
           title: Text("Flashcards"), //TODO: Deck name dynamisch ändern
-          backgroundColor: CustomColors.DeepBlue,
+          backgroundColor: CustomColors.black,
         ),
         backgroundColor: CustomColors.White,
         body: Column(
