@@ -1,31 +1,52 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flashcards/models/user.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  Future<String> signIn(String email, String password) async {
-    AuthResult authResult = await _auth.signInWithEmailAndPassword(
-        email: null, password: password);
-    FirebaseUser user = authResult.user;
-    return user.uid;
+  User _userFromFirebaseUser(FirebaseUser user){
+    return user != null ? User(uid: user.uid) : null;
   }
 
+  // auth change stream
+  Stream<User> get user {
+    return _auth.onAuthStateChanged.map(_userFromFirebaseUser);
+  }
+
+  // sign in anonymously
   Future signInAnon() async{
     try{
       AuthResult result = await _auth.signInAnonymously();
       FirebaseUser user = result.user;
-      return user;
+      return _userFromFirebaseUser(user);
     } catch(e) {
       print(e.toString());
       return null;
     }
   }
 
-  Future<String> signUp(String username, String email, String password) async{
-    AuthResult authResult = await _auth.createUserWithEmailAndPassword(email: email, password: password);
-    FirebaseUser user = authResult.user;
-    return user.uid;
+  Future signIn(String email, String password) async {
+    try{
+      AuthResult authResult = await _auth.signInWithEmailAndPassword(
+          email: email, password: password);
+      FirebaseUser user = authResult.user;
+      return _userFromFirebaseUser(user);
+    }catch(e){
+      print(e.toString());
+      return null;
+    }
+  }
+
+  Future signUp(String email, String password) async{
+    try{
+      AuthResult authResult = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+      FirebaseUser user = authResult.user;
+      return _userFromFirebaseUser(user);
+    }catch(e){
+      print(e.toString());
+      return null;
+    }
   }
 
   Future<FirebaseUser> getCurrentUser() async {
@@ -43,7 +64,13 @@ class AuthService {
     return user.isEmailVerified;
   }
 
-  Future<void> signOut() async {
-    return _auth.signOut();
+  // Sign out
+  Future signOut() async {
+    try{
+      return await _auth.signOut();
+    }catch(e){
+      print(e.toString());
+      return null;
+    }
   }
 }

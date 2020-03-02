@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flashcards/screens/homePage.dart';
-import 'package:flashcards/screens/decksPage.dart';
-import 'package:flashcards/screens/statisticsPage.dart';
-import 'package:flashcards/screens/UserPage.dart';
+import 'package:flashcards/screens/home/homePage.dart';
+import 'package:flashcards/screens/home/decksPage.dart';
+import 'package:flashcards/screens/home/statisticsPage.dart';
+import 'package:flashcards/screens/home/UserPage.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {

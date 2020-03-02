@@ -1,15 +1,15 @@
 import 'dart:math';
 
-import 'package:flashcards/screens/addDeckPage.dart';
-import 'package:flashcards/screens/addTestPage.dart';
-import 'package:flashcards/screens/decksPage.dart';
-import 'package:flashcards/screens/homePage.dart';
-import 'package:flashcards/screens/statisticsPage.dart';
+import 'package:flashcards/screens/home/addDeckPage.dart';
+import 'package:flashcards/screens/home/addTestPage.dart';
+import 'package:flashcards/screens/home/decksPage.dart';
+import 'package:flashcards/screens/home/homePage.dart';
+import 'package:flashcards/screens/home/statisticsPage.dart';
 import 'package:flashcards/utils/customColors.dart';
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:flashcards/screens/UserPage.dart';
-import 'package:flashcards/screens/addCardPage.dart';
+import 'package:flashcards/screens/home/UserPage.dart';
+import 'package:flashcards/screens/home/addCardPage.dart';
 
 class BottomNavBar extends StatefulWidget {
   @override

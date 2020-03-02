@@ -1,8 +1,12 @@
+import 'package:flashcards/bottomNavBar.dart';
+import 'package:flashcards/models/user.dart';
+import 'package:flashcards/screens/authentication/authentication.dart';
 import 'package:flashcards/services/auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flashcards/screens/loginPage.dart';
-import 'package:flashcards/screens/signupPage.dart';
-import 'package:flashcards/screens/homePage.dart';
+import 'package:flashcards/screens/authentication/loginPage.dart';
+import 'package:flashcards/screens/authentication/signupPage.dart';
+import 'package:flashcards/screens/home/homePage.dart';
+import 'package:provider/provider.dart';
 
 //enum AuthStatus {
 //  NOT_DETERMINED,
@@ -10,15 +14,8 @@ import 'package:flashcards/screens/homePage.dart';
 //  LOGGED_IN,
 //}
 
-class RootPage extends StatefulWidget {
-//  final AuthService auth;
-  RootPage();
+class Wrapper extends StatelessWidget{
 
-  @override
-  State<StatefulWidget> createState() => new _RootPageState();
-}
-
-class _RootPageState extends State<RootPage> {
 //  AuthStatus authStatus = AuthStatus.NOT_DETERMINED;
 //  String _userId = "";
 
@@ -62,7 +59,11 @@ class _RootPageState extends State<RootPage> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
+    final user = Provider.of<User>(context); // accessing the user data from the provider
+    if(user == null) return Authentication();
+    else return BottomNavBar();
+
+
 //    switch(authStatus) {
 //      case AuthStatus.NOT_DETERMINED:
 //        return buildWaitingScreen();
@@ -79,6 +80,5 @@ class _RootPageState extends State<RootPage> {
 //        return buildWaitingScreen();
 //    }
 
-    return LoginPage();
   }
 }

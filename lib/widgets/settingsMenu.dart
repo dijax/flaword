@@ -3,9 +3,9 @@ import 'package:flashcards/models/CardModel.dart';
 import 'package:flashcards/models/DeckModel.dart';
 import 'package:flashcards/models/TestModel.dart';
 import 'package:flashcards/models/settings.dart';
-import 'package:flashcards/screens/addCardPage.dart';
-import 'package:flashcards/screens/addDeckPage.dart';
-import 'package:flashcards/screens/addTestPage.dart';
+import 'package:flashcards/screens/home/addCardPage.dart';
+import 'package:flashcards/screens/home/addDeckPage.dart';
+import 'package:flashcards/screens/home/addTestPage.dart';
 import 'package:flashcards/utils/customColors.dart';
 import 'package:flutter/material.dart';
 

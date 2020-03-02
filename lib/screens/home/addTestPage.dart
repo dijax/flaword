@@ -1,4 +1,4 @@
-import 'package:flashcards/screens/addQuestion.dart';
+import 'package:flashcards/screens/home/addQuestion.dart';
 import 'package:flashcards/utils/customColors.dart';
 import 'package:flutter/material.dart';
 import 'package:flashcards/Test/mockData.dart';
