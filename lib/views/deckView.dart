@@ -1,3 +1,4 @@
+import 'package:flashcards/Test/mockData.dart';
 import 'package:flashcards/models/CardModel.dart';
 import 'package:flashcards/models/DeckModel.dart';
 import 'package:flashcards/models/TestModel.dart';
@@ -14,6 +15,7 @@ class DeckView extends StatefulWidget {
   DeckView(this.deck, this.visitDate);
   _DeckViewState createState() => _DeckViewState();
 }
+
 class _DeckViewState extends State<DeckView> {
   bool testsClicked = false;
   bool testClicked = false;
@@ -80,7 +82,7 @@ class _DeckViewState extends State<DeckView> {
                     shrinkWrap: true,
                     itemCount: cards.length,
                     itemBuilder: (BuildContext context, int cardIndex) {
-                      return new InkWell(
+                      return (!cards.elementAt(cardIndex).hidden) ? Container(child: GestureDetector(
                         onTap: () {
                           setState(() {
                             Navigator.of(context).push(MaterialPageRoute(builder: (context) => CardView(widget.deck.cards, cardIndex)));
@@ -104,16 +106,26 @@ class _DeckViewState extends State<DeckView> {
                                 ]
                             ),
                             child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
                                 Center(
                                   child: Text(cards.elementAt(cardIndex).cardTitle, style: TextStyle(color: CustomColors.White, fontSize: 20, fontFamily: 'Poppins', fontWeight: FontWeight.bold),),
                                 ),
-                                SettingsMenu(),
+                                SettingsMenu(
+                                  list: cards,
+                                  onSelect: (List<Object> newCards, bool hidden) {
+                                    setState(() {
+                                      if(hidden){cards.elementAt(cardIndex).hidden = true;}
+                                      cards = newCards;
+                                    });
+                                  },
+                                  index: cardIndex,
+                                ),
                               ],
                             ),
                           ),
                         ),
-                      );
+                      ),): Container();
                     }),
               ):Container(),
               SizedBox(height: 20.0,),
@@ -164,45 +176,57 @@ class _DeckViewState extends State<DeckView> {
                     shrinkWrap: true,
                     itemCount: tests.length,
                     itemBuilder: (BuildContext context, int testIndex) {
-                      return new InkWell(
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => TestView(tests, testIndex)));
-                        },
-                        child: Center(
-                          child: Container(
-                            padding: EdgeInsets.all(4.0),
-                            height: 70,
-                            width: 300,
-                            decoration: BoxDecoration(
-                                color: CustomColors.black,
-                                border: Border.all(color: CustomColors.LightGrey),
-                                borderRadius: BorderRadius.circular(20.0),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: CustomColors.LightGrey,
-                                    offset: Offset(5,5),
-                                    blurRadius: 2,
-                                  ),
-                                ]
-                            ),
-                            child: Padding(
-                              padding: EdgeInsets.fromLTRB(15, 0, 15,5),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Center(
-                                    child: Text(tests?.elementAt(testIndex)?.testTitle, style: TextStyle(color: CustomColors.White, fontSize: 17, fontFamily: 'Poppins', fontWeight: FontWeight.bold),),
-                                  ),
-                                  IconButton(
-                                    icon: Icon(Icons.play_arrow, size: 30, color: CustomColors.White, ),
-                                    onPressed: (){Navigator.of(context).push(MaterialPageRoute(builder: (context) => QuestionView(tests.elementAt(testIndex), 0, testIndex)));},
-                                  ),
-                                ],
+                      return !tests.elementAt(testIndex).isHidden ? Container(
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => TestView(tests, testIndex)));
+                          },
+                          child: Center(
+                            child: Container(
+                              padding: EdgeInsets.all(4.0),
+                              height: 70,
+                              width: 300,
+                              decoration: BoxDecoration(
+                                  color: CustomColors.black,
+                                  border: Border.all(color: CustomColors.LightGrey),
+                                  borderRadius: BorderRadius.circular(20.0),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: CustomColors.LightGrey,
+                                      offset: Offset(5,5),
+                                      blurRadius: 2,
+                                    ),
+                                  ]
+                              ),
+                              child: Padding(
+                                padding: EdgeInsets.fromLTRB(15, 0, 15,5),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Center(
+                                      child: Text(tests?.elementAt(testIndex)?.testTitle, style: TextStyle(color: CustomColors.White, fontSize: 17, fontFamily: 'Poppins', fontWeight: FontWeight.bold),),
+                                    ),
+                                    IconButton(
+                                      icon: Icon(Icons.play_arrow, size: 30, color: CustomColors.White, ),
+                                      onPressed: (){Navigator.of(context).push(MaterialPageRoute(builder: (context) => QuestionView(tests.elementAt(testIndex), 0, testIndex)));},
+                                    ),
+                                    SettingsMenu(
+                                      list: tests,
+                                      onSelect: (List<Object> newTests, bool hidden) {
+                                        setState(() {
+                                          if(hidden){tests.elementAt(testIndex).isHidden = true;}
+                                          tests = newTests;
+                                        });
+                                      },
+                                      index: testIndex,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      );
+                      ): Container();
                     }),
               ):Container(),
               SizedBox(height: 20.0,),

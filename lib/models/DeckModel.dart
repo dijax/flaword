@@ -7,6 +7,6 @@ class DeckModel{
   List<TestModel> tests;
   double deckCompletion;
   DateTime visitDate;
-  DeckModel(this.deckTitle, this.cards, this.tests, this.deckCompletion, this.visitDate);
-
+  bool hidden;
+  DeckModel(this.deckTitle, this.cards, this.tests, this.deckCompletion, this.visitDate, this.hidden);
 }

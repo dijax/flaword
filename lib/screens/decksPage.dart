@@ -1,6 +1,7 @@
 import 'package:flashcards/models/DeckModel.dart';
 import 'package:flashcards/views/deckView.dart';
 import 'package:flashcards/utils/customColors.dart';
+import 'package:flashcards/widgets/settingsMenu.dart';
 import 'package:flutter/material.dart';
 import 'package:flashcards/Test/mockData.dart';
 
@@ -38,13 +39,14 @@ class _DecksPageState extends State<DecksPage> {
             SliverList(
               delegate: SliverChildBuilderDelegate(
                       (BuildContext context, int index) => GestureDetector(
-                        onTap: () {
-                          MockData.setVisitDate(index, DateTime.now());
-                          print(DateTime.now());
-                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => DeckView(decks[index], DateTime.now())));
-                        }, //TODO: the deck widget to implement
+                      onTap: () {
+                        MockData.setVisitDate(index, DateTime.now());
+                        print(DateTime.now());
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => DeckView(decks[index], DateTime.now())));
+                      }, //TODO: the deck widget to implement
                         child: Stack(
                           children: <Widget>[
+
 //                            Container(
 //                              width: 382,
 //                              height: 150,
@@ -55,83 +57,122 @@ class _DecksPageState extends State<DecksPage> {
 //                              height: 155,
 //                              color: CustomColors.White,
 //                            ),
-                            Container(
-                              child: Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Container(
-                                      width: 65,
-                                      height: 65,
-                                      child: Icon(Icons.library_books, color: Colors.black,),
-                                      decoration: const BoxDecoration(
-                                        color: CustomColors.White,
-                                        borderRadius: BorderRadius.all(Radius.circular(50.0),),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: CustomColors.LightGrey,
-                                            offset: Offset(5,5),
-                                            blurRadius: 15,
-                                          )
-                                        ],
+                          Container(
+                            child: Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      Padding(
+                                        padding: EdgeInsets.fromLTRB(15, 0, 0, 0),
+                                        child: Icon(Icons.sentiment_neutral),
                                       ),
+                                      Container(
+                                        width: 65,
+                                        height: 65,
+                                        child: Icon(Icons.library_books, color: Colors.black,),
+                                        decoration: const BoxDecoration(
+                                          color: CustomColors.White,
+                                          borderRadius: BorderRadius.all(Radius.circular(50.0),),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: CustomColors.LightGrey,
+                                              offset: Offset(5,5),
+                                              blurRadius: 15,
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                      SettingsMenu(
+                                        list: decks,
+                                        onSelect: (List<Object> newDecks, bool hidden) {
+                                          setState(() {
+                                            if(hidden){decks.elementAt(index).hidden = true;}
+                                            decks = newDecks;
+                                          });
+                                        },
+                                        index: index,
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 10,),
+                                  Text("${decks[index].deckTitle.toString().toUpperCase()}",
+                                    style: TextStyle(
+                                      fontSize: 17,
+                                      color: CustomColors.PurpleDark,
+                                      fontWeight: FontWeight.w600,
+                                      fontFamily: 'Poppins',
                                     ),
-                                    SizedBox(height: 10,),
-                                    Text("${decks[index].deckTitle.toString().toUpperCase()}",
-                                      style: TextStyle(
-                                        fontSize: 17,
-                                        color: CustomColors.PurpleDark,
-                                        fontWeight: FontWeight.w600,
-                                        fontFamily: 'Poppins',
-                                      ),
+                                  ),
+                                  SizedBox(height: 8,),
+                                  Padding(
+                                    padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                                    child: Column(
+                                      children: <Widget>[
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(horizontal: 40.0),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: <Widget>[
+                                              Text(
+                                                "${decks[index].cards.length.toString()} flashcards",
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                              Text(
+                                                "${decks[index].tests.length.toString()} tests",
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    SizedBox(height: 8,),
-                                    Padding(
-                                      padding: EdgeInsets.symmetric(horizontal: 40.0),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: <Widget>[
-                                          Text(
-                                            "${decks[index].cards.length.toString()} flashcards",
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                          Text(
-                                            "${decks[index].tests.length.toString()} tests",
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey,
-                                    blurRadius: 0.0,
-                                    spreadRadius: 0.0,
-                                    offset: Offset(0.0,0.0),
                                   ),
                                 ],
-                                color: Colors.white,
                               ),
-                              margin: EdgeInsets.all(10),
-                              height: 150.0,
                             ),
-                          ],
-                        )
-                      ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey,
+                                  blurRadius: 0.0,
+                                  spreadRadius: 0.0,
+                                  offset: Offset(0.0,0.0),
+                                ),
+                              ],
+                              color: Colors.white,
+                            ),
+                            margin: EdgeInsets.all(20),
+                            height: 150.0,
+                          ),
+//                            padding: EdgeInsets.fromLTRB(120, 10, 20, 0),
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(0, 24, 0, 0),
+                              child: SizedBox(
+                                width: 70,
+                                height: 70,
+                                child: CircularProgressIndicator(
+                                  value: decks[index].deckCompletion,
+                                  backgroundColor: CustomColors.DeeppurlpleBackground,
+                                  valueColor: AlwaysStoppedAnimation<Color>(CustomColors.PurpleDark),
+                                ),),
+                            )
+                        ],
+                      )
+                  ),
                   childCount: 3
+
               ),
             ),
           ],

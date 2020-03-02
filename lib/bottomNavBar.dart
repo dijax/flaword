@@ -21,11 +21,13 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
   List<IconData> icons = [Icons.add_to_photos, Icons.add_photo_alternate, Icons.question_answer];
   List<String> tooltips = ["deck","card", "test"];
   int _currentIndex = 0;
+  double padding;
   AnimationController _controller;
 
   //Animation controller for the floating action button
   @override
   void initState(){
+    super.initState();
     _controller = new AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
@@ -42,7 +44,7 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
           children: new List.generate(icons.length, (int index) {
             Widget child = new Container(
               height: 70.0,
-              width: 56.0,
+              width: 120.0,
               alignment: FractionalOffset.topCenter,
               child: new ScaleTransition(
                 scale: new CurvedAnimation(
@@ -51,16 +53,25 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
                       curve: Curves.easeOut
                   ),
                 ),
-                child:  new FloatingActionButton(
-                  heroTag: null,
-                  backgroundColor: CustomColors.black,
-                  mini: true,
-                  tooltip: 'Add Button',
-                  focusColor: Colors.white,
-                  child:  new Icon(icons[index], color: CustomColors.Purple,),
-                  onPressed: () {
-                    menuChildPressed(index);
-                  },
+                child: Row(
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(0, 0, padd(index), 0),
+                      child: Text(tooltips[index], style: TextStyle(color: CustomColors.White, backgroundColor: CustomColors.black.withOpacity(0.5),),),
+                    ),
+                    new FloatingActionButton(
+                      heroTag: null,
+                      tooltip: "add Button",
+                      backgroundColor: CustomColors.black,
+                      mini: true,
+                      focusColor: Colors.white,
+                      child:  new
+                          Icon(icons[index], color: CustomColors.Purple,),
+                      onPressed: () {
+                        menuChildPressed(index);
+                      },
+                    ),
+                  ],
                 ),
               ),
             );
@@ -70,14 +81,16 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
               heroTag: null,
               backgroundColor: CustomColors.PurpleDark,
               elevation: 5.0,
-              tooltip: 'Add Card',
               focusColor: Colors.white,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(16.0))),
               child: new AnimatedBuilder(animation: _controller, builder: (BuildContext context, Widget child){
                 return new Transform(
                   transform: new Matrix4.rotationZ(_controller.value * 0.5 * pi),
                   alignment: FractionalOffset.center,
-                  child: new Icon(_controller.isDismissed ? Icons.add : Icons.add_to_photos),
+                  child: Column(children: <Widget>[
+                    SizedBox(height: 15,),
+                    new Icon(_controller.isDismissed ? Icons.add : Icons.add_to_photos),
+                  ],),
                 );
               }),
               onPressed: () {
@@ -151,6 +164,16 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
         }));
         break;
     }
+  }
+
+  double padd(int index) {
+    if (index == 0)
+      return 2.5;
+    if (index == 1)
+      return 2.5+index;
+    if (index == 2)
+      return 10.0;
+    return 0;
   }
 
 }

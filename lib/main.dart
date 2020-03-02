@@ -1,8 +1,10 @@
 import 'dart:io';
 
 import 'package:flashcards/bottomNavBar.dart';
+import 'package:flashcards/screens/rootPage.dart';
 import 'package:flashcards/routes/routeGenerator.dart';
 import 'package:flashcards/screens/loginPage.dart';
+import 'package:flashcards/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -34,13 +36,12 @@ class MyApp extends StatelessWidget {
         // or simply save your changes to "hot reload" in a Flutter IDE).
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
-        primarySwatch: Colors.purple,
+        primarySwatch: Colors.red,
         fontFamily: 'Poppins',
       ),
       onGenerateRoute: RouteGenerator.generateRoute,
-//      home: LoginPage(),
-      home: BottomNavBar(),
-
+      home: RootPage(),
+//      home: BottomNavBar(),
     );
   }
 }

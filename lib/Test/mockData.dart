@@ -88,17 +88,17 @@ class MockData{
 
   static List<TestModel> mathTestsList = [
     // first math test
-    TestModel("Math test1", "this is the math test1", mathQuestionsList, 0.0),
-    TestModel("Math test2", "this is the math test2", mathQuestionsList, 0.0),
-    TestModel("Math test3", "this is the math test3", mathQuestionsList, 0.0),
-    TestModel("Math test4", "this is the math test4", mathQuestionsList, 0.0),
-    TestModel("Math test5", "this is the math test5", mathQuestionsList, 0.0),
+    TestModel("Math test1", "this is the math test1", mathQuestionsList, 0.0, false),
+    TestModel("Math test2", "this is the math test2", mathQuestionsList, 0.0, false),
+    TestModel("Math test3", "this is the math test3", mathQuestionsList, 0.0, false),
+    TestModel("Math test4", "this is the math test4", mathQuestionsList, 0.0, false),
+    TestModel("Math test5", "this is the math test5", mathQuestionsList, 0.0, false),
   ];
 
   static List<AnswerModel> phyAnswers = [AnswerModel("this is the first correct answer of the 1st physics question", true, false)];
 
   static List<TestModel> physicsTestsList = [
-    TestModel("Physics test1", "this is the math test1", phyQuestionsList, 0.0),
+    TestModel("Physics test1", "this is the math test1", phyQuestionsList, 0.0, false),
   ];
   static List<QuestionModel> phyQuestionsList = [
   QuestionModel("this is the 1st phy question", phyAnswers, false),];
@@ -108,22 +108,22 @@ class MockData{
   QuestionModel("this is the 1st phy question", phyAnswers, false),];
 
   static List<TestModel> biologyTestsList = [
-    TestModel("Biology test1", "this is the math test1", bioQuestionsList, 0.0),
+    TestModel("Biology test1", "this is the math test1", bioQuestionsList, 0.0, false),
   ];
 
   static List<DeckModel> decksList = [
-    DeckModel("Math deck", mathCardsList, mathTestsList, 0.4, null),
-    DeckModel("Physics Deck", physicsCardsList, physicsTestsList, 0.1, null),
-    DeckModel("Biology Deck", biologyCardsList, biologyTestsList, 0.2, null),
-    DeckModel("Geo deck", mathCardsList, mathTestsList, 0.4, null),
-    DeckModel("Chemie Deck", physicsCardsList, physicsTestsList, 0.1, null),
-    DeckModel("Deutsch Deck", biologyCardsList, biologyTestsList, 0.2, null),
+    DeckModel("Math deck", mathCardsList, mathTestsList, 0.4, null, false),
+    DeckModel("Physics Deck", physicsCardsList, physicsTestsList, 0.1, null, false),
+    DeckModel("Biology Deck", biologyCardsList, biologyTestsList, 0.2, null, false),
+    DeckModel("Geo deck", mathCardsList, mathTestsList, 0.4, null, false),
+    DeckModel("Chemie Deck", physicsCardsList, physicsTestsList, 0.1, null, false),
+    DeckModel("Deutsch Deck", biologyCardsList, biologyTestsList, 0.2, null, false),
   ];
 
   static List<DeckModel> sortedDecks = [
-    DeckModel("Physics Deck", physicsCardsList, physicsTestsList, 0.1, null),
-    DeckModel("Math deck", mathCardsList, mathTestsList, 0.4, null),
-    DeckModel("Biology Deck", biologyCardsList, biologyTestsList, 0.2, null),
+    DeckModel("Physics Deck", physicsCardsList, physicsTestsList, 0.1, null, false),
+    DeckModel("Math deck", mathCardsList, mathTestsList, 0.4, null, false),
+    DeckModel("Biology Deck", biologyCardsList, biologyTestsList, 0.2, null, false),
   ];
 
   static List<DeckModel> getDecksList() {
