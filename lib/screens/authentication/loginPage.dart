@@ -167,7 +167,7 @@ class _LoginPageState extends State<LoginPage>{
         dynamic result = await _auth.signIn(_email, _password);
         if(result == null) {
           setState(() {
-            _error = "sign in failed. Please try again";
+            _error = "login failed. Please try again";
             _isLoading = false;
           });
         }
@@ -177,9 +177,9 @@ class _LoginPageState extends State<LoginPage>{
   // sign In anonymously
   void signInanon() async {
       dynamic result = await _auth.signInAnon();
-      if(result == null) print("error sign in");
+      if(result == null) print("error login");
       else {
-        print("sign in");
+        print("login");
         print(result.uid);
       }
   }

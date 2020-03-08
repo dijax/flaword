@@ -2,6 +2,8 @@ import 'package:flashcards/Test/mockData.dart';
 import 'package:flashcards/models/CardModel.dart';
 import 'package:flashcards/models/DeckModel.dart';
 import 'package:flashcards/models/TestModel.dart';
+import 'package:flashcards/models/deck.dart';
+import 'package:flashcards/models/user.dart';
 import 'package:flashcards/views/cardView.dart';
 import 'package:flashcards/views/questionView.dart';
 import 'package:flashcards/views/testView.dart';
@@ -10,9 +12,10 @@ import 'package:flashcards/widgets/settingsMenu.dart';
 import 'package:flutter/material.dart';
 
 class DeckView extends StatefulWidget {
-  final DeckModel deck;
+  final Deck deck;
   final DateTime visitDate;
-  DeckView(this.deck, this.visitDate);
+  final User user;
+  DeckView({this.deck, this.visitDate, this.user});
   _DeckViewState createState() => _DeckViewState();
 }
 
@@ -22,11 +25,13 @@ class _DeckViewState extends State<DeckView> {
   bool flashcardClicked = false;
   @override
   Widget build(BuildContext context) {
-    List<TestModel> tests = widget.deck.tests;
-    List<CardModel> cards = widget.deck.cards;
+//    List<TestModel> tests = widget.deck.tests;
+    List<TestModel> tests = new List();
+//    List<CardModel> cards = widget.deck.cards;
+    List<CardModel> cards = new List();
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.deck.deckTitle),
+        title: Text(widget.deck.title),
         backgroundColor: CustomColors.black,
       ),
       backgroundColor: CustomColors.White,
@@ -64,7 +69,7 @@ class _DeckViewState extends State<DeckView> {
                           Text("Flashcards", style: TextStyle(fontFamily: 'Poppins', fontSize: 20, fontWeight: FontWeight.bold),),
                           IconButton(
                             icon: Icon(Icons.play_arrow, size: 40,),
-                            onPressed: (){Navigator.of(context).push(MaterialPageRoute(builder: (context) => CardView(widget.deck.cards, null)));},
+//                            onPressed: (){Navigator.of(context).push(MaterialPageRoute(builder: (context) => CardView(widget.deck.cards, null)));},
                           ),
                         ],
                       ),
@@ -85,7 +90,7 @@ class _DeckViewState extends State<DeckView> {
                       return (!cards.elementAt(cardIndex).hidden) ? Container(child: GestureDetector(
                         onTap: () {
                           setState(() {
-                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => CardView(widget.deck.cards, cardIndex)));
+//                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => CardView(widget.deck.cards, cardIndex)));
                           });
                         },
                         child: Center(
@@ -112,6 +117,7 @@ class _DeckViewState extends State<DeckView> {
                                   child: Text(cards.elementAt(cardIndex).cardTitle, style: TextStyle(color: CustomColors.White, fontSize: 20, fontFamily: 'Poppins', fontWeight: FontWeight.bold),),
                                 ),
                                 SettingsMenu(
+                                  user: widget.user,
                                   list: cards,
                                   onSelect: (List<Object> newCards, bool hidden) {
                                     setState(() {
@@ -211,6 +217,7 @@ class _DeckViewState extends State<DeckView> {
                                       onPressed: (){Navigator.of(context).push(MaterialPageRoute(builder: (context) => QuestionView(tests.elementAt(testIndex), 0, testIndex)));},
                                     ),
                                     SettingsMenu(
+                                      user: widget.user,
                                       list: tests,
                                       onSelect: (List<Object> newTests, bool hidden) {
                                         setState(() {

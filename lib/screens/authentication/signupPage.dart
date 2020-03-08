@@ -30,18 +30,33 @@ class _SignUpPageState extends State<SignUpPage>{
         backgroundColor: Colors.transparent,
         leading: CircleAvatar(child: Icon(Icons.layers, size: 30, color: CustomColors.White,), backgroundColor: CustomColors.black.withOpacity(0.3),),
         actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.perm_identity, color: CustomColors.White,),
-            tooltip: "Login",
-            onPressed: widget.toggleAuthView ,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 5),
+            child: InkWell(
+              onTap: widget.toggleAuthView,
+              child: Row(
+                children: <Widget>[
+                  Center(child: Text("Login", style: TextStyle(color: CustomColors.White, fontSize: 16, fontFamily: 'Monsterrat'),)),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Icon(Icons.person, color: CustomColors.White,),
+                  ),
+                ],
+              ),
+            ),
           ),
+//          IconButton(
+//            icon: Icon(Icons.perm_identity, color: CustomColors.White,),
+//            tooltip: "Login",
+//            onPressed: widget.toggleAuthView ,
+//          ),
         ],
         title: Text("FLAWORD", style: appNameTextStyle,),
       ),
         backgroundColor: Colors.transparent,
         body: SingleChildScrollView(
           child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            padding: EdgeInsets.fromLTRB(40, 70, 40, 10),
             color: Colors.transparent,
 //            padding: EdgeInsets.fromLTRB(40, 30, 40, 130),
 //            decoration: BoxDecoration(
@@ -231,7 +246,7 @@ class _SignUpPageState extends State<SignUpPage>{
       setState(() {
         _isLoading = true;
       });
-      dynamic result = await _auth.signUp(_email, _password);
+      dynamic result = await _auth.signUp(_username, _email, _password);
       if(result == null) {
         setState(() {
           _error = "sign up not successefull, please suply a valid email";

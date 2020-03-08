@@ -40,6 +40,7 @@ dependencies:
   flutter_swiper: ^1.1.2
   provider: ^4.0.4
   flutter_spinkit: ^4.1.2
+  wave_progress_widget: ^0.0.1
 #  firebase_core: ^0.4.4
 
 dev_dependencies:

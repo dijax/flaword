@@ -1,28 +1,41 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flashcards/Test/mockData.dart';
 import 'package:flashcards/models/DeckModel.dart';
+import 'package:flashcards/models/deck.dart';
+import 'package:flashcards/models/user.dart';
+import 'package:flashcards/screens/home/decksList.dart';
+import 'package:flashcards/services/auth.dart';
 import 'package:flashcards/views/deckView.dart';
 import 'package:flashcards/widgets/settingsMenu.dart';
 import 'package:flashcards/utils/customColors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+//import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
+import 'package:flashcards/services/database.dart';
 
 class HomePage extends StatefulWidget {
+  final User user;
+  HomePage({this.user});
+
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin{
   //TODO use the Random color generator
-  final appColors = [Color.fromRGBO(231, 129, 109, 1.0),Color.fromRGBO(99, 138, 223, 1.0),Color.fromRGBO(111, 194, 173, 1.0)];
+//  final appColors = [Color.fromRGBO(231, 129, 109, 1.0),Color.fromRGBO(99, 138, 223, 1.0),Color.fromRGBO(111, 194, 173, 1.0)];
   int deckIndex = 0;
   ScrollController scrollController;
   var currentColor = Color.fromRGBO(231, 129, 109, 1.0);
+//  AuthService _auth = AuthService();
 
   AnimationController animationController;
   ColorTween colorTween;
   CurvedAnimation curvedAnimation;
   List<DeckModel> decks = MockData.decksList.take(3).toList();
+
 
   @override
   void initState() {
@@ -32,59 +45,59 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin{
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
+    print("home " + widget.user?.uid);
+
+    return MultiProvider(
+      providers: [
+        StreamProvider<User>.value(value: DatabaseService(uid: widget.user.uid).username),
+        StreamProvider<List<Deck>>.value(value: DatabaseService(uid: widget.user.uid).decks),
+      ],
+      child: Scaffold(
+//    return Scaffold(
+        backgroundColor: Colors.transparent,
 //      resizeToAvoidBottomPadding: false, // used to fix the pixels overflow
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: ExactAssetImage('assets/graphics/mountain.jpg'),
-            fit: BoxFit.cover,
-            colorFilter: ColorFilter.mode(
-                Colors.black.withOpacity(0.6),
-                BlendMode.dstIn
-            ),
-          ),
-        ),
-        child: ListView(
-//          crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Row(),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 10.0),
-                      child: Row(
-                        children: <Widget>[
-                          CircleAvatar(
-                            radius: 30,
-                            backgroundColor: Colors.black.withOpacity(0.4),
-                            child: Icon(Icons.layers, color: CustomColors.White,),
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Text("FLAWORLD",
-                            style: TextStyle(
-                                fontFamily: 'MrDafoe',
-                                color: CustomColors.White,
-                                fontSize: 18),
-                          )
-                        ],
+        body: Container(
+          child: ListView(
+              children: <Widget>[
+                Row(),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 10.0),
+                        child: Row(
+                          children: <Widget>[
+                            CircleAvatar(
+                              radius: 30,
+                              backgroundColor: Colors.black.withOpacity(0.4),
+                              child: Icon(Icons.layers, color: CustomColors.White,),
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text("FLAWORLD",
+                              style: TextStyle(
+                                  fontFamily: 'MrDafoe',
+                                  color: CustomColors.White,
+                                  fontSize: 18),
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0.0, 16.0, 0.0, 12.0),
-                      child: Text("Hello, Dija.", style: TextStyle(fontSize: 30.0, color: CustomColors.White, fontFamily: 'Montserrat', fontWeight: FontWeight.bold),),
-                    ),
-                    Text("Nice to see you again.", style:  TextStyle(backgroundColor: Colors.black.withOpacity(0.5),fontSize: 16.0, color: Colors.white, fontFamily: 'Poppins')),
-                    Text("Keep the good work, keep learning.", style: TextStyle(backgroundColor: Colors.black.withOpacity(0.5),fontSize: 16.0, color: Colors.white, fontFamily: 'Poppins'),),
-                  ],
+                      StreamProvider<User>.value(
+                        value: DatabaseService(uid: widget.user.uid).username,
+                        child: TitleWidget(),
+                      ),
+
+//                      TitleWidget(user: widget.user),
+                      Text("Nice to see you.", style:  TextStyle(backgroundColor: Colors.black.withOpacity(0.5),fontSize: 16.0, color: Colors.white, fontFamily: 'Poppins')),
+                      Text("Keep the good work, keep learning.", style: TextStyle(backgroundColor: Colors.black.withOpacity(0.5),fontSize: 16.0, color: Colors.white, fontFamily: 'Poppins'),),
+
+                    ],
+                  ),
                 ),
-              ),
 //            StreamBuilder<QuerySnapshot>(
 //              stream: Firestore.instance.collection("deck").snapshots(),
 //              builder: (context, snapshot) {
@@ -107,187 +120,63 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin{
 //                );
 //              },
 //            ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Padding(
-                      padding: const EdgeInsets.fromLTRB(24.0, 36.0, 24.0, 0.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text("Last used Decks", style: TextStyle(
-                              backgroundColor: Colors.black.withOpacity(0.5),
-                              fontSize: 16.0, fontFamily: 'Montserrat',
-                              fontWeight: FontWeight.w500,
-                              color: CustomColors.White
-                          ),),
-                        ],)
-                  ),
-                  Container(
-                    height: 300.0,
-                    child: ListView.builder(
-                      physics: NeverScrollableScrollPhysics(),
-                      itemCount: decks.length,
-                      controller: scrollController,
-                      scrollDirection: Axis.horizontal,
-                      itemBuilder: (context, position){
-                        return GestureDetector(
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0 , 8.0),
-                              child: Container(
-                                  child: (!decks.elementAt(position).hidden)? new Card(
-                                    child: InkWell(
-                                      onTap: () {
-                                        var selectedDeck = MockData.sortedDecks[position];
-                                        Navigator.of(context).push(MaterialPageRoute(builder: (context)=>DeckView(selectedDeck, DateTime.now())));
-                                        MockData.last3Decks(position);
-                                      },
-                                      child: Container(
-                                        width: 250.0,
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: <Widget>[
-                                            Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                children: <Widget>[
-                                                  Padding(
-                                                    padding: const EdgeInsets.fromLTRB(12.0, 0.0, 0.0, 0.0),
-                                                  ),
-                                                  SettingsMenu(
-                                                    list: decks,
-                                                    onSelect: (List<Object> decks, bool hidden) {
-                                                      setState(() {
-                                                        if(hidden){MockData.decksList.elementAt(position).hidden = true;}
-                                                        this.decks = decks;
-                                                      });
-                                                    },
-                                                    index: position,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.center,
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                children: <Widget>[
-                                                  Padding(
-                                                    padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 40.0),
-                                                    child: Text("${MockData.sortedDecks[position].deckTitle}", style: TextStyle(fontSize: 28.0, fontWeight: FontWeight.bold, fontFamily: 'Montserrat', color: CustomColors.black), textAlign: TextAlign.center,),
-                                                  ),
-                                                  Padding(
-                                                      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                                                      child:Row(
-                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                        children: <Widget>[
-                                                          Row(
-                                                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                            children: <Widget>[
-                                                              Text("${decks[position].cards.length.toString()}", style: TextStyle(color: CustomColors.black, fontSize: 25.0, fontFamily: 'Montserrat', fontWeight: FontWeight.w600 ),),
-                                                              Padding(
-                                                                  padding: const EdgeInsets.fromLTRB(5.0, 0.0, 0.0, 0.0),
-                                                                  child: Icon(Icons.perm_media, color: CustomColors.black, size: 20.0,)
-                                                              ),
-                                                            ],
-                                                          ),
-                                                          Row(
-                                                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                            children: <Widget>[
-                                                              Text("${decks[position].tests.length.toString()}", style: TextStyle(fontSize: 25.0, fontFamily: 'Montserrat', fontWeight: FontWeight.w600 , color: CustomColors.black),),
-                                                              Padding(
-                                                                  padding: const EdgeInsets.fromLTRB(5.0, 0.0, 0.0, 0.0),
-                                                                  child: Icon(Icons.thumbs_up_down, color: CustomColors.black, size: 20.0,)
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ],
-                                                      )
-                                                  ),
-                                                  Padding(
-                                                    padding: const EdgeInsets.all(8.0),
-                                                    child: LinearProgressIndicator(
-                                                      value: decks[position].deckCompletion,
-                                                      backgroundColor: CustomColors.DeeppurlpleBackground,
-                                                      valueColor: AlwaysStoppedAnimation<Color>(CustomColors.PurpleDark),),
-                                                  ),
-                                                ],
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                  ): Card(),
-                                decoration: new BoxDecoration(boxShadow: [
-                                ]),
-                              ),
-                            ),
-                            onHorizontalDragEnd: (details) {
-                              animationController = AnimationController(
-                                  vsync: this, duration: Duration(
-                                  milliseconds: 500));
-                              curvedAnimation = CurvedAnimation(
-                                  parent: animationController, curve: Curves
-                                  .fastOutSlowIn);
-                              animationController.addListener(() {
-                                setState(() {
-//                                currentColor = colorTween.evaluate(curvedAnimation);
-                                });
-                              });
-                              if(details.velocity.pixelsPerSecond.dx > 0) {
-                                if(deckIndex > 0) {
-                                  deckIndex--;
-                                  colorTween = ColorTween(begin: currentColor, end: appColors[deckIndex]);
-                                }
-                              } else {
-                                if (deckIndex < 2) {
-                                  deckIndex ++;
-                                  colorTween = ColorTween(begin: currentColor, end: appColors[deckIndex]);
-                                }
-                              }
-                              setState(() {
-                                scrollController.animateTo(deckIndex*256.0, duration: Duration(milliseconds: 500), curve: Curves.fastOutSlowIn);
-                              }
-                              );
-                            }
-                        );
-                      },
+
+                    StreamProvider<List<Deck>>.value(
+                      value: DatabaseService(uid: widget.user.uid).decks,
+                      child: Container(
+                        height: 300.0,
+                        child: DecksList(user:widget.user),
+                      ),
                     ),
-                  )
-                ],
-              ),
-            ]
+              ]
+          ),
         ),
-      ),
-    );
+//      ),
+    ));
   }
 }
 
-class Record{
-  final String name;
-  final String description;
-  final int completion;
-  final DocumentReference reference;
-
-  Record.fromMap(Map<String, dynamic> map, {this.reference})
-      : assert(map['completion'] != null),
-        assert(map['description'] != null),
-        assert(map['name'] != null),
-
-        completion = map['completion'],
-        description = map['description'],
-        name = map['name'];
-
-  Record.fromSnapshot(DocumentSnapshot snapshot)
-      :this.fromMap(snapshot.data, reference: snapshot.reference);
-
+class TitleWidget extends StatelessWidget {
+  TitleWidget();
   @override
-  String toString() => "Record<$name:$description:$completion>";
+  Widget build(BuildContext context) {
+    final user = Provider.of<User>(context);
+    if(user!=null) {
+      print("Titlewidget " + user.uid);
+    }
+    return (user!= null)?Padding(
+      padding: const EdgeInsets.fromLTRB(0.0, 16.0, 0.0, 12.0),
+        child: Text("Hello, ${user.username}", style: TextStyle(fontSize: 30.0, color: CustomColors.White, fontFamily: 'Montserrat', fontWeight: FontWeight.bold),)
+    ):Padding(
+      padding: const EdgeInsets.fromLTRB(0.0, 16.0, 0.0, 12.0),
+      child: Text("Hello,", style: TextStyle(fontSize: 30.0, color: CustomColors.White, fontFamily: 'Montserrat', fontWeight: FontWeight.bold),));
+  }
 }
+
+
+//class TitleWidget extends StatelessWidget {
+////  final userId = DatabaseService().uid;
+//  final User user;
+//  TitleWidget({this.user});
+//  @override
+//  Widget build(BuildContext context) {
+//    // TODO: implement build
+////    final user = Provider.of<User>(context);
+////    print("user"+ user.username);
+//          return (user!= null)?Padding(
+//            padding: const EdgeInsets.fromLTRB(0.0, 16.0, 0.0, 12.0),
+//            child: StreamBuilder<DocumentSnapshot>(
+//              stream: DatabaseService().users.document(user.uid).snapshots(),
+//              builder: (context, snapshot) {
+//                if(!snapshot.hasData) {
+//                  print("Error snapshot does not have data");
+//                  return Container();
+//                } else if (snapshot.hasData) {
+//                  print("userId " + user.uid);
+//                  return Text("Hello, ${snapshot.data['username']}", style: TextStyle(fontSize: 30.0, color: CustomColors.White, fontFamily: 'Montserrat', fontWeight: FontWeight.bold),);
+//                } else return Container();
+//              }
+//            ),
+//          ):Container(child: Text("user is null"),);
+//  }
+//}

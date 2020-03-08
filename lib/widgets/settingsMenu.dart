@@ -3,9 +3,12 @@ import 'package:flashcards/models/CardModel.dart';
 import 'package:flashcards/models/DeckModel.dart';
 import 'package:flashcards/models/TestModel.dart';
 import 'package:flashcards/models/settings.dart';
+import 'package:flashcards/models/user.dart';
 import 'package:flashcards/screens/home/addCardPage.dart';
 import 'package:flashcards/screens/home/addDeckPage.dart';
+import 'package:flashcards/screens/home/addTest.dart';
 import 'package:flashcards/screens/home/addTestPage.dart';
+import 'package:flashcards/screens/home/adddeck.dart';
 import 'package:flashcards/utils/customColors.dart';
 import 'package:flutter/material.dart';
 
@@ -13,7 +16,8 @@ class SettingsMenu extends StatefulWidget {
   final DeckCallback onSelect;
   final int index;
   final List<dynamic> list;
-  const SettingsMenu({this.onSelect, this.index, this.list});
+  final User user;
+  const SettingsMenu({this.onSelect, this.index, this.list, this.user});
   @override
   _SettingsMenuState createState() => _SettingsMenuState();
 }
@@ -80,11 +84,11 @@ class _SettingsMenuState extends State<SettingsMenu> {
 
   toPage() {
     if(list is List<DeckModel>)
-      return AddDeckPage();
+      return Adddeck(user: widget.user,);
     if(list is List<CardModel>)
-      return AddCardPage(null, false);
+      return AddCardPage(deck: null, deckIsGiven: false, user: widget.user,);
     if(list is List<TestModel>)
-      return AddTestPage(null, false);
+      return AddTest(deck: null,deckIsGiven: false, user: widget.user,);
     return CustomColors.White;
   }
 
@@ -95,13 +99,15 @@ class _SettingsMenuState extends State<SettingsMenu> {
       onPressed:  () {
         print("cancel");
         Navigator.of(context).pop();
-        list.removeAt(widget.index);
         },
     );
     Widget continueButton = FlatButton(
       child: Text("Continue"),
       onPressed:  () {
         Navigator.of(context).pop();
+        setState(() {
+          list.removeAt(widget.index);
+        });
       },
     );
 

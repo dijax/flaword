@@ -1,3 +1,4 @@
+import 'package:flashcards/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flashcards/screens/home/homePage.dart';
 import 'package:flashcards/screens/home/decksPage.dart';
@@ -8,13 +9,13 @@ class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch(settings.name) {
       case'/':
-        return MaterialPageRoute(builder: (_) => HomePage());
+        return MaterialPageRoute(builder: (_) => HomePage(user: null));
       case '/decks':
-        return MaterialPageRoute(builder: (_) => DecksPage());
+        return MaterialPageRoute(builder: (_) => DecksPage(user: null,));
       case '/stats':
-        return MaterialPageRoute(builder: (_) => StatisticsPage());
+        return MaterialPageRoute(builder: (_) => StatisticsPage(user: null));
       case '/user':
-        return MaterialPageRoute(builder: (_) => UserPage());
+        return MaterialPageRoute(builder: (_) => UserPage(user: null));
       default:
         return _errorRoute();
     }

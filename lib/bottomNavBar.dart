@@ -1,7 +1,10 @@
 import 'dart:math';
 
+import 'package:flashcards/models/user.dart';
 import 'package:flashcards/screens/home/addDeckPage.dart';
+import 'package:flashcards/screens/home/addTest.dart';
 import 'package:flashcards/screens/home/addTestPage.dart';
+import 'package:flashcards/screens/home/adddeck.dart';
 import 'package:flashcards/screens/home/decksPage.dart';
 import 'package:flashcards/screens/home/homePage.dart';
 import 'package:flashcards/screens/home/statisticsPage.dart';
@@ -12,10 +15,15 @@ import 'package:flashcards/screens/home/UserPage.dart';
 import 'package:flashcards/screens/home/addCardPage.dart';
 
 class BottomNavBar extends StatefulWidget {
+  final User user;
+  BottomNavBar({this.user});
+
   @override
   _BottomNavBarState createState() => _BottomNavBarState();
 }
 class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMixin{
+
+//  final User user;
 
   // List of icons shown by clicking the add floating action button
   List<IconData> icons = [Icons.add_to_photos, Icons.add_photo_alternate, Icons.question_answer];
@@ -24,7 +32,8 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
   double padding;
   AnimationController _controller;
 
-  //Animation controller for the floating action button
+//
+//  //Animation controller for the floating action button
   @override
   void initState(){
     super.initState();
@@ -36,7 +45,14 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
 
   @override
   Widget build(BuildContext context) {
+    final List<Widget> _children = [
+      HomePage(user: widget.user),
+      DecksPage(user: widget.user),
+      StatisticsPage(user:widget.user),
+      UserPage(user: widget.user),
+    ];
     return Scaffold(
+      backgroundColor: Colors.transparent,
       floatingActionButton: new Padding(
         padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
         child: new Column(
@@ -68,7 +84,7 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
                       child:  new
                           Icon(icons[index], color: CustomColors.Purple,),
                       onPressed: () {
-                        menuChildPressed(index);
+                        menuChildPressed(index, widget.user);
                       },
                     ),
                   ],
@@ -126,12 +142,7 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
     );
   }
 
-  final List<Widget> _children = [
-    HomePage(),
-    DecksPage(),
-    StatisticsPage(),
-    UserPage(),
-  ];
+
 
   String text = 'Default Text';
 
@@ -141,30 +152,31 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
     });
   }
 
-  void menuChildPressed(int index) {
+  void menuChildPressed(int index, User user) {
     switch(index){
       case 0:
         print("the add deck child has been pressed!");
         Navigator.of(context).push(MaterialPageRoute<Null>(builder: (BuildContext context){
-          return new AddDeckPage();
+          return new Adddeck( user: user);
         }
         ));
         break;
       case 1:
         print("the add card child has been pressed!");
         Navigator.of(context).push(MaterialPageRoute<Null>(builder: (BuildContext context){
-          return new AddCardPage(null, false);
+          return new AddCardPage(deck: null, deckIsGiven: false, user: user);
         }
         ));
         break;
       case 2:
         print("the add test child has been pressed!");
         Navigator.of(context).push(MaterialPageRoute<Null>(builder: (BuildContext context){
-          return new AddTestPage(null, false);
+          return new AddTest(deck: null, deckIsGiven: false, user: user);
         }));
         break;
     }
   }
+
 
   double padd(int index) {
     if (index == 0)

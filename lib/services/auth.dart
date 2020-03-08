@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flashcards/models/user.dart';
+import 'package:flashcards/services/database.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -13,6 +14,13 @@ class AuthService {
   Stream<User> get user {
     return _auth.onAuthStateChanged.map(_userFromFirebaseUser);
   }
+
+//  Future currentUser() async {
+//    final FirebaseUser user = await _auth.currentUser();
+//    final uid = user.uid;
+//    return uid;
+//    // here you write the codes to input the data into firestore
+//  }
 
   // sign in anonymously
   Future signInAnon() async{
@@ -38,10 +46,13 @@ class AuthService {
     }
   }
 
-  Future signUp(String email, String password) async{
+  Future signUp(String username, String email, String password) async{
     try{
       AuthResult authResult = await _auth.createUserWithEmailAndPassword(email: email, password: password);
       FirebaseUser user = authResult.user;
+      // create new document for this new user
+      await DatabaseService(uid: user.uid).updateUserData(username);
+//      await DatabaseService(uid: user.uid).updateDeck("your first deck", 0, 0, 0.0, null, false);
       return _userFromFirebaseUser(user);
     }catch(e){
       print(e.toString());

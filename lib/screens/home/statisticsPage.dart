@@ -1,8 +1,12 @@
+import 'package:flashcards/models/user.dart';
 import 'package:flashcards/utils/customColors.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class StatisticsPage extends StatefulWidget {
+  final User user;
+  StatisticsPage({this.user});
+
   @override
   _StatisticsPageState createState() => _StatisticsPageState();
 }
