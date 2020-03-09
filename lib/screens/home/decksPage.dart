@@ -20,7 +20,7 @@ class DecksPage extends StatefulWidget{
 }
 
 class _DecksPageState extends State<DecksPage> with TickerProviderStateMixin{
-  List<DeckModel> decks = MockData.getDecksList();
+//  List<DeckModel> decks = MockData.getDecksList();
 
   @override void dispose() {
     // TODO: implement dispose
@@ -82,13 +82,12 @@ class _DecksListState extends State<DecksList> {
             itemBuilder: (context, index){
               return GestureDetector(
                   onTap: () {
-                    MockData.setVisitDate(index, DateTime.now());
+//                    MockData.setVisitDate(index, DateTime.now());
                     print(DateTime.now());
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => DeckView(deck:decks[index], visitDate:DateTime.now(), user: widget.user,)));
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => DeckView(deckId:decks[index].deckId,deckTitle: decks[index].title, visitDate:DateTime.now(), user: widget.user,)));
                   }, //TODO: the deck widget to implement
                   child: Stack(
                     children: <Widget>[
-
 //                            Container(
 //                              width: 382,
 //                              height: 150,

@@ -1,4 +1,5 @@
 import 'package:flashcards/models/CardModel.dart';
+import 'package:flashcards/models/card.dart';
 import 'package:flashcards/utils/customColors.dart';
 import 'package:flutter/material.dart';
 import 'package:flip_card/flip_card.dart';
@@ -38,7 +39,7 @@ class _FlipCardViewState extends State<FlipCardView>{
                         blurRadius: 15,
                       ),]),
                 child: Center(
-                    child: Text(widget.card?.front)),
+                    child: Text(widget.card?.back)),
               )
           ),
         ),
@@ -59,7 +60,7 @@ class _FlipCardViewState extends State<FlipCardView>{
                 ],
               ),
               child: Center(
-                  child: Text(widget.card?.back)),
+                  child: Text(widget.card?.front)),
             ),
           ),
         ),

@@ -2,6 +2,7 @@ import 'package:flashcards/Test/mockData.dart';
 import 'package:flashcards/models/CardModel.dart';
 import 'package:flashcards/models/DeckModel.dart';
 import 'package:flashcards/models/TestModel.dart';
+import 'package:flashcards/models/card.dart';
 import 'package:flashcards/models/settings.dart';
 import 'package:flashcards/models/user.dart';
 import 'package:flashcards/screens/home/addCardPage.dart';
@@ -84,11 +85,11 @@ class _SettingsMenuState extends State<SettingsMenu> {
 
   toPage() {
     if(list is List<DeckModel>)
-      return Adddeck(user: widget.user,);
+      return AddDeck(user: widget.user,);
     if(list is List<CardModel>)
-      return AddCardPage(deck: null, deckIsGiven: false, user: widget.user,);
+      return AddCardPage(deckTitle: null, deckIsGiven: false, user: widget.user,);
     if(list is List<TestModel>)
-      return AddTest(deck: null,deckIsGiven: false, user: widget.user,);
+      return AddTest(deckTitle: null,deckIsGiven: false, user: widget.user,);
     return CustomColors.White;
   }
 

@@ -1,5 +1,8 @@
 import 'package:flashcards/models/CardModel.dart';
 import 'package:flashcards/models/CardUnderstanding.dart';
+import 'package:flashcards/models/card.dart';
+import 'package:flashcards/models/user.dart';
+import 'package:flashcards/services/database.dart';
 import 'package:flashcards/widgets/flipCard.dart';
 import 'package:flashcards/utils/customColors.dart';
 import 'package:flutter/material.dart';
@@ -7,9 +10,10 @@ import 'package:flip_card/flip_card.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 
 class CardView extends StatefulWidget {
+  final User user;
   final List<CardModel> cards;
   final int cardIndex;
-  CardView(this.cards, this.cardIndex);
+  CardView({this.cards, this.cardIndex, this.user});
   _CardViewState createState() => _CardViewState();
 }
 class _CardViewState extends State<CardView> with TickerProviderStateMixin{
@@ -104,7 +108,11 @@ class _CardViewState extends State<CardView> with TickerProviderStateMixin{
               icon: Icon(Icons.sentiment_very_satisfied, size: 50, color: CustomColors.GreenAccent,),
               onPressed: (){
                 setState(() {
-                  widget.cards.elementAt(_cardValue).cardUnderstanding = CardUnderstanding.clear;
+                  print('deckId' + widget.cards[_cardValue].deckId + ' cardId' + widget.cards[_cardValue].cardId);
+                  DatabaseService(uid: widget.user.uid).updateCard(widget.cards[_cardValue].cardId,
+                      widget.cards[_cardValue].deckId, widget.cards[_cardValue].title, widget.cards[_cardValue].front, widget.cards[_cardValue].back,
+                      widget.cards[_cardValue].hidden, CardUnderstanding.clear.toString());
+//                  widget.cards.elementAt(_cardValue).cardUnderstanding = CardUnderstanding.clear;
                 });
               },
             ),
@@ -121,7 +129,7 @@ class _CardViewState extends State<CardView> with TickerProviderStateMixin{
               icon: Icon(Icons.sentiment_neutral, size: 50, color: CustomColors.OrangeIcon),
               onPressed: (){
                 setState(() {
-                  widget.cards.elementAt(_cardValue).cardUnderstanding = CardUnderstanding.unsure;
+//                  widget.cards.elementAt(_cardValue).cardUnderstanding = CardUnderstanding.unsure;
                 });
               },
             ),
@@ -138,7 +146,7 @@ class _CardViewState extends State<CardView> with TickerProviderStateMixin{
               icon: Icon(Icons.sentiment_very_dissatisfied, size: 50, color: CustomColors.TrashRed),
               onPressed: (){
                 setState(() {
-                  widget.cards.elementAt(_cardValue).cardUnderstanding = CardUnderstanding.problematic;
+//                  widget.cards.elementAt(_cardValue).cardUnderstanding = CardUnderstanding.problematic;
                 });
               },
             ),
@@ -156,22 +164,22 @@ class _CardViewState extends State<CardView> with TickerProviderStateMixin{
 
   Widget getUnderstandingIcon(){
     print(_cardValue);
-    print(widget.cards.elementAt(_cardValue).cardUnderstanding);
-    switch(widget.cards.elementAt(_cardValue).cardUnderstanding){
-      case CardUnderstanding.clear:
-        return Icon(Icons.sentiment_very_satisfied, size: 30,color: CustomColors.GreenAccent,);
-        break;
-      case CardUnderstanding.none:
-//        print("no data");
-        return Icon(Icons.sentiment_neutral, size: 30,color: CustomColors.White.withOpacity(0.1),);
-        break;
-      case CardUnderstanding.unsure:
-        return Icon(Icons.sentiment_neutral, size: 30,color: CustomColors.OrangeIcon,);
-        break;
-      case CardUnderstanding.problematic:
-        return Icon(Icons.sentiment_very_dissatisfied, size: 30,color: CustomColors.TrashRed,);
-        break;
-    }
+//    print(widget.cards.elementAt(_cardValue).cardUnderstanding);
+//    switch(widget.cards.elementAt(_cardValue).cardUnderstanding){
+//      case CardUnderstanding.clear:
+//        return Icon(Icons.sentiment_very_satisfied, size: 30,color: CustomColors.GreenAccent,);
+//        break;
+//      case CardUnderstanding.none:
+////        print("no data");
+//        return Icon(Icons.sentiment_neutral, size: 30,color: CustomColors.White.withOpacity(0.1),);
+//        break;
+//      case CardUnderstanding.unsure:
+//        return Icon(Icons.sentiment_neutral, size: 30,color: CustomColors.OrangeIcon,);
+//        break;
+//      case CardUnderstanding.problematic:
+//        return Icon(Icons.sentiment_very_dissatisfied, size: 30,color: CustomColors.TrashRed,);
+//        break;
+//    }
     return Icon(Icons.sentiment_neutral, size: 30,color: CustomColors.White.withOpacity(0.1),);
   }
 

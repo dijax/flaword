@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flashcards/models/card.dart';
 import 'package:flashcards/models/deck.dart';
 import 'package:flashcards/models/user.dart';
 import 'package:flashcards/services/auth.dart';
@@ -13,7 +14,8 @@ class DatabaseService {
   final CollectionReference users = Firestore.instance.collection("users");
 
   final String uid;
-  DatabaseService({this.uid});
+  final String deck_Id;
+  DatabaseService({this.uid, this.deck_Id});
 
   // add Data to Firestore
   Future addCard(String deckId, String title, String front, String back, bool hidden, String cardUnderstanding) async{
@@ -46,8 +48,8 @@ class DatabaseService {
     String deckId = "";
     if(colRef.getDocuments() != null) {
       colRef.getDocuments().then((doc){
-        addDeckToFireStore(deckId, title, cardsCount, testsCount, completion, visited, isHidden);
         deckId = "deck${doc.documents.length + 1}";
+        addDeckToFireStore(deckId, title, cardsCount, testsCount, completion, visited, isHidden);
         print("deckId: "+ deckId);
       });
     } else{
@@ -97,6 +99,7 @@ class DatabaseService {
     });
   }
 
+
 //  Future updateDecks(String title, int cardsCount, int testsCount, double completion, DateTime visited, bool hidden) async {
 //    return await users.document(uid).collection('decks').document(uid).setData({
 //      'title':title,
@@ -121,11 +124,53 @@ class DatabaseService {
 //  }
 
 
+  Future updateCardsCount(bool increment) async{
+    if(increment){
+      return await deckCollection.document(uid).collection('decks').document(deck_Id).setData({
+        'cardsCount' : FieldValue.increment(1),
+      });
+    } else{
+      return await deckCollection.document(uid).collection('decks').document(deck_Id).setData({
+        'cardsCount' : FieldValue.increment(-1),
+      });
+    }
+  }
+
+
+
+  Future updateCard(String cardId, String deckId, String title, String front, String back, bool hidden, String cardUnderstanding) async{
+    return await deckCollection.document(uid).collection('decks').document(deckId).collection("cards").document(cardId).setData({
+      'title' : title,
+      'front' : front,
+      'back'  : back,
+      'hidden': hidden,
+      'cardUnderstanding': cardUnderstanding,
+    });
+  }
+
+  List<CardModel> _cardsListFromSnapshot(QuerySnapshot snapshot) {
+    return snapshot.documents.map((doc) {
+      return CardModel(
+        cardId: doc.documentID ?? '',
+        deckId: deck_Id,
+        title: doc.data['title'] ?? '',
+        front: doc.data['front']?? '',
+        back: doc.data['back']??'',
+        hidden: doc.data['hidden']??false,
+        cardUnderstanding: doc.data['cardUnderstanding']??'');
+    }).toList();
+  }
+
+  Stream<List<CardModel>> get cards {
+    return deckCollection.document(uid).collection("decks").document(deck_Id).collection("cards").snapshots()
+        .map(_cardsListFromSnapshot);
+  }
+
   // deck list from Snapshot
   List<Deck> _decksListFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.documents.map((doc) {
-      return Deck(doc.data['title']??'', doc.data['cardsCount']??0, doc.data['testsCount']?? 0,
-        doc.data['completion']?? 0.0, doc.data['visited']?? null, doc.data['hidden']??false,);
+      return Deck(deckId: doc.documentID, title: doc.data['title']??'', cardsCount: doc.data['cardsCount']??0, testsCount: doc.data['testsCount']?? 0,
+        completion: doc.data['completion']?? 0.0, visited: doc.data['visited']?? null, hidden: doc.data['hidden']??false,);
     }).toList();
   }
 
@@ -138,6 +183,7 @@ class DatabaseService {
     // TODO test for anonym
     return User(uid:uid??"", username:snapshot.data['username']??"");
   }
+
 
 //  List<User>_usersFromSnapshot(QuerySnapshot snapshot) {
 //    return snapshot.documents.map((doc) {

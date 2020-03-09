@@ -34,7 +34,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin{
   AnimationController animationController;
   ColorTween colorTween;
   CurvedAnimation curvedAnimation;
-  List<DeckModel> decks = MockData.decksList.take(3).toList();
+//  List<DeckModel> decks = MockData.decksList.take(3).toList();
 
 
   @override

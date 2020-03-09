@@ -157,21 +157,21 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
       case 0:
         print("the add deck child has been pressed!");
         Navigator.of(context).push(MaterialPageRoute<Null>(builder: (BuildContext context){
-          return new Adddeck( user: user);
+          return new AddDeck( user: user);
         }
         ));
         break;
       case 1:
         print("the add card child has been pressed!");
         Navigator.of(context).push(MaterialPageRoute<Null>(builder: (BuildContext context){
-          return new AddCardPage(deck: null, deckIsGiven: false, user: user);
+          return new AddCardPage(deckTitle: null, deckIsGiven: false, user: user);
         }
         ));
         break;
       case 2:
         print("the add test child has been pressed!");
         Navigator.of(context).push(MaterialPageRoute<Null>(builder: (BuildContext context){
-          return new AddTest(deck: null, deckIsGiven: false, user: user);
+          return new AddTest(deckTitle: null, deckIsGiven: false, user: user);
         }));
         break;
     }

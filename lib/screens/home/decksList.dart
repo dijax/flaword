@@ -84,7 +84,7 @@ class _DecksListState extends State<DecksList> with TickerProviderStateMixin{
                                   list: decks,
                                   onSelect: (List<Object> decks, bool hidden) {
                                     setState(() {
-                                      if(hidden){MockData.decksList.elementAt(position).hidden = true;}
+//                                      if(hidden){MockData.decksList.elementAt(position).hidden = true;}
 //                                      this.decks = decks; //TODO Settings menu erwartet ein Deckmodel und bekommt ein DEcks
                                     });
                                   },

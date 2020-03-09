@@ -8,10 +8,10 @@ import 'package:flutter/material.dart';
 import 'package:flashcards/Test/mockData.dart';
 
 class AddTest extends StatefulWidget {
-  final String deck;
+  final String deckTitle;
   final bool deckIsGiven;
   final User user;
-  const AddTest({this.deck, this.deckIsGiven, this.user});
+  const AddTest({this.deckTitle, this.deckIsGiven, this.user});
 
   @override
   _AddTestState createState() => _AddTestState();
@@ -19,7 +19,7 @@ class AddTest extends StatefulWidget {
 class _AddTestState extends State<AddTest> {
   List<String> _decks;
   int _questionCount = 0;
-  String dropDownValue = MockData.decksList[0].deckTitle;
+//  String dropDownValue = MockData.decksList[0].deckTitle;
   TextEditingController deckTitleController = TextEditingController();
   List<Widget> _questions;
 
@@ -107,7 +107,7 @@ class _AddTestState extends State<AddTest> {
                       padding: EdgeInsets.fromLTRB(12, 0, 12, 0),
                       child: DropdownButton<String>(
                         isExpanded: true,
-                        value: dropDownValue,
+//                        value: dropDownValue,
                         iconSize: 28,
                         elevation: 0,
                         style: TextStyle(
@@ -117,7 +117,7 @@ class _AddTestState extends State<AddTest> {
                         ),
                         onChanged: (String newValue){
                           setState(() {
-                            dropDownValue = newValue;
+//                            dropDownValue = newValue;
                           });
                         },
                         items: getDecks().map<DropdownMenuItem<String>>((String value) {
@@ -174,9 +174,9 @@ class _AddTestState extends State<AddTest> {
   getDecks() {
     _decks = new List();
     if(widget.deckIsGiven){
-      _decks.add(widget.deck);
+      _decks.add(widget.deckTitle);
     }
-    else MockData.decksList.forEach((element) => _decks.add(element.deckTitle));
+//    else MockData.decksList.forEach((element) => _decks.add(element.deckTitle));
     return _decks;
   }
 
