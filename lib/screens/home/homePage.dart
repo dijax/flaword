@@ -45,7 +45,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin{
 
   @override
   Widget build(BuildContext context) {
-    print("home " + widget.user?.uid);
+//    print("home " + widget.user?.uid);
 
     return MultiProvider(
       providers: [
@@ -142,7 +142,7 @@ class TitleWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context);
     if(user!=null) {
-      print("Titlewidget " + user.uid);
+//      print("Titlewidget " + user.uid);
     }
     return (user!= null)?Padding(
       padding: const EdgeInsets.fromLTRB(0.0, 16.0, 0.0, 12.0),

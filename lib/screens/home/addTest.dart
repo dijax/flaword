@@ -1,26 +1,33 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flashcards/models/CardUnderstanding.dart';
+import 'package:flashcards/models/deck.dart';
+import 'package:flashcards/models/test.dart';
 import 'package:flashcards/models/user.dart';
 import 'package:flashcards/screens/home/addQuestion.dart';
 import 'package:flashcards/services/database.dart';
 import 'package:flashcards/utils/customColors.dart';
+import 'package:flashcards/widgets/dropDownWidget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flashcards/Test/mockData.dart';
 
 class AddTest extends StatefulWidget {
+  final String deckId;
   final String deckTitle;
   final bool deckIsGiven;
+  final TestsCallback onAddTest;
   final User user;
-  const AddTest({this.deckTitle, this.deckIsGiven, this.user});
+  const AddTest({this.deckTitle, this.deckIsGiven, this.deckId, this.onAddTest, this.user});
 
   @override
   _AddTestState createState() => _AddTestState();
 }
 class _AddTestState extends State<AddTest> {
   List<String> _decks;
+  String deckId;
   int _questionCount = 0;
+  TextEditingController _testTitleEC = TextEditingController();
 //  String dropDownValue = MockData.decksList[0].deckTitle;
-  TextEditingController deckTitleController = TextEditingController();
   List<Widget> _questions;
 
   @override
@@ -74,6 +81,7 @@ class _AddTestState extends State<AddTest> {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
                     child: TextField(
+                      controller: _testTitleEC,
                       decoration: InputDecoration(
                         labelText: 'Enter a test title',
                         focusedBorder: OutlineInputBorder(
@@ -105,27 +113,54 @@ class _AddTestState extends State<AddTest> {
                         border: Border.all(color: CustomColors.DeepBlue,),
                       ),
                       padding: EdgeInsets.fromLTRB(12, 0, 12, 0),
-                      child: DropdownButton<String>(
-                        isExpanded: true,
-//                        value: dropDownValue,
-                        iconSize: 28,
-                        elevation: 0,
-                        style: TextStyle(
-                          color: CustomColors.NearlyBlack,
-                          fontSize: 18,
-                          backgroundColor: Colors.white,
-                        ),
-                        onChanged: (String newValue){
-                          setState(() {
-//                            dropDownValue = newValue;
-                          });
-                        },
-                        items: getDecks().map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value, style: TextStyle(color: CustomColors.DeepBlue.withOpacity(0.9), fontWeight: FontWeight.bold),),
-                          );
-                        }).toList(),
+//                      child: DropdownButton<String>(
+//                        isExpanded: true,
+////                        value: dropDownValue,
+//                        iconSize: 28,
+//                        elevation: 0,
+//                        style: TextStyle(
+//                          color: CustomColors.NearlyBlack,
+//                          fontSize: 18,
+//                          backgroundColor: Colors.white,
+//                        ),
+//                        onChanged: (String newValue){
+//                          setState(() {
+////                            dropDownValue = newValue;
+//                          });
+//                        },
+//                        items: getDecks().map<DropdownMenuItem<String>>((String value) {
+//                          return DropdownMenuItem<String>(
+//                            value: value,
+//                            child: Text(value, style: TextStyle(color: CustomColors.DeepBlue.withOpacity(0.9), fontWeight: FontWeight.bold),),
+//                          );
+//                        }).toList(),
+//                      ),
+                      child:(!widget.deckIsGiven)? StreamBuilder<QuerySnapshot>(
+                          stream: DatabaseService(uid: widget.user.uid).deckCollection.document(widget.user.uid).collection("decks").snapshots(),
+                          builder: (context, snapshot) {
+                            List<Deck> decks = new List();
+                            if(snapshot.hasError)return Container();
+                            else if(snapshot.data == null)return Container();
+                            else {
+                              snapshot.data.documents.forEach((doc){
+                                decks.add(Deck().fromSnapshot(doc));
+                              });
+                              return DropDownWidget(
+                                  decks: decks,
+                                  deckTitle: widget.deckTitle,
+                                  deckIsGiven : widget.deckIsGiven,
+                                  user: widget.user,
+                                  onSelect:(String id) {
+                                    deckId = id;
+//                                  print("tiiiiii" + deckId);
+                                  });
+                            }
+                          }
+                      ): DropDownWidget(
+                        deckTitle: widget.deckTitle,
+                        deckIsGiven: widget.deckIsGiven,
+                        user: widget.user,
+//                        onSelect: (String id) {},
                       ),
                     ),
                   ),
@@ -182,7 +217,13 @@ class _AddTestState extends State<AddTest> {
 
   void addTest() {
     print("test added");
+    if(widget.deckIsGiven){
+      Test test = Test(deckId: widget.deckId, title: _testTitleEC.text, completion: 0, rating: 0, isHidden: false,);
+      widget.onAddTest(test);
+    }else {
 //    DatabaseService(uid: widget.user.uid).addCard("deck1","deck1", "front", "back", false, CardUnderstanding.clear.toString());
+    }
+
     Navigator.pop(context);
   }
 
@@ -192,3 +233,5 @@ class _AddTestState extends State<AddTest> {
     });
   }
 }
+
+typedef TestsCallback = void Function(Test card);

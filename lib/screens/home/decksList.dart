@@ -38,13 +38,13 @@ class _DecksListState extends State<DecksList> with TickerProviderStateMixin{
   Widget build(BuildContext context) {
 
     final decks = Provider.of<List<Deck>>(context);
-    if(decks!=null){
-      String id = "deck"+ (decks.length + 1).toString();
-      print("id "+id);
-      decks.forEach((deck){
-        print(deck.title);
-      });
-    }
+//    if(decks!=null){
+////      String id = "deck"+ (decks.length + 1).toString();
+////      print("id "+id);
+////      decks.forEach((deck){
+//////        print(deck.title);
+////      });
+//    }
 
     return (decks!= null)?
       ListView.builder(
@@ -57,7 +57,7 @@ class _DecksListState extends State<DecksList> with TickerProviderStateMixin{
             child: Padding(
               padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0 , 8.0),
               child: Container(
-                child: (!decks.elementAt(position).hidden)? new Card(
+                child: (!decks.elementAt(position).isHidden)? new Card(
                   child: InkWell(
                     onTap: () {
                       // TODO the DeckView anpassen und the sorting implementieren
@@ -82,7 +82,7 @@ class _DecksListState extends State<DecksList> with TickerProviderStateMixin{
                                 SettingsMenu(
                                   user: widget.user,
                                   list: decks,
-                                  onSelect: (List<Object> decks, bool hidden) {
+                                  onSelect: (List<Object> decks, bool isHidden) {
                                     setState(() {
 //                                      if(hidden){MockData.decksList.elementAt(position).hidden = true;}
 //                                      this.decks = decks; //TODO Settings menu erwartet ein Deckmodel und bekommt ein DEcks

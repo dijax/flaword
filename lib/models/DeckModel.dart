@@ -7,6 +7,6 @@ class DeckModel{
   List<TestModel> tests;
   double deckCompletion;
   DateTime visitDate;
-  bool hidden;
-  DeckModel(this.deckTitle, /*this.cards, */this.tests, this.deckCompletion, this.visitDate, this.hidden);
+  bool isHidden;
+  DeckModel(this.deckTitle, /*this.cards, */this.tests, this.deckCompletion, this.visitDate, this.isHidden);
 }

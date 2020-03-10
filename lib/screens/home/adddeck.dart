@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flashcards/models/CardUnderstanding.dart';
+import 'package:flashcards/models/card.dart';
+import 'package:flashcards/models/test.dart';
 import 'package:flashcards/models/user.dart';
 import 'package:flashcards/screens/home/addCardPage.dart';
 import 'package:flashcards/screens/home/addTest.dart';
@@ -18,6 +20,9 @@ class AddDeck extends StatefulWidget {
 }
 class _AddDeckState extends State<AddDeck> {
   List<String> decks;
+  List<Test> tests = new List();
+  List<CardModel> cards = new List();
+//  List<>
   String dropDownValue;
   TextEditingController deckTitleEditingController = TextEditingController();
   TextEditingController desTitleEditingController = TextEditingController();
@@ -199,24 +204,55 @@ class _AddDeckState extends State<AddDeck> {
   }
 
   void addDeck() {
-    print("Deck added");
+//    print("Deck added");
     DatabaseService(uid: widget.user.uid).addDeck(deckTitleEditingController.text, 0, 0, 0.0, null, false);
+    cards.forEach((card){
+      CollectionReference colRef = DatabaseService(uid: widget.user.uid).deckCollection.document(widget.user.uid).collection("decks").document(card.cardId).collection("cards");
+      if(colRef.getDocuments() != null) {
+        colRef.getDocuments().then((doc){
+          var cardId = "card${doc.documents.length + 1 + cards.indexOf(card)}";
+          DatabaseService(uid: widget.user.uid).addCard(cardId, card.deckId, card.title, card.front, card.back, card.isHidden, card.cardUnderstanding);
+          print("cardId: "+ cardId);
+        });
+      } else{
+        print("Card not added ");
+      }
+      DatabaseService(uid: widget.user.uid, deck_Id: card.deckId).updateCardsCount(true);
+      print(card.title);
+    });
+    tests.forEach((test){
+      CollectionReference colRef = DatabaseService(uid: widget.user.uid).deckCollection.document(widget.user.uid).collection("decks").document(test.deckId).collection("tests");
+      if(colRef.getDocuments() != null) {
+        colRef.getDocuments().then((doc){
+          var cardId = "test${doc.documents.length + 1 + tests.indexOf(test)}";
+          DatabaseService(uid: widget.user.uid).addTest(test.deckId, test.title, test.completion, test.isHidden, test.rating);
+          print("testId: "+ cardId);
+        });
+      } else{
+        print("test not added ");
+      }
+      DatabaseService(uid: widget.user.uid, deck_Id: test.deckId).updateCardsCount(true);
+      print(test.title);
+    });
     Navigator.pop(context);
   }
 
   void addCard() {
-    addDeck();
-    print("add card");
+//    addDeck();
+//    print("add card");
     CollectionReference colRef = DatabaseService().deckCollection.document(widget.user.uid).collection("decks");
     String deckId = "";
 
     if(colRef.getDocuments() != null) {
       colRef.getDocuments().then((doc) {
         deckId = "deck${doc.documents.length + 1}";
-        print("deckId: " + deckId);
+//        print("deckId: " + deckId);
         if(deckTitleEditingController.text.trim().isNotEmpty && deckId.trim().isNotEmpty) {
           Navigator.of(context).push(MaterialPageRoute(builder: (context) =>
               AddCardPage(
+                onAddCard: (CardModel card){
+                  cards.add(card);
+                },
                 deckId: deckId,
                 deckTitle:deckTitleEditingController.text,
                 deckIsGiven: true,
@@ -228,8 +264,29 @@ class _AddDeckState extends State<AddDeck> {
   }
 
   void addTest() {
-    print("add test");
-    if(deckTitleEditingController.text.trim().isNotEmpty)
-      Navigator.of(context).push(MaterialPageRoute(builder: (context) => AddTest(deckTitle:deckTitleEditingController.text, deckIsGiven: true, user: widget.user,)));
+//    print("add test");
+    if(deckTitleEditingController.text.trim().isNotEmpty) {
+      CollectionReference colRef = DatabaseService().deckCollection.document(widget.user.uid).collection("decks");
+      String id = "";
+
+      if(colRef.getDocuments() != null) {
+        colRef.getDocuments().then((doc) {
+          id = "deck${doc.documents.length + 1}";
+//        print("deckId: " + deckId);
+          if(deckTitleEditingController.text.trim().isNotEmpty && id.trim().isNotEmpty) {
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) =>
+                AddTest(
+                  onAddTest: (Test test){
+                    tests.add(test);
+                  },
+                  deckId: id,
+                  deckTitle:deckTitleEditingController.text,
+                  deckIsGiven: true,
+                  user: widget.user,)));
+          }
+        });
+      }
+    }
+//      Navigator.of(context).push(MaterialPageRoute(builder: (context) => AddTest(deckTitle:deckTitleEditingController.text, deckIsGiven: true, user: widget.user,)));
   }
 }

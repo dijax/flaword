@@ -333,7 +333,7 @@ class _CardsListState extends State<CardsList> {
             shrinkWrap: true,
             itemCount: cards.length,
             itemBuilder: (BuildContext context, int cardIndex) {
-            return (!cards.elementAt(cardIndex).hidden) ? Container(child: GestureDetector(
+            return (!cards.elementAt(cardIndex).isHidden) ? Container(child: GestureDetector(
               onTap: () {
                 setState(() {
 //                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => CardView(widget.deck.cards, cardIndex)));
@@ -365,7 +365,7 @@ class _CardsListState extends State<CardsList> {
                       SettingsMenu(
                         user: widget.user,
                         list: cards,
-                        onSelect: (List<Object> newCards, bool hidden) {
+                        onSelect: (List<Object> newCards, bool isHidden) {
                           setState(() {
 //                            if(hidden){cards[cardIndex].hidden = true;}
 //                            cards = newCards;

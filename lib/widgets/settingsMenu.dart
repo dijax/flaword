@@ -131,4 +131,4 @@ class _SettingsMenuState extends State<SettingsMenu> {
   }
 }
 
-typedef DeckCallback = void Function(List<dynamic> decks, bool hidden);
+typedef DeckCallback = void Function(List<dynamic> decks, bool isHidden);

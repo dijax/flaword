@@ -111,7 +111,7 @@ class _CardViewState extends State<CardView> with TickerProviderStateMixin{
                   print('deckId' + widget.cards[_cardValue].deckId + ' cardId' + widget.cards[_cardValue].cardId);
                   DatabaseService(uid: widget.user.uid).updateCard(widget.cards[_cardValue].cardId,
                       widget.cards[_cardValue].deckId, widget.cards[_cardValue].title, widget.cards[_cardValue].front, widget.cards[_cardValue].back,
-                      widget.cards[_cardValue].hidden, CardUnderstanding.clear.toString());
+                      widget.cards[_cardValue].isHidden, CardUnderstanding.clear.toString());
 //                  widget.cards.elementAt(_cardValue).cardUnderstanding = CardUnderstanding.clear;
                 });
               },

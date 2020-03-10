@@ -129,7 +129,7 @@ class _DecksListState extends State<DecksList> {
                                   SettingsMenu(
                                     user: widget.user,
                                     list: decks,
-                                    onSelect: (List<Object> newDecks, bool hidden) {
+                                    onSelect: (List<Object> newDecks, bool isHidden) {
                                       setState(() {
 //                                              if(hidden){decks.elementAt(index).hidden = true;}
 //                                              decks = newDecks;
