@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flashcards/models/CardUnderstanding.dart';
+import 'package:flashcards/models/answer.dart';
 import 'package:flashcards/models/card.dart';
+import 'package:flashcards/models/question.dart';
 import 'package:flashcards/models/test.dart';
 import 'package:flashcards/models/user.dart';
 import 'package:flashcards/screens/home/addCardPage.dart';
@@ -21,6 +23,8 @@ class AddDeck extends StatefulWidget {
 class _AddDeckState extends State<AddDeck> {
   List<String> decks;
   List<Test> tests = new List();
+  List<Question> questions = new List();
+  List<Answer> answers = new List();
   List<CardModel> cards = new List();
 //  List<>
   String dropDownValue;
@@ -205,60 +209,62 @@ class _AddDeckState extends State<AddDeck> {
 
   void addDeck() {
 //    print("Deck added");
-    DatabaseService(uid: widget.user.uid).addDeck(deckTitleEditingController.text, 0, 0, 0.0, null, false);
-    cards.forEach((card){
-      CollectionReference colRef = DatabaseService(uid: widget.user.uid).deckCollection.document(widget.user.uid).collection("decks").document(card.cardId).collection("cards");
-      if(colRef.getDocuments() != null) {
-        colRef.getDocuments().then((doc){
-          var cardId = "card${doc.documents.length + 1 + cards.indexOf(card)}";
-          DatabaseService(uid: widget.user.uid).addCard(cardId, card.deckId, card.title, card.front, card.back, card.isHidden, card.cardUnderstanding);
-          print("cardId: "+ cardId);
-        });
-      } else{
-        print("Card not added ");
-      }
-      DatabaseService(uid: widget.user.uid, deck_Id: card.deckId).updateCardsCount(true);
-      print(card.title);
-    });
-    tests.forEach((test){
-      CollectionReference colRef = DatabaseService(uid: widget.user.uid).deckCollection.document(widget.user.uid).collection("decks").document(test.deckId).collection("tests");
-      if(colRef.getDocuments() != null) {
-        colRef.getDocuments().then((doc){
-          var cardId = "test${doc.documents.length + 1 + tests.indexOf(test)}";
-          DatabaseService(uid: widget.user.uid).addTest(test.deckId, test.title, test.completion, test.isHidden, test.rating);
-          print("testId: "+ cardId);
-        });
-      } else{
-        print("test not added ");
-      }
-      DatabaseService(uid: widget.user.uid, deck_Id: test.deckId).updateCardsCount(true);
-      print(test.title);
-    });
-    Navigator.pop(context);
+    if(deckTitleEditingController.text.trim().isNotEmpty){
+      DatabaseService(uid: widget.user.uid).addDeck(deckTitleEditingController.text, 0, 0, 0.0, null, false);
+      cards.forEach((card){
+        CollectionReference colRef = DatabaseService(uid: widget.user.uid).deckCollection.document(widget.user.uid).collection("decks").document(card.cardId).collection("cards");
+        if(colRef.getDocuments() != null) {
+          colRef.getDocuments().then((doc){
+            var cardId = "card${doc.documents.length + 1 + cards.indexOf(card)}";
+            DatabaseService(uid: widget.user.uid).addCard(cardId, card.deckId, card.title, card.front, card.back, card.isHidden, card.cardUnderstanding);
+            print("cardId: "+ cardId);
+          });
+        } else{
+          print("Card not added ");
+        }
+        print(card.title);
+      });
+      tests.forEach((test){
+        CollectionReference colRef = DatabaseService(uid: widget.user.uid).deckCollection.document(widget.user.uid).collection("decks").document(test.deckId).collection("tests");
+        if(colRef.getDocuments() != null) {
+          colRef.getDocuments().then((doc){
+            var testId = "test${doc.documents.length + 1 + tests.indexOf(test)}";
+            DatabaseService(uid: widget.user.uid).addTest(testId, test.deckId, test.title, test.completion, test.isHidden, test.rating);
+            print("testId: "+ testId);
+          });
+        } else{
+          print("test not added ");
+        }
+        print(test.title);
+      });
+      Navigator.pop(context);
+    } else {
+      print("Bitte deck title angeben"); //TODO add error
+    }
   }
 
   void addCard() {
-//    addDeck();
-//    print("add card");
-    CollectionReference colRef = DatabaseService().deckCollection.document(widget.user.uid).collection("decks");
-    String deckId = "";
+    if(deckTitleEditingController.text.trim().isNotEmpty ) {
+      CollectionReference colRef = DatabaseService().deckCollection.document(widget.user.uid).collection("decks");
+      String deckId = "";
 
-    if(colRef.getDocuments() != null) {
-      colRef.getDocuments().then((doc) {
-        deckId = "deck${doc.documents.length + 1}";
+      if(colRef.getDocuments() != null) {
+        colRef.getDocuments().then((doc) {
+          deckId = "deck${doc.documents.length + 1}";
 //        print("deckId: " + deckId);
-        if(deckTitleEditingController.text.trim().isNotEmpty && deckId.trim().isNotEmpty) {
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) =>
-              AddCardPage(
-                onAddCard: (CardModel card){
-                  cards.add(card);
-                },
-                deckId: deckId,
-                deckTitle:deckTitleEditingController.text,
-                deckIsGiven: true,
-                user: widget.user,)));
-        }
-      });
+          if(deckId.trim().isNotEmpty) {
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) =>
+                AddCardPage(
+                  onAddCard: (CardModel card){
+                    cards.add(card);
+                  },
+                  deckId: deckId,
+                  deckTitle:deckTitleEditingController.text,
+                  deckIsGiven: true,
+                  user: widget.user,)));
+          }
+        });
+      }
     }
     // TODO else show error
   }
@@ -276,8 +282,14 @@ class _AddDeckState extends State<AddDeck> {
           if(deckTitleEditingController.text.trim().isNotEmpty && id.trim().isNotEmpty) {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) =>
                 AddTest(
-                  onAddTest: (Test test){
+                  onAddTest: (Test test, List<Question> questions, List<Answer> answers){
                     tests.add(test);
+                    questions.forEach((question){
+                      this.questions.add(question);
+                    });
+                    answers.forEach((answer){
+                      this.answers.add(answer);
+                    });
                   },
                   deckId: id,
                   deckTitle:deckTitleEditingController.text,

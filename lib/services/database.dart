@@ -43,6 +43,7 @@ class DatabaseService {
         'isHidden' : isHidden,
         'cardUnderstanding' : cardUnderstanding,
       });
+      updateCardsCount(deckId, true);
   }
 
   Future addDeck(String title, int cardsCount, int testsCount, double completion, DateTime visited, bool isHidden) async{
@@ -71,17 +72,19 @@ class DatabaseService {
     });
   }
 
-  Future addTest(String deckId, String title, double completion, bool isHidden, double rating) async {
+  Future addTest(String testId, String deckId, String title, double completion, bool isHidden, double rating) async {
     CollectionReference colRef = deckCollection.document(uid).collection("decks").document(deckId).collection("tests");
-    String testId = "";
-    if(colRef.getDocuments() != null) {
-      colRef.getDocuments().then((doc){
-        testId = "test${doc.documents.length + 1}";
-        addTestToFireStore(testId, deckId, title, completion, isHidden, rating);
-        print("testId: "+ testId);
-      });
-    } else{
-      print("Test not added ");
+    if(testId != null) addTestToFireStore(testId, deckId, title, completion, isHidden, rating);
+    else {
+      if(colRef.getDocuments() != null) {
+        colRef.getDocuments().then((doc){
+          testId = "test${doc.documents.length + 1}";
+          addTestToFireStore(testId, deckId, title, completion, isHidden, rating);
+          print("testId: "+ testId);
+        });
+      } else{
+        print("Test not added ");
+      }
     }
   }
 
@@ -93,11 +96,13 @@ class DatabaseService {
       'isHidden' : isHidden,
       'rating' : rating,
     });
+    updateTestsCount(deckId, true);
   }
 
-  Future addQuestion(String testId, String deckId, String question, String answer, bool isHidden, double rating) async {
+  Future addQuestion(String questionId, String testId, String deckId, String question, String answer, bool isHidden, double rating) async {
     CollectionReference colRef = deckCollection.document(uid).collection("decks").document(deckId).collection("tests").document(testId).collection("questions");
     String questionId = "";
+    //TODO if questionId != null
     if(colRef.getDocuments() != null) {
       colRef.getDocuments().then((doc){
         questionId= "question${doc.documents.length + 1}";
@@ -119,13 +124,13 @@ class DatabaseService {
     });
   }
 
-  Future addAnswer(String questionId, String testId, String deckId, String question, String answer, bool isHidden, double rating) async {
+  Future addAnswer(String questionId, String testId, String deckId, String answer, bool checked, bool correct) async {
     CollectionReference colRef = deckCollection.document(uid).collection("decks").document(deckId).collection("tests").document(testId).collection("questions").document(questionId).collection("answers");
     String answerId = "";
     if(colRef.getDocuments() != null) {
       colRef.getDocuments().then((doc){
         answerId = "answer${doc.documents.length + 1}";
-        addAnswerToFireStore(answerId, questionId, testId, deckId, question, answer, isHidden, rating);
+        addAnswerToFireStore(answerId, questionId, testId, deckId, answer, checked, correct);
         print("answerId: "+ answerId);
       });
     } else{
@@ -133,13 +138,12 @@ class DatabaseService {
     }
   }
 
-  Future addAnswerToFireStore(String answerId, String questionId, String testId, String deckId, String question, String answer, bool isHidden, double rating) async{
+  Future addAnswerToFireStore(String answerId, String questionId, String testId, String deckId, String answer, bool checked, bool correct) async{
     DocumentReference docRef = deckCollection.document(uid).collection("decks").document(deckId).collection("tests").document(testId).collection("questions").document(questionId).collection("answers").document(answerId);
     await docRef.setData({
-      'question' : question,
       'answer' : answer,
-      'rating' : rating,
-      'isHidden' : isHidden,
+      'correct' : correct,
+      'checked' : checked,
     });
   }
 
@@ -175,18 +179,30 @@ class DatabaseService {
 //  }
 
 
-  Future updateCardsCount(bool increment) async{
+  Future updateCardsCount(String deckId, bool increment) async{
     if(increment){
-      return await deckCollection.document(uid).collection('decks').document(deck_Id).setData({
+      return await deckCollection.document(uid).collection('decks').document(deckId).updateData({
         'cardsCount' : FieldValue.increment(1),
       });
     } else{
-      return await deckCollection.document(uid).collection('decks').document(deck_Id).setData({
+      return await deckCollection.document(uid).collection('decks').document(deckId).updateData({
         'cardsCount' : FieldValue.increment(-1),
       });
     }
   }
 
+
+  Future updateTestsCount(String deckId, bool increment) async{
+    if(increment){
+      return await deckCollection.document(uid).collection('decks').document(deckId).updateData({
+        'testsCount' : FieldValue.increment(1),
+      });
+    } else{
+      return await deckCollection.document(uid).collection('decks').document(deck_Id).updateData({
+        'testsCount' : FieldValue.increment(-1),
+      });
+    }
+  }
 
   Future updateCard(String cardId, String deckId, String title, String front, String back, bool isHidden, String cardUnderstanding) async{
     return await deckCollection.document(uid).collection('decks').document(deckId).collection("cards").document(cardId).setData({

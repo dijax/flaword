@@ -247,13 +247,12 @@ class _AddCardPageState extends State<AddCardPage> {
   void addCard() {
 //    print("Card added");
     // TODO test if the textfield empty
-
-    if(widget.deckIsGiven) {
-
-      CardModel card = CardModel(deckId: widget.deckId, title: _cardTitleEC.text,
-          front: _cardFrontEC.text, back: _cardBackEC.text, isHidden: false,
-          cardUnderstanding: CardUnderstanding.none.toString());
-      widget.onAddCard(card);
+    if(_cardBackEC.text.trim().isNotEmpty && _cardFrontEC.text.trim().isNotEmpty && _cardTitleEC.text.trim().isNotEmpty) {
+      if(widget.deckIsGiven) {
+        CardModel card = CardModel(deckId: widget.deckId, title: _cardTitleEC.text,
+            front: _cardFrontEC.text, back: _cardBackEC.text, isHidden: false,
+            cardUnderstanding: CardUnderstanding.none.toString());
+        widget.onAddCard(card);
 //      print("widget.deckId: " + widget.deckId);
 
 //      DatabaseService(
@@ -263,17 +262,21 @@ class _AddCardPageState extends State<AddCardPage> {
 //          _cardBackEC.text,
 //          false,
 //          CardUnderstanding.none.toString());
-    }else{
+      }else{
 //      print("deckId: " + deckId);
-//      DatabaseService(
-//          uid: widget.user.uid).addCard(deckId,
-//          _cardTitleEC.text,
-//          _cardBackEC.text,
-//          _cardBackEC.text,
-//          false,
-//          CardUnderstanding.none.toString());
+      DatabaseService(
+        // give the cardId only if the Deck not saved yet
+          uid: widget.user.uid).addCard(null, deckId,
+          _cardTitleEC.text,
+          _cardBackEC.text,
+          _cardBackEC.text,
+          false,
+          CardUnderstanding.none.toString());
+      }
+      Navigator.pop(context);
+    } else {
+      print("card title, card front oder card back fehlen");
     }
-    Navigator.pop(context);
   }
 }
 
