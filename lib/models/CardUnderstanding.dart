@@ -4,3 +4,8 @@ enum CardUnderstanding{
   unsure,
   problematic
 }
+
+CardUnderstanding enumFromString(String str){
+  CardUnderstanding cardUnderstanding = CardUnderstanding.values.firstWhere((e) => e.toString() == str);
+  return cardUnderstanding;
+}

@@ -6,5 +6,6 @@ class Question{
   final String answer;
   final double rating;
   final bool isHidden;
-  Question({this.testId, this.deckId, this.questionId, this.question, this.answer, this.rating, this.isHidden});
+  final int answerCount;
+  Question({this.testId, this.deckId, this.questionId, this.question, this.answer, this.rating, this.isHidden, this.answerCount});
 }

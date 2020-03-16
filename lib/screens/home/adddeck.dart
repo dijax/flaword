@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flashcards/models/CardUnderstanding.dart';
 import 'package:flashcards/models/answer.dart';
 import 'package:flashcards/models/card.dart';
+import 'package:flashcards/models/deck.dart';
 import 'package:flashcards/models/question.dart';
 import 'package:flashcards/models/test.dart';
 import 'package:flashcards/models/user.dart';
@@ -15,7 +16,9 @@ import 'package:flashcards/Test/mockData.dart';
 
 class AddDeck extends StatefulWidget {
   final User user;
-  const AddDeck({this.user});
+  final bool edit;
+  final Deck deck;
+  const AddDeck({this.user, this.edit, this.deck});
 
   @override
   _AddDeckState createState() => _AddDeckState();
@@ -47,10 +50,14 @@ class _AddDeckState extends State<AddDeck> {
 //    } else{
 //      dropDownValue = MockData.decksList[0].deckTitle;
 //    }
+    if(widget.edit) {
+      deckTitleEditingController.text = widget.deck.title;
+      desTitleEditingController.text = widget.deck.descritpion;
+    }
     return Scaffold(
         backgroundColor: CustomColors.black,
         appBar: AppBar(
-          title: Text('Add Deck'),
+          title: widget.edit? Text('Edit Deck'): Text('Add Deck'),
           actions: <Widget>[
             FlatButton(
               onPressed: addDeck,
@@ -79,8 +86,11 @@ class _AddDeckState extends State<AddDeck> {
             ),
             padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
             child: Container(
-              padding: EdgeInsets.fromLTRB(15, 10, 15, 160),
+              padding: EdgeInsets.fromLTRB(15, 10, 15, 0),
               decoration: BoxDecoration(color: CustomColors.White,
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: const Radius.circular(20.0),
+                    bottomRight: const Radius.circular(20.0),)
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -113,7 +123,7 @@ class _AddDeckState extends State<AddDeck> {
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 40),
                   ),
-                  InkWell(
+                  !widget.edit ? InkWell(
                     onTap: addCard,
                     child: Container(
                       padding: EdgeInsets.symmetric(vertical: 20, horizontal: 100),
@@ -135,11 +145,11 @@ class _AddDeckState extends State<AddDeck> {
                         ],
                       ),
                     ),
-                  ),
-                  Padding(
+                  ): Container(),
+                  !widget.edit ? Padding(
                     padding: EdgeInsets.symmetric(vertical: 12),
-                  ),
-                  InkWell(
+                  ):Container(),
+                  !widget.edit ? InkWell(
                     onTap: addTest,
                     child: Container(
                       padding: EdgeInsets.symmetric(vertical: 20, horizontal: 100),
@@ -161,10 +171,10 @@ class _AddDeckState extends State<AddDeck> {
                         ],
                       ),
                     ),
-                  ),
-                  Padding(
+                  ): Container(),
+                  !widget.edit ?Padding(
                     padding: EdgeInsets.symmetric(vertical: 30),
-                  ),
+                  ):Container(),
 //                  Material(
 //                    child: InkWell(
 //                      onTap: addDeck, // TODO: add Card either for a chosen deck or a new one
@@ -208,36 +218,75 @@ class _AddDeckState extends State<AddDeck> {
   }
 
   void addDeck() {
+    String id;
 //    print("Deck added");
     if(deckTitleEditingController.text.trim().isNotEmpty){
-      DatabaseService(uid: widget.user.uid).addDeck(deckTitleEditingController.text, 0, 0, 0.0, null, false);
-      cards.forEach((card){
-        CollectionReference colRef = DatabaseService(uid: widget.user.uid).deckCollection.document(widget.user.uid).collection("decks").document(card.cardId).collection("cards");
-        if(colRef.getDocuments() != null) {
-          colRef.getDocuments().then((doc){
-            var cardId = "card${doc.documents.length + 1 + cards.indexOf(card)}";
-            DatabaseService(uid: widget.user.uid).addCard(cardId, card.deckId, card.title, card.front, card.back, card.isHidden, card.cardUnderstanding);
-            print("cardId: "+ cardId);
+      if(!widget.edit){
+        DatabaseService(uid: widget.user.uid).addDeckToFireStore(deckTitleEditingController.text, 0, 0, 0.0, null, false).then((e){
+          id = e.documentID;
+          cards.forEach((card){
+//          CollectionReference colRef = DatabaseService(uid: widget.user.uid).deckCollection.
+//          document(widget.user.uid).collection("decks").document(card.cardId).collection("cards");
+//          if(colRef.getDocuments() != null) {
+//            colRef.getDocuments().then((doc){
+//              var cardId = "card${doc.documents.length + 1 + cards.indexOf(card)}";
+            DatabaseService(uid: widget.user.uid).addCard(/*cardId, */id,
+                card.title, card.front, card.back, card.isHidden, card.cardUnderstanding);
+//              print("cardId: "+ cardId);
+//            });
+//          } else{
+//            print("Card not added ");
+//          }
+//          print(card.title);
           });
-        } else{
-          print("Card not added ");
-        }
-        print(card.title);
-      });
-      tests.forEach((test){
-        CollectionReference colRef = DatabaseService(uid: widget.user.uid).deckCollection.document(widget.user.uid).collection("decks").document(test.deckId).collection("tests");
-        if(colRef.getDocuments() != null) {
-          colRef.getDocuments().then((doc){
-            var testId = "test${doc.documents.length + 1 + tests.indexOf(test)}";
-            DatabaseService(uid: widget.user.uid).addTest(testId, test.deckId, test.title, test.completion, test.isHidden, test.rating);
-            print("testId: "+ testId);
-          });
-        } else{
-          print("test not added ");
-        }
-        print(test.title);
-      });
-      Navigator.pop(context);
+          tests.forEach((test) {
+/*            CollectionReference colRef = DatabaseService(uid: widget.user.uid)
+                .deckCollection.document(widget.user.uid).collection("decks")
+                .document(id)
+                .collection("tests");*/
+//            if (colRef.getDocuments() != null) {
+//              colRef.getDocuments().then((doc) {
+//                var testId = "test${doc.documents.length + 1 +
+//                    tests.indexOf(test)}";
+                DatabaseService(uid: widget.user.uid).addTestToFireStore(
+                    id, test.title, test.completion, test.isHidden,
+                    test.rating).then((e){
+                      String testId = e.documentID;
+                      if (questions.isNotEmpty) {
+                        questions.forEach((question) {
+                          DatabaseService(uid: widget.user.uid).addQuestionToFireStore(
+//                      question.questionId,
+                              testId, id, question.question, question.answer,
+                              question.isHidden, question.rating).then((e){
+                                String questionId = e.documentID;
+                                if (answers.isNotEmpty) {
+                                  answers.forEach((answer) {
+                                    print(answer.answer + " " + answer.answerId + " " +
+                                        questionId + " " + testId);
+                                    DatabaseService(uid: widget.user.uid).addAnswerToFireStore(
+                                        questionId, testId, id,
+                                        answer.answer, answer.checked, answer.correct);
+                                  });
+                                }
+                          });
+                        });
+                      }
+
+                });
+              });
+//            }
+////            print("testId: "+ testId);
+//            else{
+//              print("test not added ");
+//            }
+//            print(test.title);
+//          });
+          Navigator.pop(context);
+        });
+      }
+      else{
+        DatabaseService(uid: widget.user.uid).updateDeck(widget.deck.deckId, deckTitleEditingController.text, desTitleEditingController.text);
+      }
     } else {
       print("Bitte deck title angeben"); //TODO add error
     }
@@ -246,19 +295,20 @@ class _AddDeckState extends State<AddDeck> {
   void addCard() {
     if(deckTitleEditingController.text.trim().isNotEmpty ) {
       CollectionReference colRef = DatabaseService().deckCollection.document(widget.user.uid).collection("decks");
-      String deckId = "";
+//      String deckId = "";
 
       if(colRef.getDocuments() != null) {
         colRef.getDocuments().then((doc) {
-          deckId = "deck${doc.documents.length + 1}";
+//          deckId = "deck${doc.documents.length + 1}";
 //        print("deckId: " + deckId);
-          if(deckId.trim().isNotEmpty) {
+          if(/*deckId.trim().isNotEmpty*/true) {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) =>
                 AddCardPage(
+                  edit: false,
                   onAddCard: (CardModel card){
                     cards.add(card);
                   },
-                  deckId: deckId,
+//                  deckId: deckId,
                   deckTitle:deckTitleEditingController.text,
                   deckIsGiven: true,
                   user: widget.user,)));
@@ -282,6 +332,7 @@ class _AddDeckState extends State<AddDeck> {
           if(deckTitleEditingController.text.trim().isNotEmpty && id.trim().isNotEmpty) {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) =>
                 AddTest(
+                  edit: false,
                   onAddTest: (Test test, List<Question> questions, List<Answer> answers){
                     tests.add(test);
                     questions.forEach((question){

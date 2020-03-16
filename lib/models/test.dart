@@ -5,5 +5,6 @@ class Test{
   final double completion;
   final double rating;
   final bool isHidden;
-  Test({this.testId, this.deckId, this.title, this.completion, this.rating, this.isHidden});
+  final int questionsCount;
+  Test({this.testId, this.deckId, this.title, this.completion, this.rating, this.isHidden, this.questionsCount});
 }

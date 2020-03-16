@@ -18,14 +18,16 @@ class CardView extends StatefulWidget {
 }
 class _CardViewState extends State<CardView> with TickerProviderStateMixin{
   int _cardValue = 0;
+  String title;
   bool indexChanged = false;
   GlobalKey<FlipCardState> cardKey = GlobalKey<FlipCardState>();
 
   @override
   void initState() {
-    super.initState(); //TODO ??
+    super.initState();
     if(widget.cardIndex != null) _cardValue = widget.cardIndex;
     else _cardValue = 0;
+    title = widget.cards[_cardValue].title;
   }
 //  @override
 //  void initState() {
@@ -53,7 +55,7 @@ class _CardViewState extends State<CardView> with TickerProviderStateMixin{
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Flashcards"), //TODO: Deck name dynamisch ändern
+          title: Text(title), //TODO: Deck name dynamisch ändern
           backgroundColor: CustomColors.black,
         ),
         backgroundColor: CustomColors.White,
@@ -107,12 +109,10 @@ class _CardViewState extends State<CardView> with TickerProviderStateMixin{
             IconButton(
               icon: Icon(Icons.sentiment_very_satisfied, size: 50, color: CustomColors.GreenAccent,),
               onPressed: (){
+                DatabaseService(uid: widget.user.uid, deck_Id: widget.cards[_cardValue].deckId)
+                    .updateCardUnderstanding(widget.cards[_cardValue].cardId, CardUnderstanding.clear);
                 setState(() {
-                  print('deckId' + widget.cards[_cardValue].deckId + ' cardId' + widget.cards[_cardValue].cardId);
-                  DatabaseService(uid: widget.user.uid).updateCard(widget.cards[_cardValue].cardId,
-                      widget.cards[_cardValue].deckId, widget.cards[_cardValue].title, widget.cards[_cardValue].front, widget.cards[_cardValue].back,
-                      widget.cards[_cardValue].isHidden, CardUnderstanding.clear.toString());
-//                  widget.cards.elementAt(_cardValue).cardUnderstanding = CardUnderstanding.clear;
+                  widget.cards[_cardValue].setCardUnderstanding(CardUnderstanding.clear);
                 });
               },
             ),
@@ -128,8 +128,10 @@ class _CardViewState extends State<CardView> with TickerProviderStateMixin{
             IconButton(
               icon: Icon(Icons.sentiment_neutral, size: 50, color: CustomColors.OrangeIcon),
               onPressed: (){
+                DatabaseService(uid: widget.user.uid, deck_Id: widget.cards[_cardValue].deckId)
+                    .updateCardUnderstanding(widget.cards[_cardValue].cardId, CardUnderstanding.unsure);
                 setState(() {
-//                  widget.cards.elementAt(_cardValue).cardUnderstanding = CardUnderstanding.unsure;
+                  widget.cards[_cardValue].setCardUnderstanding(CardUnderstanding.unsure);
                 });
               },
             ),
@@ -145,8 +147,10 @@ class _CardViewState extends State<CardView> with TickerProviderStateMixin{
             IconButton(
               icon: Icon(Icons.sentiment_very_dissatisfied, size: 50, color: CustomColors.TrashRed),
               onPressed: (){
+                DatabaseService(uid: widget.user.uid, deck_Id: widget.cards[_cardValue].deckId)
+                    .updateCardUnderstanding(widget.cards[_cardValue].cardId, CardUnderstanding.problematic);
                 setState(() {
-//                  widget.cards.elementAt(_cardValue).cardUnderstanding = CardUnderstanding.problematic;
+                  widget.cards[_cardValue].setCardUnderstanding(CardUnderstanding.problematic);
                 });
               },
             ),
@@ -165,21 +169,22 @@ class _CardViewState extends State<CardView> with TickerProviderStateMixin{
   Widget getUnderstandingIcon(){
     print(_cardValue);
 //    print(widget.cards.elementAt(_cardValue).cardUnderstanding);
-//    switch(widget.cards.elementAt(_cardValue).cardUnderstanding){
-//      case CardUnderstanding.clear:
-//        return Icon(Icons.sentiment_very_satisfied, size: 30,color: CustomColors.GreenAccent,);
-//        break;
-//      case CardUnderstanding.none:
-////        print("no data");
-//        return Icon(Icons.sentiment_neutral, size: 30,color: CustomColors.White.withOpacity(0.1),);
-//        break;
-//      case CardUnderstanding.unsure:
-//        return Icon(Icons.sentiment_neutral, size: 30,color: CustomColors.OrangeIcon,);
-//        break;
-//      case CardUnderstanding.problematic:
-//        return Icon(Icons.sentiment_very_dissatisfied, size: 30,color: CustomColors.TrashRed,);
-//        break;
-//    }
+    CardUnderstanding cardUnderstanding = enumFromString(widget.cards.elementAt(_cardValue).cardUnderstanding);
+    switch(cardUnderstanding){
+      case CardUnderstanding.clear:
+        return Icon(Icons.sentiment_very_satisfied, size: 30,color: CustomColors.GreenAccent,);
+        break;
+      case CardUnderstanding.none:
+//        print("no data");
+        return Icon(Icons.sentiment_neutral, size: 30,color: CustomColors.White.withOpacity(0.1),);
+        break;
+      case CardUnderstanding.unsure:
+        return Icon(Icons.sentiment_neutral, size: 30,color: CustomColors.OrangeIcon,);
+        break;
+      case CardUnderstanding.problematic:
+        return Icon(Icons.sentiment_very_dissatisfied, size: 30,color: CustomColors.TrashRed,);
+        break;
+    }
     return Icon(Icons.sentiment_neutral, size: 30,color: CustomColors.White.withOpacity(0.1),);
   }
 
@@ -197,6 +202,7 @@ class _CardViewState extends State<CardView> with TickerProviderStateMixin{
     setState(() {
       indexChanged = true;
       _cardValue = value;
+      title = widget.cards[_cardValue].title;
     });
   }
 

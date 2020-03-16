@@ -1,10 +1,11 @@
 import 'package:flashcards/models/TestModel.dart';
+import 'package:flashcards/models/test.dart';
 import 'package:flashcards/utils/customColors.dart';
 import 'package:flutter/material.dart';
 import 'package:flip_card/flip_card.dart';
 
 class TestView extends StatefulWidget {
-  final List<TestModel> tests;
+  final List<Test> tests;
   final int testIndex;
   TestView(this.tests, this.testIndex);
   _TestViewState createState() => _TestViewState();
@@ -19,7 +20,7 @@ class _TestViewState extends State<TestView> {
     // TODO: implement build
     return Scaffold(
         appBar: AppBar(
-          title: Text(widget.tests?.elementAt(widget.testIndex)?.testTitle),
+          title: Text(widget.tests?.elementAt(widget.testIndex)?.title),
           backgroundColor: CustomColors.black,
         ),
         backgroundColor: CustomColors.White,
@@ -31,7 +32,7 @@ class _TestViewState extends State<TestView> {
                 child: new ListView.builder(
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
-                    itemCount: widget.tests?.elementAt(widget.testIndex)?.questions?.length,
+//                    itemCount: widget.tests?.elementAt(widget.testIndex)?.questions?.length,
                     itemBuilder: (BuildContext context, int quIndex) {
                       return new InkWell(
                         child: Center(
@@ -52,7 +53,7 @@ class _TestViewState extends State<TestView> {
                                     ),
                                   ]
                               ),
-                              child: Text(widget.tests?.elementAt(widget.testIndex)?.questions?.elementAt(quIndex)?.question, style: TextStyle(fontSize: 20, fontFamily: 'Poppins'),),
+//                              child: Text(widget.tests?.elementAt(widget.testIndex)?.questions?.elementAt(quIndex)?.question, style: TextStyle(fontSize: 20, fontFamily: 'Poppins'),),
                             ),
                           ),
                         ),

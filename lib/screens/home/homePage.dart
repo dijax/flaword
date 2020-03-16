@@ -50,7 +50,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin{
     return MultiProvider(
       providers: [
         StreamProvider<User>.value(value: DatabaseService(uid: widget.user.uid).username),
-        StreamProvider<List<Deck>>.value(value: DatabaseService(uid: widget.user.uid).decks),
+        StreamProvider<List<Deck>>.value(value: DatabaseService(uid: widget.user.uid).decksSorted),
       ],
       child: Scaffold(
 //    return Scaffold(
@@ -120,14 +120,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin{
 //                );
 //              },
 //            ),
-
-                    StreamProvider<List<Deck>>.value(
-                      value: DatabaseService(uid: widget.user.uid).decks,
-                      child: Container(
-                        height: 300.0,
-                        child: DecksList(user:widget.user),
-                      ),
-                    ),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(20, 10, 0, 0),
+                  child: Text("Last visited", style: TextStyle(backgroundColor:CustomColors.black.withOpacity(0.5), color: CustomColors.White),),
+                ),
+                StreamProvider<List<Deck>>.value(
+                  value: DatabaseService(uid: widget.user.uid).decksSorted,
+                  child: Container(
+                    height: 300.0,
+                    child: DecksList(user:widget.user),
+                  ),
+                ),
               ]
           ),
         ),

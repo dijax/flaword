@@ -1,22 +1,24 @@
 import 'package:flashcards/Test/mockData.dart';
-import 'package:flashcards/models/CardModel.dart';
 import 'package:flashcards/models/DeckModel.dart';
 import 'package:flashcards/models/TestModel.dart';
 import 'package:flashcards/models/card.dart';
+import 'package:flashcards/models/deck.dart';
 import 'package:flashcards/models/settings.dart';
+import 'package:flashcards/models/test.dart';
 import 'package:flashcards/models/user.dart';
 import 'package:flashcards/screens/home/addCardPage.dart';
 import 'package:flashcards/screens/home/addDeckPage.dart';
 import 'package:flashcards/screens/home/addTest.dart';
 import 'package:flashcards/screens/home/addTestPage.dart';
 import 'package:flashcards/screens/home/adddeck.dart';
+import 'package:flashcards/services/database.dart';
 import 'package:flashcards/utils/customColors.dart';
 import 'package:flutter/material.dart';
 
 class SettingsMenu extends StatefulWidget {
   final DeckCallback onSelect;
   final int index;
-  final List<dynamic> list;
+  final dynamic list;
   final User user;
   const SettingsMenu({this.onSelect, this.index, this.list, this.user});
   @override
@@ -25,7 +27,7 @@ class SettingsMenu extends StatefulWidget {
 
 class _SettingsMenuState extends State<SettingsMenu> {
   final GlobalKey _menuKey = new GlobalKey();
-  List<Object> list;
+  dynamic list;
 
   @override
   void initState() {
@@ -63,6 +65,7 @@ class _SettingsMenuState extends State<SettingsMenu> {
       case Settings.Hide:
         print("Hide has been pressed");
         widget.onSelect(list, true);
+        hideElement(list);
         break;
       case Settings.Delete:
         print("Delete has been pressed");
@@ -74,22 +77,22 @@ class _SettingsMenuState extends State<SettingsMenu> {
   }
 
   menuColor() {
-    if(list is List<DeckModel>)
+    if(list is Deck)
       return CustomColors.black;
-    if(list is List<CardModel>)
+    if(list is CardModel)
       return CustomColors.White;
-    if(list is List<TestModel>)
+    if(list is Test)
       return CustomColors.White;
     return CustomColors.PurpleDark;
   }
 
   toPage() {
-    if(list is List<DeckModel>)
-      return AddDeck(user: widget.user,);
-    if(list is List<CardModel>)
-      return AddCardPage(deckTitle: null, deckIsGiven: false, user: widget.user,);
-    if(list is List<TestModel>)
-      return AddTest(deckTitle: null,deckIsGiven: false, user: widget.user,);
+    if(list is Deck)
+      return AddDeck(deck: list as Deck, user: widget.user, edit: true);
+    if(list is CardModel)
+      return AddCardPage(card: list as CardModel, edit:true, deckTitle: null, deckIsGiven: false, user: widget.user,);
+    if(list is Test)
+      return AddTest(test: list as Test, edit:true, deckTitle: null,deckIsGiven: false, user: widget.user,);
     return CustomColors.White;
   }
 
@@ -106,9 +109,7 @@ class _SettingsMenuState extends State<SettingsMenu> {
       child: Text("Continue"),
       onPressed:  () {
         Navigator.of(context).pop();
-        setState(() {
-          list.removeAt(widget.index);
-        });
+        deleteElement(list);
       },
     );
 
@@ -129,6 +130,34 @@ class _SettingsMenuState extends State<SettingsMenu> {
       },
     );
   }
+
+  void hideElement(list) {
+      if(list is Deck) {
+        DatabaseService(uid: widget.user.uid).updateDeckVisibilty(true, list.deckId);
+      }
+
+      if(list is CardModel) {
+        DatabaseService(uid: widget.user.uid).updateCardVisibilty(true, list.deckId, list.cardId);
+      }
+
+      if(list is Test) {
+        DatabaseService(uid: widget.user.uid).updateTestVisibilty(true, list.deckId, list.testId);
+      }
+  }
+
+  void deleteElement(list) {
+    if(list is Deck) {
+      DatabaseService(uid: widget.user.uid).removeDeck(list.deckId);
+    }
+
+    if(list is CardModel) {
+      DatabaseService(uid: widget.user.uid).removeCard(list.deckId, list.cardId);
+    }
+
+    if(list is Test) {
+      DatabaseService(uid: widget.user.uid).removeTest(list.deckId, list.testId);
+    }
+  }
 }
 
-typedef DeckCallback = void Function(List<dynamic> decks, bool isHidden);
+typedef DeckCallback = void Function(dynamic element, bool isHidden);

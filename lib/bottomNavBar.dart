@@ -120,6 +120,7 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
           ),
         ),
       ),
+
       bottomNavigationBar: CurvedNavigationBar(
         height: 50.0,
         items: <Widget>[
@@ -142,8 +143,6 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
     );
   }
 
-
-
   String text = 'Default Text';
 
   void onTappedBar(int index) {
@@ -157,21 +156,21 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
       case 0:
         print("the add deck child has been pressed!");
         Navigator.of(context).push(MaterialPageRoute<Null>(builder: (BuildContext context){
-          return new AddDeck( user: user);
+          return new AddDeck( user: user, edit: false,);
         }
         ));
         break;
       case 1:
         print("the add card child has been pressed!");
         Navigator.of(context).push(MaterialPageRoute<Null>(builder: (BuildContext context){
-          return new AddCardPage(deckTitle: null, deckIsGiven: false, user: user);
+          return new AddCardPage(edit: false, deckTitle: null, deckIsGiven: false, user: user);
         }
         ));
         break;
       case 2:
         print("the add test child has been pressed!");
         Navigator.of(context).push(MaterialPageRoute<Null>(builder: (BuildContext context){
-          return new AddTest(deckTitle: null, deckIsGiven: false, user: user);
+          return new AddTest(edit: false, deckTitle: null, deckIsGiven: false, user: user);
         }));
         break;
     }

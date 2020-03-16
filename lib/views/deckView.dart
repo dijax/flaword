@@ -3,6 +3,7 @@ import 'package:flashcards/models/DeckModel.dart';
 import 'package:flashcards/models/TestModel.dart';
 import 'package:flashcards/models/card.dart';
 import 'package:flashcards/models/deck.dart';
+import 'package:flashcards/models/test.dart';
 import 'package:flashcards/models/user.dart';
 import 'package:flashcards/services/database.dart';
 import 'package:flashcards/views/cardView.dart';
@@ -33,8 +34,11 @@ class _DeckViewState extends State<DeckView> {
 //    List<TestModel> tests = new List();
 //    List<CardModel> cards = widget.deck.cards;
 //    List<CardModel> cards = new List();
-    return StreamProvider<List<CardModel>>.value(
-      value: DatabaseService(uid: widget.user.uid, deck_Id: widget.deckId).cards,
+    return MultiProvider(
+      providers: [
+        StreamProvider<List<CardModel>>.value(value: DatabaseService(uid: widget.user.uid, deck_Id: widget.deckId).cards),
+        StreamProvider<List<Test>>.value(value: DatabaseService(uid: widget.user.uid, deck_Id: widget.deckId).tests),
+      ],
       child: Scaffold(
         appBar: AppBar(
           title: Text(widget.deckTitle),
@@ -47,7 +51,10 @@ class _DeckViewState extends State<DeckView> {
           child: Center(
             child: Column(
               children: <Widget>[
-                CardsList(user: widget.user, deckId: widget.deckId),
+                StreamProvider<User>.value(
+                  value: DatabaseService(uid: widget.user.uid, deck_Id: widget.deckId).username,
+                  child: CardsList(user: widget.user, deckId: widget.deckId),
+                ),
 //                InkWell(
 //                  onTap: () {setState(() {
 //                    flashcardClicked = !flashcardClicked;
@@ -146,46 +153,46 @@ class _DeckViewState extends State<DeckView> {
 ////                ):Container(),
 //                flashcardClicked? CardsList(user: widget.user, deckId: widget.deckId):Container(),
                 SizedBox(height: 20.0,),
-                InkWell(
-                  onTap: (){setState(() {
-                    testsClicked = !testsClicked;
-                  });},
-                  child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 50),
-                    decoration: BoxDecoration(
-                      color: CustomColors.White,
-                      boxShadow: [
-                        BoxShadow(
-                          color: CustomColors.LightGrey,
-                          offset: Offset(5,5),
-                          blurRadius: 15,
-                        )
-                      ],
-                    ),
-                    child: Column(
-                      children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.symmetric(vertical: 10),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            // TODO: add number of tests and progressbar and settings menu
-                            Text("Tests", style: TextStyle(fontFamily: 'Poppins', fontSize: 20, fontWeight: FontWeight.bold),),
-//                          IconButton(
-//                            icon: Icon(Icons.play_arrow, size: 40,),
-//                              onPressed: (){
-//                              },
-//                          ),
-                          ],
-                        ),
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(0, 0, 0, 20),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+//                InkWell(
+//                  onTap: (){setState(() {
+//                    testsClicked = !testsClicked;
+//                  });},
+//                  child: Container(
+//                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 50),
+//                    decoration: BoxDecoration(
+//                      color: CustomColors.White,
+//                      boxShadow: [
+//                        BoxShadow(
+//                          color: CustomColors.LightGrey,
+//                          offset: Offset(5,5),
+//                          blurRadius: 15,
+//                        )
+//                      ],
+//                    ),
+//                    child: Column(
+//                      children: <Widget>[
+//                        Padding(
+//                          padding: EdgeInsets.symmetric(vertical: 10),
+//                        ),
+//                        Row(
+//                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                          children: <Widget>[
+//                            // TODO: add number of tests and progressbar and settings menu
+//                            Text("Tests", style: TextStyle(fontFamily: 'Poppins', fontSize: 20, fontWeight: FontWeight.bold),),
+////                          IconButton(
+////                            icon: Icon(Icons.play_arrow, size: 40,),
+////                              onPressed: (){
+////                              },
+////                          ),
+//                          ],
+//                        ),
+//                        Padding(
+//                          padding: EdgeInsets.fromLTRB(0, 0, 0, 20),
+//                        ),
+//                      ],
+//                    ),
+//                  ),
+//                ),
 //                testsClicked ? Container(
 //                  color: CustomColors.White,
 //                  child: new ListView.builder(
@@ -247,6 +254,11 @@ class _DeckViewState extends State<DeckView> {
 //                        ): Container();
 //                      }),
 //                ):Container(),
+                StreamProvider<User>.value(
+                  value: DatabaseService(uid: widget.user.uid, deck_Id: widget.deckId).username,
+                  child: TestsList(user: widget.user, deckId: widget.deckId),
+                ),
+
                 SizedBox(height: 20.0,),
               ],
             ),
@@ -274,13 +286,13 @@ class _CardsListState extends State<CardsList> {
     // TODO: implement build
 
     final cards = Provider.of<List<CardModel>>(context);
-    if(cards!=null){
-      String id = "card"+ (cards.length + 1).toString();
-      print("id "+id);
-      cards.forEach((card){
-        print(card.title);
-      });
-    }
+//    if(cards!=null){
+//      String id = "card"+ (cards.length + 1).toString();
+//      print("id "+id);
+//      cards.forEach((card){
+//        print(card.title);
+//      });
+//    }
     return (cards != null) ? Column(
       children: <Widget>[
         InkWell(
@@ -312,8 +324,8 @@ class _CardsListState extends State<CardsList> {
                     IconButton(
                       icon: Icon(Icons.play_arrow, size: 40,),
                       onPressed: (){
-                          print("here" + _flashcardClicked.toString());
-                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => CardView(cards: cards, cardIndex: null, user: widget.user,)));
+//                        print("here" + _flashcardClicked.toString());
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => CardView(cards: cards, cardIndex: null, user: widget.user,)));
                       },
 //                            onPressed: (){Navigator.of(context).push(MaterialPageRoute(builder: (context) => CardView(widget.deck.cards, null)));},
                     ),
@@ -326,60 +338,193 @@ class _CardsListState extends State<CardsList> {
             ),
           ),
         ),
-        _flashcardClicked?Container(
+        _flashcardClicked? Container(
           color: CustomColors.White,
           child: new ListView.builder(
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: cards.length,
-            itemBuilder: (BuildContext context, int cardIndex) {
-            return (!cards.elementAt(cardIndex).isHidden) ? Container(child: GestureDetector(
-              onTap: () {
-                setState(() {
-//                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => CardView(widget.deck.cards, cardIndex)));
-                });
-              },
-              child: Center(
-                child: Container(
-                  padding: EdgeInsets.all(20.0),
-                  height: 70,
-                  width: 300,
-                  decoration: BoxDecoration(
-                      color: CustomColors.black,
-                      border: Border.all(color: CustomColors.LightGrey),
-                      borderRadius: BorderRadius.circular(20.0),
-                      boxShadow: [
-                        BoxShadow(
-                          color: CustomColors.LightGrey,
-                          offset: Offset(5,5),
-                          blurRadius: 2,
-                        ),
-                      ]
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Center(
-                        child: Text(cards[cardIndex].title, style: TextStyle(color: CustomColors.White, fontSize: 20, fontFamily: 'Poppins', fontWeight: FontWeight.bold),),
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: cards.length,
+              itemBuilder: (BuildContext context, int cardIndex) {
+                return (!cards.elementAt(cardIndex).isHidden) ? Container(child: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context) =>
+                          CardView(cards: cards, cardIndex: cardIndex, user: widget.user,)));
+                    });
+                  },
+                  child: Center(
+                    child: Container(
+                      padding: EdgeInsets.all(20.0),
+                      height: 70,
+                      width: 300,
+                      decoration: BoxDecoration(
+                          color: CustomColors.black,
+                          border: Border.all(color: CustomColors.LightGrey),
+                          borderRadius: BorderRadius.circular(20.0),
+                          boxShadow: [
+                            BoxShadow(
+                              color: CustomColors.LightGrey,
+                              offset: Offset(5,5),
+                              blurRadius: 2,
+                            ),
+                          ]
                       ),
-                      SettingsMenu(
-                        user: widget.user,
-                        list: cards,
-                        onSelect: (List<Object> newCards, bool isHidden) {
-                          setState(() {
+                      child: Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text(cards[cardIndex].title, style: TextStyle(
+                                  color: CustomColors.White, fontSize: 20,
+                                  fontFamily: 'Poppins', fontWeight: FontWeight.bold),),
+                            SettingsMenu(
+                              user: widget.user,
+                              list: cards[cardIndex],
+                              onSelect: (dynamic card, bool isHidden) {
+                                setState(() {
 //                            if(hidden){cards[cardIndex].hidden = true;}
 //                            cards = newCards;
-                          });
-                        },
-                        index: cardIndex,
+                                });
+                              },
+                              index: cardIndex,
+                            ),
+                          ],
+                        ),
                       ),
-                    ],
+                    ),
                   ),
                 ),
-              ),
+                ):Container();
+              }),
+        ):Container(), ],) : Container();
+  }
+}
+
+
+class TestsList extends StatefulWidget {
+  final User user;
+  final String deckId;
+  TestsList({this.user, this.deckId});
+
+  @override
+  _TestsListState createState() => _TestsListState();
+}
+
+class _TestsListState extends State<TestsList> {
+  bool _testsClicked = false;
+  @override
+  Widget build(BuildContext context) {
+    final tests = Provider.of<List<Test>>(context);
+//    if(tests!=null){
+//      String id = "card"+ (tests.length + 1).toString();
+//      print("id "+id);
+//      tests.forEach((card){
+//        print(card.title);
+//      });
+//    }
+    return (tests != null) ? Column(
+      children: <Widget>[
+        InkWell(
+          onTap: (){setState(() {
+            _testsClicked = !_testsClicked;
+          });},
+          child: Container(
+            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 50),
+            decoration: BoxDecoration(
+              color: CustomColors.White,
+              boxShadow: [
+                BoxShadow(
+                  color: CustomColors.LightGrey,
+                  offset: Offset(5,5),
+                  blurRadius: 15,
+                )
+              ],
             ),
-            ):Container();
-          }),
-    ):Container(), ],) : Container();
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 10),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    // TODO: add number of tests and progressbar and settings menu
+                    Text("Tests", style: TextStyle(fontFamily: 'Poppins', fontSize: 20, fontWeight: FontWeight.bold),),
+//                          IconButton(
+//                            icon: Icon(Icons.play_arrow, size: 40,),
+//                              onPressed: (){
+//                              },
+//                          ),
+                  ],
+                ),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(0, 0, 0, 20),
+                ),
+              ],
+            ),
+          ),
+        ),
+        _testsClicked ? Container(
+          color: CustomColors.White,
+          child: new ListView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: tests.length,
+              itemBuilder: (BuildContext context, int testIndex) {
+                return !tests.elementAt(testIndex).isHidden ? Container(
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => TestView(tests, testIndex)));
+                    },
+                    child: Center(
+                      child: Container(
+                        padding: EdgeInsets.all(4.0),
+                        height: 70,
+                        width: 300,
+                        decoration: BoxDecoration(
+                            color: CustomColors.black,
+                            border: Border.all(color: CustomColors.LightGrey),
+                            borderRadius: BorderRadius.circular(20.0),
+                            boxShadow: [
+                              BoxShadow(
+                                color: CustomColors.LightGrey,
+                                offset: Offset(5,5),
+                                blurRadius: 2,
+                              ),
+                            ]
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.fromLTRB(15, 0, 15,5),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Center(
+                                child: Text(tests?.elementAt(testIndex)?.title, style: TextStyle(color: CustomColors.White, fontSize: 17, fontFamily: 'Poppins', fontWeight: FontWeight.bold),),
+                              ),
+                              IconButton(
+                                icon: Icon(Icons.play_arrow, size: 30, color: CustomColors.White, ),
+                                onPressed: (){Navigator.of(context).push(MaterialPageRoute(builder: (context) => QuestionView(test: tests.elementAt(testIndex), quIndex: 0, testIndex: testIndex, user: widget.user,)));},
+                              ),
+                              SettingsMenu(
+                                user: widget.user,
+                                list: tests[testIndex],
+                                onSelect: (dynamic test, bool hidden) {
+                                  setState(() {
+//                                    if(hidden){tests.elementAt(testIndex).isHidden = true;}
+//                                    tests = newTests;
+                                  });
+                                },
+                                index: testIndex,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ): Container();
+              }),
+        ):Container()
+      ]
+    ):Container();
   }
 }

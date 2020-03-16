@@ -4,8 +4,12 @@ class Answer{
   final String questionId;
   final String answerId;
   final String answer;
-  final bool checked;
+  bool checked;
   final bool correct;
   Answer({this.testId, this.deckId, this.questionId, this.checked, this.answer,
     this.correct, this.answerId});
+
+  void setChecked(bool checked) {
+    this.checked = checked;
+  }
 }

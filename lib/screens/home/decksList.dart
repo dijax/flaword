@@ -60,10 +60,10 @@ class _DecksListState extends State<DecksList> with TickerProviderStateMixin{
                 child: (!decks.elementAt(position).isHidden)? new Card(
                   child: InkWell(
                     onTap: () {
-                      // TODO the DeckView anpassen und the sorting implementieren
-//                      var selectedDeck = MockData.sortedDecks[position];
-//                      Navigator.of(context).push(MaterialPageRoute(builder: (context)=>DeckView(selectedDeck, DateTime.now())));
-//                      MockData.last3Decks(position);
+                      Navigator.of(context).push(MaterialPageRoute(builder:
+                          (context)=>DeckView(deckId: decks[position].deckId,
+                            deckTitle: decks[position].title, visitDate: DateTime.now(), user: widget.user,)));
+                      DatabaseService(uid: widget.user.uid, deck_Id: decks[position].deckId).updateVisitDate(DateTime.now());
                     },
                     child: Container(
                       width: 250.0,
@@ -81,8 +81,8 @@ class _DecksListState extends State<DecksList> with TickerProviderStateMixin{
                                 ),
                                 SettingsMenu(
                                   user: widget.user,
-                                  list: decks,
-                                  onSelect: (List<Object> decks, bool isHidden) {
+                                  list: decks[position],
+                                  onSelect: (dynamic element, bool isHidden) {
                                     setState(() {
 //                                      if(hidden){MockData.decksList.elementAt(position).hidden = true;}
 //                                      this.decks = decks; //TODO Settings menu erwartet ein Deckmodel und bekommt ein DEcks

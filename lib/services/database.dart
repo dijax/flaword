@@ -1,7 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flashcards/models/CardUnderstanding.dart';
+import 'package:flashcards/models/answer.dart';
 import 'package:flashcards/models/card.dart';
 import 'package:flashcards/models/deck.dart';
+import 'package:flashcards/models/question.dart';
+import 'package:flashcards/models/test.dart';
 import 'package:flashcards/models/user.dart';
 import 'package:flashcards/services/auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -15,28 +19,42 @@ class DatabaseService {
 
   final String uid;
   final String deck_Id;
-  DatabaseService({this.uid, this.deck_Id});
+  final String tstId;
+  final String quId;
+  DatabaseService({this.uid, this.deck_Id, this.tstId, this.quId});
 
   // add Data to Firestore
-  Future addCard(String cardId, String deckId, String title, String front, String back, bool isHidden, String cardUnderstanding) async{
+  Future addCard(/*String cardId, */String deckId, String title, String front, String back, bool isHidden, String cardUnderstanding) async{
     CollectionReference colRef = deckCollection.document(uid).collection("decks").document(deckId).collection("cards");
-    if(cardId != null) addCardToFireStore(cardId, deckId, title, front, back, isHidden, cardUnderstanding);
-    else{
-      if(colRef.getDocuments() != null) {
-        colRef.getDocuments().then((doc){
-          cardId = "card${doc.documents.length + 1}";
-          addCardToFireStore(cardId, deckId, title, front, back, isHidden, cardUnderstanding);
-          print("cardId: "+ cardId);
-        });
-      } else{
-        print("Card not added ");
-      }
-    }
+    /*if(*//*cardId != null*//*)*/ addCardToFireStore(/*cardId, */deckId, title, front, back, isHidden, cardUnderstanding);
+//    else{
+//      if(colRef.getDocuments() != null) {
+//        colRef.getDocuments().then((doc){
+//          cardId = "card${doc.documents.length + 1}";
+//          addCardToFireStore(cardId, deckId, title, front, back, isHidden, cardUnderstanding);
+//          print("cardId: "+ cardId);
+//        });
+//      } else{
+//        print("Card not added ");
+//      }
+//    }
   }
 
-  Future addCardToFireStore(String cardId, String deckId, String title, String front, String back, bool isHidden, String cardUnderstanding) async{
-    DocumentReference docRef = deckCollection.document(uid).collection("decks").document(deckId).collection("cards").document(cardId);
-      await docRef.setData({
+//  Future addCardToFireStore(String cardId, String deckId, String title, String front, String back, bool isHidden, String cardUnderstanding) async{
+//    DocumentReference docRef = deckCollection.document(uid).collection("decks").document(deckId).collection("cards").document(cardId);
+//      await docRef.setData({
+//        'title' : title,
+//        'front' : front,
+//        'back' : back,
+//        'isHidden' : isHidden,
+//        'cardUnderstanding' : cardUnderstanding,
+//      });
+//      updateCardsCount(deckId, true);
+//  }
+
+  Future addCardToFireStore(/*String cardId, */String deckId, String title, String front, String back, bool isHidden, String cardUnderstanding) async{
+    CollectionReference colRef = deckCollection.document(uid).collection("decks").document(deckId).collection("cards");
+      await colRef.add({
         'title' : title,
         'front' : front,
         'back' : back,
@@ -48,34 +66,36 @@ class DatabaseService {
 
   Future addDeck(String title, int cardsCount, int testsCount, double completion, DateTime visited, bool isHidden) async{
     CollectionReference colRef = deckCollection.document(uid).collection("decks");
-    String deckId = "";
-    if(colRef.getDocuments() != null) {
-      colRef.getDocuments().then((doc){
-        deckId = "deck${doc.documents.length + 1}";
-        addDeckToFireStore(deckId, title, cardsCount, testsCount, completion, visited, isHidden);
-        print("deckId: "+ deckId);
-      });
-    } else{
-      print("Deck not added ");
-    }
+//    String deckId = "";
+//    if(colRef.getDocuments() != null) {
+//      colRef.getDocuments().then((doc){
+//        deckId = "deck${doc.documents.length + 1}";
+        addDeckToFireStore(/*deckId, */title, cardsCount, testsCount, completion, visited, isHidden);
+//        print("deckId: "+ deckId);
+//      });
+//    } else{
+//      print("Deck not added ");
+//    }
   }
 
-  Future addDeckToFireStore(String deckId, String title, int cardsCount, int testsCount, double completion, DateTime visited, bool isHidden) async{
-    DocumentReference docRef = deckCollection.document(uid).collection("decks").document(deckId);
-    await docRef.setData({
+  Future addDeckToFireStore(/*String deckId, */String title, int cardsCount, int testsCount, double completion, DateTime visited, bool isHidden) async{
+    CollectionReference colRef = deckCollection.document(uid).collection("decks")/*.document(deckId)*/;
+    String id;
+    return await colRef.add({
       'title': title,
       'cardsCount': cardsCount,
       'testsCount': testsCount,
       'completion': completion,
-      'visited': visited,
+      'visited': DateTime.now(),
       'isHidden': isHidden,
+      'description' : "",
     });
   }
 
-  Future addTest(String testId, String deckId, String title, double completion, bool isHidden, double rating) async {
+  Future addTest(/*String testId, */String deckId, String title, double completion, bool isHidden, double rating) async {
     CollectionReference colRef = deckCollection.document(uid).collection("decks").document(deckId).collection("tests");
-    if(testId != null) addTestToFireStore(testId, deckId, title, completion, isHidden, rating);
-    else {
+    /*if(testId != null) */addTestToFireStore(/*testId,*/ deckId, title, completion, isHidden, rating);
+    /*else {
       if(colRef.getDocuments() != null) {
         colRef.getDocuments().then((doc){
           testId = "test${doc.documents.length + 1}";
@@ -85,38 +105,39 @@ class DatabaseService {
       } else{
         print("Test not added ");
       }
-    }
+    }*/
   }
 
-  Future addTestToFireStore(String testId, String deckId, String title, double completion, bool isHidden, double rating) async{
-    DocumentReference docRef = deckCollection.document(uid).collection("decks").document(deckId).collection("tests").document(testId);
-    await docRef.setData({
+  Future addTestToFireStore(/*String testId, */String deckId, String title, double completion, bool isHidden, double rating) async{
+    CollectionReference colRef = deckCollection.document(uid).collection("decks").document(deckId).collection("tests")/*.document(testId)*/;
+    updateTestsCount(deckId, true);
+    return await colRef.add({
       'title' : title,
       'completion' : completion,
       'isHidden' : isHidden,
       'rating' : rating,
     });
-    updateTestsCount(deckId, true);
   }
 
-  Future addQuestion(String questionId, String testId, String deckId, String question, String answer, bool isHidden, double rating) async {
+  Future addQuestion(/*String questionId, */String testId, String deckId, String question, String answer, bool isHidden, double rating) async {
     CollectionReference colRef = deckCollection.document(uid).collection("decks").document(deckId).collection("tests").document(testId).collection("questions");
-    String questionId = "";
-    //TODO if questionId != null
-    if(colRef.getDocuments() != null) {
-      colRef.getDocuments().then((doc){
-        questionId= "question${doc.documents.length + 1}";
-        addQuestionToFireStore(questionId, testId, deckId, question, answer, isHidden, rating);
-        print("questionId: "+ questionId);
-      });
-    } else{
-      print("question not added ");
-    }
+    /*if(questionId.isNotEmpty)*/ addQuestionToFireStore(/*questionId, */testId, deckId, question, answer, isHidden, rating);
+//    else{
+//      if(colRef.getDocuments() != null) {
+//        colRef.getDocuments().then((doc){
+//          questionId= "question${doc.documents.length + 1}";
+//          addQuestionToFireStore(questionId, testId, deckId, question, answer, isHidden, rating);
+//          print("questionId: "+ questionId);
+//        });
+//      } else{
+//        print("question not added ");
+//      }
+//    }
   }
 
-  Future addQuestionToFireStore(String questionId, String testId, String deckId, String question, String answer, bool isHidden, double rating) async{
-    DocumentReference docRef = deckCollection.document(uid).collection("decks").document(deckId).collection("tests").document(testId).collection("questions").document(questionId);
-    await docRef.setData({
+  Future addQuestionToFireStore(/*String questionId, */String testId, String deckId, String question, String answer, bool isHidden, double rating) async{
+    CollectionReference colRef = deckCollection.document(uid).collection("decks").document(deckId).collection("tests").document(testId).collection("questions");
+    return await colRef.add({
       'question' : question,
       'answer' : answer,
       'rating' : rating,
@@ -124,23 +145,27 @@ class DatabaseService {
     });
   }
 
-  Future addAnswer(String questionId, String testId, String deckId, String answer, bool checked, bool correct) async {
+  Future addAnswer(String answerId, String questionId, String testId, String deckId, String answer, bool checked, bool correct) async {
     CollectionReference colRef = deckCollection.document(uid).collection("decks").document(deckId).collection("tests").document(testId).collection("questions").document(questionId).collection("answers");
-    String answerId = "";
-    if(colRef.getDocuments() != null) {
-      colRef.getDocuments().then((doc){
-        answerId = "answer${doc.documents.length + 1}";
-        addAnswerToFireStore(answerId, questionId, testId, deckId, answer, checked, correct);
-        print("answerId: "+ answerId);
-      });
-    } else{
-      print("answer not added ");
+    if(answerId.isNotEmpty) addAnswerToFireStore(/*answerId, */questionId, testId, deckId, answer, checked, correct);
+    else{
+      if(colRef.getDocuments() != null) {
+        colRef.getDocuments().then((doc){
+          answerId = "answer${doc.documents.length + 1}";
+          addAnswerToFireStore(/*answerId, */questionId, testId, deckId, answer, checked, correct);
+          print("answerId: "+ answerId);
+        });
+      } else{
+        print("answer not added ");
+      }
     }
   }
 
-  Future addAnswerToFireStore(String answerId, String questionId, String testId, String deckId, String answer, bool checked, bool correct) async{
-    DocumentReference docRef = deckCollection.document(uid).collection("decks").document(deckId).collection("tests").document(testId).collection("questions").document(questionId).collection("answers").document(answerId);
-    await docRef.setData({
+  Future addAnswerToFireStore(String questionId, String testId, String deckId, String answer, bool checked, bool correct) async{
+    CollectionReference colRef = deckCollection.document(uid).collection("decks")
+        .document(deckId).collection("tests").document(testId).collection("questions")
+        .document(questionId).collection("answers");
+    await colRef.add({
       'answer' : answer,
       'correct' : correct,
       'checked' : checked,
@@ -153,6 +178,7 @@ class DatabaseService {
     'username' : username,
     });
   }
+
 
 
 //  Future updateDecks(String title, int cardsCount, int testsCount, double completion, DateTime visited, bool hidden) async {
@@ -178,6 +204,48 @@ class DatabaseService {
 //    });
 //  }
 
+  Future updateVisitDate(DateTime date) async {
+    // Firestore reference to the document with uid if not found Firestore create it
+    return await deckCollection.document(uid).collection('decks').document(deck_Id).updateData({
+      'visited' : date,
+    });
+  }
+
+  Future updateDeckVisibilty (bool isHidden, String deckId) async {
+    // Firestore reference to the document with uid if not found Firestore create it
+    return await deckCollection.document(uid).collection('decks').document(deckId).updateData({
+      'isHidden' : isHidden,
+    });
+  }
+
+  Future updateCardVisibilty (bool isHidden, String deckId, String cardId) async {
+    // Firestore reference to the document with uid if not found Firestore create it
+    return await deckCollection.document(uid).collection('decks').document(deckId).collection("cards").document(cardId).updateData({
+      'isHidden' : isHidden,
+    });
+  }
+
+  Future updateTestVisibilty (bool isHidden, String deckId, String testId) async {
+    // Firestore reference to the document with uid if not found Firestore create it
+    return await deckCollection.document(uid).collection('decks').document(deckId).collection("tests").document(testId).updateData({
+      'isHidden' : isHidden,
+    });
+  }
+
+  Future removeDeck (String deckId) async {
+    // Firestore reference to the document with uid if not found Firestore create it
+    return await deckCollection.document(uid).collection('decks').document(deckId).delete();
+  }
+
+  Future removeCard(String deckId, String cardId) async {
+    // Firestore reference to the document with uid if not found Firestore create it
+    return await deckCollection.document(uid).collection('decks').document(deckId).collection("cards").document(cardId).delete();
+  }
+
+  Future removeTest (String deckId, String testId) async {
+    // Firestore reference to the document with uid if not found Firestore create it
+    return await deckCollection.document(uid).collection('decks').document(deckId).collection("tests").document(testId).delete();
+  }
 
   Future updateCardsCount(String deckId, bool increment) async{
     if(increment){
@@ -204,27 +272,35 @@ class DatabaseService {
     }
   }
 
-  Future updateCard(String cardId, String deckId, String title, String front, String back, bool isHidden, String cardUnderstanding) async{
-    return await deckCollection.document(uid).collection('decks').document(deckId).collection("cards").document(cardId).setData({
+  Future updateCard(String cardId, String deckId, String title, String description, String front, String back) async{
+    return await deckCollection.document(uid).collection('decks').document(deckId).collection("cards").document(cardId).updateData({
       'title' : title,
+      'description': description,
       'front' : front,
       'back'  : back,
-      'isHidden': isHidden,
-      'cardUnderstanding': cardUnderstanding,
     });
   }
 
-  List<CardModel> _cardsListFromSnapshot(QuerySnapshot snapshot) {
-    return snapshot.documents.map((doc) {
-      return CardModel(
-        cardId: doc.documentID ?? '',
-        deckId: deck_Id,
-        title: doc.data['title'] ?? '',
-        front: doc.data['front']?? '',
-        back: doc.data['back']??'',
-        isHidden: doc.data['isHidden']??false,
-        cardUnderstanding: doc.data['cardUnderstanding']??'');
-    }).toList();
+  Future updateCardUnderstanding(String cardId, CardUnderstanding cardUnderstanding) async {
+    // Firestore reference to the document with uid if not found Firestore create it
+    return await deckCollection.document(uid).collection('decks').document(deck_Id).collection("cards").document(cardId).updateData({
+      'cardUnderstanding' : cardUnderstanding.toString(),
+    });
+  }
+
+//  Future updateCard (String cardId, CardUnderstanding cardUnderstanding) async {
+//    // Firestore reference to the document with uid if not found Firestore create it
+//    return await deckCollection.document(uid).collection('decks').document(deck_Id).collection("cards").document(cardId).updateData({
+//      'cardUnderstanding' : cardUnderstanding.toString(),
+//    });
+//  }
+
+  Future updateDeck(String deckId, String deckTitle, String deckDescription) async {
+    // Firestore reference to the document with uid if not found Firestore create it
+    return await deckCollection.document(uid).collection('decks').document(deckId).updateData({
+      'title' : deckTitle,
+      'description' : deckDescription,
+    });
   }
 
   Stream<List<CardModel>> get cards {
@@ -232,16 +308,90 @@ class DatabaseService {
         .map(_cardsListFromSnapshot);
   }
 
+  List<CardModel> _cardsListFromSnapshot(QuerySnapshot snapshot) {
+    return snapshot.documents.map((doc) {
+      return CardModel(
+          cardId: doc.documentID ?? '',
+          deckId: deck_Id,
+          title: doc.data['title'] ?? '',
+          front: doc.data['front']?? '',
+          back: doc.data['back']??'',
+          isHidden: doc.data['isHidden']??false,
+          cardUnderstanding: doc.data['cardUnderstanding']??'');
+    }).toList();
+  }
+
+  Stream<List<Test>> get tests {
+    return deckCollection.document(uid).collection("decks").document(deck_Id)
+        .collection("tests").snapshots()
+        .map(_testsListFromSnapshot);
+  }
+
+  List<Test> _testsListFromSnapshot(QuerySnapshot snapshot) {
+    return snapshot.documents.map((doc) {
+      return Test(
+          testId: doc.documentID ?? '',
+          deckId: deck_Id,
+          title: doc.data['title'] ?? '',
+          completion: doc.data['completion']?? '',
+          rating: doc.data['rating']??'',
+          isHidden: doc.data['isHidden']??false,);
+    }).toList();
+  }
+
+  Stream<List<Question>> get questions {
+    return deckCollection.document(uid).collection("decks").document(deck_Id)
+        .collection("tests").document(tstId).collection("questions").snapshots()
+        .map(_questionsListFromSnapshot);
+  }
+
+  List<Question> _questionsListFromSnapshot(QuerySnapshot snapshot) {
+    return snapshot.documents.map((doc) {
+      return Question(
+        testId: tstId ?? '',
+        deckId: deck_Id ?? '',
+        questionId: doc.documentID ?? '',
+        question: doc.data['question'] ?? '',
+        answer: doc.data['answer']?? '',
+        rating: doc.data['rating'].toDouble()?? 0.0,
+        isHidden: doc.data['isHidden']??false,);
+    }).toList();
+  }
+
+  Stream<List<Answer>> get answers {
+    return deckCollection.document(uid).collection("decks").document(deck_Id)
+        .collection("tests").document(tstId).collection("questions").document(quId).collection("answers").snapshots()
+        .map(_answersListFromSnapshot);
+  }
+
+  List<Answer> _answersListFromSnapshot(QuerySnapshot snapshot) {
+    return snapshot.documents.map((doc) {
+      return Answer(
+        testId: doc.documentID ?? '',
+        deckId: deck_Id ?? '',
+        questionId: quId ?? '',
+        answerId: doc.documentID,
+        answer: doc.data['answer']??'',
+        checked: doc.data['checked']??false,
+        correct: doc.data['correct']??false);
+    }).toList();
+  }
+
   // deck list from Snapshot
   List<Deck> _decksListFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.documents.map((doc) {
       return Deck(deckId: doc.documentID, title: doc.data['title']??'', cardsCount: doc.data['cardsCount']??0, testsCount: doc.data['testsCount']?? 0,
-        completion: doc.data['completion']?? 0.0, visited: doc.data['visited']?? null, isHidden: doc.data['isHidden']??false,);
+        completion: doc.data['completion']?? 0.0, visited: doc.data['visited'].toDate()?? null, isHidden: doc.data['isHidden']??false,);
     }).toList();
   }
 
   Stream<List<Deck>> get decks {
     return deckCollection.document(uid).collection("decks").snapshots()
+        .map(_decksListFromSnapshot);
+  }
+
+  Stream<List<Deck>> get decksSorted {
+    return deckCollection.document(uid).collection("decks").orderBy("visited", descending: true).snapshots()
         .map(_decksListFromSnapshot);
   }
 
