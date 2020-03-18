@@ -145,21 +145,21 @@ class DatabaseService {
     });
   }
 
-  Future addAnswer(String answerId, String questionId, String testId, String deckId, String answer, bool checked, bool correct) async {
-    CollectionReference colRef = deckCollection.document(uid).collection("decks").document(deckId).collection("tests").document(testId).collection("questions").document(questionId).collection("answers");
-    if(answerId.isNotEmpty) addAnswerToFireStore(/*answerId, */questionId, testId, deckId, answer, checked, correct);
-    else{
-      if(colRef.getDocuments() != null) {
-        colRef.getDocuments().then((doc){
-          answerId = "answer${doc.documents.length + 1}";
-          addAnswerToFireStore(/*answerId, */questionId, testId, deckId, answer, checked, correct);
-          print("answerId: "+ answerId);
-        });
-      } else{
-        print("answer not added ");
-      }
-    }
-  }
+//  Future addAnswer(String answerId, String questionId, String testId, String deckId, String answer, bool checked, bool correct) async {
+//    CollectionReference colRef = deckCollection.document(uid).collection("decks").document(deckId).collection("tests").document(testId).collection("questions").document(questionId).collection("answers");
+//    if(answerId.isNotEmpty) addAnswerToFireStore(/*answerId, */questionId, testId, deckId, answer, checked, correct);
+//    else{
+//      if(colRef.getDocuments() != null) {
+//        colRef.getDocuments().then((doc){
+//          answerId = "answer${doc.documents.length + 1}";
+//          addAnswerToFireStore(/*answerId, */questionId, testId, deckId, answer, checked, correct);
+//          print("answerId: "+ answerId);
+//        });
+//      } else{
+//        print("answer not added ");
+//      }
+//    }
+//  }
 
   Future addAnswerToFireStore(String questionId, String testId, String deckId, String answer, bool checked, bool correct) async{
     CollectionReference colRef = deckCollection.document(uid).collection("decks")
@@ -270,6 +270,16 @@ class DatabaseService {
         'testsCount' : FieldValue.increment(-1),
       });
     }
+  }
+
+  Future updateTest(String testId, String deckId, String title, /*String description, */double completion, double rating, bool isHidden) async{
+    return await deckCollection.document(uid).collection('decks').document(deckId).collection("tests").document(testId).updateData({
+      'title' : title,
+//      'description': description ?? "",
+      'isHidden' : isHidden,
+      'completion'  : completion,
+      'rating' : rating,
+    });
   }
 
   Future updateCard(String cardId, String deckId, String title, String description, String front, String back) async{

@@ -10,8 +10,8 @@ class AddQuestion extends StatefulWidget {
   final TextEditingController answerTextController;
   final List<TextEditingController> controllers;
   final VoidCallback onDeleteSelected;
-  final String testId;
-  const AddQuestion({this.onAddAnswers, this.onAddQuestion, this.onDeleteSelected, this.testId, this.questionTextController, this.answerTextController, this.controllers});
+//  final String testId;
+  const AddQuestion({this.onAddAnswers, this.onAddQuestion, this.onDeleteSelected, this.questionTextController, this.answerTextController, this.controllers});
   _AddQuestionState createState() => _AddQuestionState();
 }
 

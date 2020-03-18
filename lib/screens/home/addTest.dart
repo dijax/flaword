@@ -27,7 +27,6 @@ class AddTest extends StatefulWidget {
   _AddTestState createState() => _AddTestState();
 }
 class _AddTestState extends State<AddTest> {
-//  List<String> _decks = new List();
   String deckId;
   List<Deck> decks = new List();
   int _questionCount = 0;
@@ -38,21 +37,12 @@ class _AddTestState extends State<AddTest> {
   List<TextEditingController> answerEC = new List();
   List<TextEditingController> answersEC = new List();
 
-//  String dropDownValue = MockData.decksList[0].deckTitle;
   List<Widget> _questions;
 
   @override
   Widget build(BuildContext context) {
     _questions = new List.generate(_questionCount, (int index) =>
     new AddQuestion(
-      testId : getTestId(),
-//      onAddAnswers: (List<Answer> answers){
-//        if(answers.isNotEmpty) this.answers.clear();
-//        this.answers = answers;
-//      },
-//      onAddQuestion: (Question question) {
-//          this.questions.add(question);
-//      },
       answerTextController: answerEC[index],
       questionTextController: questionEC[index],
       controllers: answersEC,
@@ -67,7 +57,7 @@ class _AddTestState extends State<AddTest> {
     return Scaffold(
         backgroundColor: CustomColors.black,
         appBar: AppBar(
-          title: Text('Add Test'),
+          title: (widget.edit)?Text('Edit Test'):Text('Add Test'),
           actions: <Widget>[
             FlatButton(
               onPressed: addTest,
@@ -120,18 +110,6 @@ class _AddTestState extends State<AddTest> {
                         ),),
                     ),
                   ),
-//                  Padding(
-//                    padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30),
-//                  ),
-//                  TextField(
-//                    decoration: InputDecoration(
-//                      labelText: 'Enter a card description',
-//                      focusedBorder: OutlineInputBorder(
-//                        borderSide: const BorderSide(color: CustomColors.DeepBlue, width: 2.0),
-//                        borderRadius: BorderRadius.circular(25.0),
-//                      ),
-//                    ),
-//                  ),
                   Padding(
                     padding: const EdgeInsets.symmetric(
                         vertical: 20, horizontal: 20),
@@ -144,28 +122,6 @@ class _AddTestState extends State<AddTest> {
                         border: Border.all(color: CustomColors.DeepBlue,),
                       ),
                       padding: EdgeInsets.fromLTRB(12, 0, 12, 0),
-//                      child: DropdownButton<String>(
-//                        isExpanded: true,
-////                        value: dropDownValue,
-//                        iconSize: 28,
-//                        elevation: 0,
-//                        style: TextStyle(
-//                          color: CustomColors.NearlyBlack,
-//                          fontSize: 18,
-//                          backgroundColor: Colors.white,
-//                        ),
-//                        onChanged: (String newValue){
-//                          setState(() {
-////                            dropDownValue = newValue;
-//                          });
-//                        },
-//                        items: getDecks().map<DropdownMenuItem<String>>((String value) {
-//                          return DropdownMenuItem<String>(
-//                            value: value,
-//                            child: Text(value, style: TextStyle(color: CustomColors.DeepBlue.withOpacity(0.9), fontWeight: FontWeight.bold),),
-//                          );
-//                        }).toList(),
-//                      ),
                       child: (!widget.deckIsGiven) ? StreamBuilder<QuerySnapshot>(
                           stream: DatabaseService(uid: widget.user.uid)
                               .deckCollection.document(widget.user.uid)
@@ -246,54 +202,39 @@ class _AddTestState extends State<AddTest> {
     );
   }
 
-//  getDecks() {
-//    _decks = new List();
-//    if(widget.deckIsGiven){
-//      _decks.add(widget.deckTitle);
-//    }
-//    else MockData.decksList.forEach((element) => _decks.add(element.deckTitle));
-//    return _decks;
-//  }
-
   void addTest() {
     saveData();
     print("test added");
-    if (_testTitleEC.text.isNotEmpty) {
-      if (widget.deckIsGiven) {
-        Test test = Test(deckId: widget.deckId,
-          title: _testTitleEC.text,
-          completion: 0,
-          rating: 0.0,
-          isHidden: false,);
-        widget.onAddTest(test, questions, answers);
+    if (_testTitleEC.text.trim().isNotEmpty) {
+      if(!widget.edit) {
+        if (widget.deckIsGiven) {
+          Test test = Test(deckId: widget.deckId,
+            title: _testTitleEC.text,
+            completion: 0,
+            rating: 0.0,
+            isHidden: false,);
+          widget.onAddTest(test, questions, answers);
+        } else {
+          DatabaseService(uid: widget.user.uid).addTestToFireStore(deckId, _testTitleEC.text, 0.0, false, 0.0).then((doc){
+            String testId = doc.documentID;
+            if(questions.isNotEmpty) questions?.forEach((question){
+              DatabaseService(uid: widget.user.uid).addQuestion(/*question.questionId, */testId,
+                  deckId, question.question, question.answer,
+                  question.isHidden, question.rating).then((doc){
+                    String questionId = doc.documentID;
+                if(answers.isNotEmpty){
+                  answers.forEach((answer){
+                    print(answer.answer + " " + answer.answerId + " " + answer.questionId + " " + testId);
+                    DatabaseService(uid: widget.user.uid).addAnswerToFireStore(questionId,
+                        testId, deckId, answer.answer, answer.checked, answer.correct);
+                  });
+                }
+              });
+            });
+            });
+          }
       } else {
-        CollectionReference colRef = DatabaseService().deckCollection.document(
-            widget.user.uid).collection("decks").document(deckId).collection("tests");
-
-        if (colRef.getDocuments() != null) {
-          colRef.getDocuments().then((doc) {
-            String testId = "test${doc.documents.length + 1}";
-            DatabaseService(uid: widget.user.uid).addTest(/*testId,*/
-                deckId, _testTitleEC.text, 0.0, false, 0.0);
-            if(questions.isNotEmpty){
-              questions.forEach((question){
-                DatabaseService(uid: widget.user.uid).addQuestion(/*question.questionId, */testId,
-                    deckId, question.question, question.answer,
-                    question.isHidden, question.rating);
-              });
-            }
-            if(answers.isNotEmpty){
-              answers.forEach((answer){
-                print(answer.answer + " " + answer.answerId + " " + answer.questionId + " " + testId);
-                DatabaseService(uid: widget.user.uid).addAnswer(answer.answerId, answer.questionId,
-                    testId, deckId, answer.answer, answer.checked, answer.correct);
-              });
-            }
-          });
-        }
-
-//    DatabaseService(uid: widget.user.uid).addQuestion(getTestId(), deckId, , answer, isHidden, rating)
-//    DatabaseService(uid: widget.user.uid).addCard("deck1","deck1", "front", "back", false, CardUnderstanding.clear.toString());
+        DatabaseService(uid: widget.user.uid).updateTest(widget.test.testId, widget.test.deckId, _testTitleEC.text, 0.0, 0.0, false);
       }
       Navigator.pop(context);
     } else {
@@ -303,11 +244,6 @@ class _AddTestState extends State<AddTest> {
   }
 
   saveData(){
-//    print("ha answer " + answerEC.text);
-//    print("ha question " + questionEC.text);
-//    answersEC.forEach((answer){
-//      print("ha answers " + answer.text);
-//    });
     String id;
     widget.deckIsGiven ? id = widget.deckId : id = deckId;
     print(id);
@@ -318,7 +254,7 @@ class _AddTestState extends State<AddTest> {
       if(questionEC[_questionCount - 1].text.trim().isNotEmpty){
         questions.add(
             Question(
-                testId: getTestId(), deckId: id,
+                /*testId: getTestId(), */deckId: id,
                 questionId: "question${questions.length+1}",
                 question: questionEC[_questionCount-1].text, isHidden: false, rating: 0.0
             )
@@ -328,13 +264,10 @@ class _AddTestState extends State<AddTest> {
 
 
     if(answerEC.isNotEmpty){
-//      answerEC.forEach((ec) {
-//        print("Ec " + ec.text + " " + answerEC.indexOf(ec).toString() + " " + _questionCount.toString());
-//      });
       if(answerEC[_questionCount-1].text.trim().isNotEmpty){
         answers.add(
             Answer(
-              testId: getTestId(), deckId: id,
+              /*testId: getTestId(),*/ deckId: id,
               questionId: questions.last.questionId,
               answerId: "answer${answers.length+1}",
               answer: answerEC[_questionCount - 1].text, correct: true, checked: false,
@@ -347,7 +280,7 @@ class _AddTestState extends State<AddTest> {
           if(answerEC.text.trim().isNotEmpty){
             answers.add(
                 Answer(
-                  testId: getTestId(), deckId: id,
+                  /*testId: getTestId(), */deckId: id,
                   questionId: questions.last.questionId,
                   answerId: "answer${answers.length+1}",
                   answer: answerEC.text, correct: false,
@@ -361,11 +294,6 @@ class _AddTestState extends State<AddTest> {
 
   void addQuestion() {
     saveData();
-//    questionEC.dispose();
-//    answerEC.dispose();
-//    answersEC.forEach((ec){
-//      ec.dispose();
-//    });
     setState(() {
       _questionCount = _questionCount + 1;
       TextEditingController ec = new TextEditingController();
@@ -373,35 +301,11 @@ class _AddTestState extends State<AddTest> {
       questionEC.add(ec);
       answerEC.add(ec2);
       if(!widget.deckIsGiven){
-//        decks.removeLast();
         decks.add(Deck(title: "hier",));
       }
     });
   }
 
-  String getTestId() {
-    if(!widget.deckIsGiven){
-      CollectionReference colRef = DatabaseService().deckCollection.document(
-          widget.user.uid).collection("decks").document(deckId).collection("tests");
-
-      if (colRef.getDocuments() != null) {
-        colRef.getDocuments().then((doc) {
-          return "test${doc.documents.length + 1}";
-        });
-      } else return "test1";
-    }else{
-      CollectionReference colRef = DatabaseService().deckCollection.document(
-          widget.user.uid).collection("decks").document(widget.deckId).collection(
-          "tests");
-
-      if (colRef.getDocuments() != null) {
-        colRef.getDocuments().then((doc) {
-          return "test${doc.documents.length + 1}";
-        });
-      } else return "";
-    }
-    return "";
-  }
 }
 
 typedef TestsCallback = void Function(Test test, List<Question>, List<Answer>);

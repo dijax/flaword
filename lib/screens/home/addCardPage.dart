@@ -24,7 +24,6 @@ class AddCardPage extends StatefulWidget {
 }
 class _AddCardPageState extends State<AddCardPage> {
   String deckId;
-//  String dropDownValue;
   TextEditingController _cardTitleEC = TextEditingController();
   TextEditingController _cardDesEC = TextEditingController();
   TextEditingController _cardFrontEC = TextEditingController();
@@ -203,8 +202,8 @@ class _AddCardPageState extends State<AddCardPage> {
             // give the cardId only if the Deck not saved yet
               uid: widget.user.uid).addCard(/*null, */deckId,
               _cardTitleEC.text,
-              _cardBackEC.text,
               _cardFrontEC.text,
+              _cardBackEC.text,
               false,
               CardUnderstanding.none.toString());
         }
