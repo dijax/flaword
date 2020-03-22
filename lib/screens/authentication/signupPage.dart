@@ -1,7 +1,7 @@
 import 'package:flashcards/services/auth.dart';
 import 'package:flashcards/utils/customColors.dart';
 import 'package:flashcards/utils/styles.dart';
-import 'package:flashcards/widgets/loadingWidget.dart';
+import 'package:flashcards/screens/home/widgets/loadingWidget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -45,11 +45,6 @@ class _SignUpPageState extends State<SignUpPage>{
               ),
             ),
           ),
-//          IconButton(
-//            icon: Icon(Icons.perm_identity, color: CustomColors.White,),
-//            tooltip: "Login",
-//            onPressed: widget.toggleAuthView ,
-//          ),
         ],
         title: Text("FLAWORD", style: appNameTextStyle,),
       ),
@@ -58,45 +53,8 @@ class _SignUpPageState extends State<SignUpPage>{
           child: Container(
             padding: EdgeInsets.fromLTRB(40, 70, 40, 10),
             color: Colors.transparent,
-//            padding: EdgeInsets.fromLTRB(40, 30, 40, 130),
-//            decoration: BoxDecoration(
-//              image: DecorationImage(
-//                image: ExactAssetImage('assets/graphics/forest.jpg'),
-//                fit: BoxFit.cover,
-//                colorFilter: ColorFilter.mode(
-//                    Colors.black.withOpacity(0.6),
-//                    BlendMode.dstIn
-//                ),
-//              ),
-//            ),
             child: Column(
               children: <Widget>[
-//                Row(
-//                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                    crossAxisAlignment: CrossAxisAlignment.center,
-//                    children: <Widget>[
-//                      Row(
-//                        children: <Widget>[
-//                          Icon(Icons.layers, size: 30, color: CustomColors.White,),
-//                          Text("FLAWORLD",
-//                              style: TextStyle(
-//                                  fontFamily: 'MrDafoe',
-//                                  color: CustomColors.White,
-//                                  fontSize: 18),
-//                            ),
-//                        ],
-//                      ),
-//                      InkWell(
-//                        onTap: widget.toggleAuthView,
-//                        child: Row(
-//                          children: <Widget>[
-//                            IconButton(icon: Icon(Icons.person, color: CustomColors.White, size: 30,),),
-//                            Text("Login", style: TextStyle(color: CustomColors.White, fontSize: 18, fontFamily: 'Monsterrat'),),
-//                          ],
-//                        ),
-//                      ),
-//                    ],
-//                  ),
                 Form(
                   key: _formKey,
                   child: ListView(

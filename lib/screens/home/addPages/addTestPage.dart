@@ -1,25 +1,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flashcards/models/CardUnderstanding.dart';
-import 'package:flashcards/models/answer.dart';
-import 'package:flashcards/models/deck.dart';
-import 'package:flashcards/models/question.dart';
-import 'package:flashcards/models/test.dart';
-import 'package:flashcards/models/user.dart';
-import 'package:flashcards/screens/home/addQuestion.dart';
+import 'package:flashcards/models/answerModel.dart';
+import 'package:flashcards/models/deckModel.dart';
+import 'package:flashcards/models/questionModel.dart';
+import 'package:flashcards/models/testModel.dart';
+import 'package:flashcards/models/userModel.dart';
+import 'package:flashcards/screens/home/addPages/addQuestion.dart';
+import 'package:flashcards/screens/home/widgets/dropDownWidget.dart';
 import 'package:flashcards/services/database.dart';
 import 'package:flashcards/utils/customColors.dart';
-import 'package:flashcards/widgets/dropDownWidget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flashcards/Test/mockData.dart';
 
 class AddTest extends StatefulWidget {
   final String deckId;
   final String deckTitle;
   final bool deckIsGiven;
   final TestsCallback onAddTest;
-  final User user;
-  final Test test;
+  final UserModel user;
+  final TestModel test;
   final bool edit;
   const AddTest({this.edit, this.test, this.deckTitle, this.deckIsGiven, this.deckId, this.onAddTest, this.user});
 
@@ -28,11 +26,11 @@ class AddTest extends StatefulWidget {
 }
 class _AddTestState extends State<AddTest> {
   String deckId;
-  List<Deck> decks = new List();
+  List<DeckModel> decks = new List();
   int _questionCount = 0;
   TextEditingController _testTitleEC = TextEditingController();
-  List<Question> questions = new List();
-  List<Answer> answers = new List();
+  List<QuestionModel> questions = new List();
+  List<AnswerModel> answers = new List();
   List<TextEditingController> questionEC = new List();
   List<TextEditingController> answerEC = new List();
   List<TextEditingController> answersEC = new List();
@@ -133,13 +131,13 @@ class _AddTestState extends State<AddTest> {
                             else if (snapshot.data == null)
                               return Container();
                             else {
-//                              if(decks!=null) decks.removeLast();
                               if(decks.isEmpty) {
                                 snapshot.data.documents.forEach((doc) {
-                                  decks.add(Deck().fromSnapshot(doc));
+                                  decks.add(DeckModel().fromSnapshot(doc));
                                 });
                               }
                               return DropDownWidget(
+                                expand: true,
                                   decks: decks,
                                   deckTitle: widget.deckTitle,
                                   deckIsGiven: widget.deckIsGiven,
@@ -150,10 +148,10 @@ class _AddTestState extends State<AddTest> {
                             }
                           }
                       ) : DropDownWidget(
+                        expand: true,
                         deckTitle: widget.deckTitle,
                         deckIsGiven: widget.deckIsGiven,
                         user: widget.user,
-//                        onSelect: (String id) {},
                       ),
                     ),
                   ),
@@ -208,24 +206,24 @@ class _AddTestState extends State<AddTest> {
     if (_testTitleEC.text.trim().isNotEmpty) {
       if(!widget.edit) {
         if (widget.deckIsGiven) {
-          Test test = Test(deckId: widget.deckId,
+          TestModel test = TestModel(deckId: widget.deckId,
             title: _testTitleEC.text,
             completion: 0,
             rating: 0.0,
             isHidden: false,);
           widget.onAddTest(test, questions, answers);
         } else {
-          DatabaseService(uid: widget.user.uid).addTestToFireStore(deckId, _testTitleEC.text, 0.0, false, 0.0).then((doc){
+          DatabaseService(uid: widget.user.uid).addTest(deckId, _testTitleEC.text, 0.0, false, 0.0).then((doc){
             String testId = doc.documentID;
             if(questions.isNotEmpty) questions?.forEach((question){
-              DatabaseService(uid: widget.user.uid).addQuestion(/*question.questionId, */testId,
+              DatabaseService(uid: widget.user.uid).addQuestion(testId,
                   deckId, question.question, question.answer,
                   question.isHidden, question.rating).then((doc){
                     String questionId = doc.documentID;
                 if(answers.isNotEmpty){
                   answers.forEach((answer){
-                    print(answer.answer + " " + answer.answerId + " " + answer.questionId + " " + testId);
-                    DatabaseService(uid: widget.user.uid).addAnswerToFireStore(questionId,
+                    print(answer.answer + " " + " " + questionId+ " " + testId);
+                    DatabaseService(uid: widget.user.uid).addAnswer(questionId,
                         testId, deckId, answer.answer, answer.checked, answer.correct);
                   });
                 }
@@ -253,7 +251,7 @@ class _AddTestState extends State<AddTest> {
       });
       if(questionEC[_questionCount - 1].text.trim().isNotEmpty){
         questions.add(
-            Question(
+            QuestionModel(
                 /*testId: getTestId(), */deckId: id,
                 questionId: "question${questions.length+1}",
                 question: questionEC[_questionCount-1].text, isHidden: false, rating: 0.0
@@ -266,10 +264,10 @@ class _AddTestState extends State<AddTest> {
     if(answerEC.isNotEmpty){
       if(answerEC[_questionCount-1].text.trim().isNotEmpty){
         answers.add(
-            Answer(
+            AnswerModel(
               /*testId: getTestId(),*/ deckId: id,
               questionId: questions.last.questionId,
-              answerId: "answer${answers.length+1}",
+//              answerId: "answer${answers.length+1}",
               answer: answerEC[_questionCount - 1].text, correct: true, checked: false,
             )
         );
@@ -279,10 +277,10 @@ class _AddTestState extends State<AddTest> {
         answersEC.forEach((answerEC) {
           if(answerEC.text.trim().isNotEmpty){
             answers.add(
-                Answer(
+                AnswerModel(
                   /*testId: getTestId(), */deckId: id,
                   questionId: questions.last.questionId,
-                  answerId: "answer${answers.length+1}",
+//                  answerId: "answer${answers.length+1}",
                   answer: answerEC.text, correct: false,
                   checked: false
                 )
@@ -301,11 +299,11 @@ class _AddTestState extends State<AddTest> {
       questionEC.add(ec);
       answerEC.add(ec2);
       if(!widget.deckIsGiven){
-        decks.add(Deck(title: "hier",));
+        decks.add(DeckModel(title: "hier",));
       }
     });
   }
 
 }
 
-typedef TestsCallback = void Function(Test test, List<Question>, List<Answer>);
+typedef TestsCallback = void Function(TestModel test, List<QuestionModel>, List<AnswerModel>);

@@ -1,15 +1,13 @@
 import 'dart:io';
 
-import 'package:flashcards/bottomNavBar.dart';
 import 'package:flashcards/screens/wrapper.dart';
 import 'package:flashcards/routes/routeGenerator.dart';
-import 'package:flashcards/screens/authentication/loginPage.dart';
 import 'package:flashcards/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-import 'models/user.dart';
+import 'models/userModel.dart';
 
 void main() => runApp(MyApp());
 
@@ -28,7 +26,7 @@ class MyApp extends StatelessWidget {
       systemNavigationBarIconBrightness: Brightness.dark,
     ));
 
-    return StreamProvider<User>.value(
+    return StreamProvider<UserModel>.value(
       value: AuthService().user, // we create an instance of the AuthService to call the stream
       child: MaterialApp(
         title: 'Flashcards',
@@ -59,7 +57,6 @@ class MyApp extends StatelessWidget {
           ),
           child: Wrapper(),
         ),
-//      home: BottomNavBar(),
       ),
     );
   }

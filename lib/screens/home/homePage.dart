@@ -1,22 +1,14 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flashcards/Test/mockData.dart';
-import 'package:flashcards/models/DeckModel.dart';
-import 'package:flashcards/models/deck.dart';
-import 'package:flashcards/models/user.dart';
+import 'package:flashcards/models/deckModel.dart';
+import 'package:flashcards/models/userModel.dart';
 import 'package:flashcards/screens/home/decksList.dart';
-import 'package:flashcards/services/auth.dart';
-import 'package:flashcards/views/deckView.dart';
-import 'package:flashcards/widgets/settingsMenu.dart';
+import 'package:flashcards/services/database.dart';
 import 'package:flashcards/utils/customColors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-//import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
-import 'package:flashcards/services/database.dart';
 
 class HomePage extends StatefulWidget {
-  final User user;
+  final UserModel user;
   HomePage({this.user});
 
   @override
@@ -25,17 +17,14 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin{
   //TODO use the Random color generator
-//  final appColors = [Color.fromRGBO(231, 129, 109, 1.0),Color.fromRGBO(99, 138, 223, 1.0),Color.fromRGBO(111, 194, 173, 1.0)];
+
   int deckIndex = 0;
   ScrollController scrollController;
   var currentColor = Color.fromRGBO(231, 129, 109, 1.0);
-//  AuthService _auth = AuthService();
 
   AnimationController animationController;
   ColorTween colorTween;
   CurvedAnimation curvedAnimation;
-//  List<DeckModel> decks = MockData.decksList.take(3).toList();
-
 
   @override
   void initState() {
@@ -45,17 +34,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin{
 
   @override
   Widget build(BuildContext context) {
-//    print("home " + widget.user?.uid);
-
     return MultiProvider(
       providers: [
-        StreamProvider<User>.value(value: DatabaseService(uid: widget.user.uid).username),
-        StreamProvider<List<Deck>>.value(value: DatabaseService(uid: widget.user.uid).decksSorted),
+        StreamProvider<UserModel>.value(value: DatabaseService(uid: widget.user.uid).username),
+        StreamProvider<List<DeckModel>>.value(value: DatabaseService(uid: widget.user.uid).decksSorted),
       ],
       child: Scaffold(
-//    return Scaffold(
         backgroundColor: Colors.transparent,
-//      resizeToAvoidBottomPadding: false, // used to fix the pixels overflow
         body: Container(
           child: ListView(
               children: <Widget>[
@@ -86,45 +71,20 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin{
                           ],
                         ),
                       ),
-                      StreamProvider<User>.value(
+                      StreamProvider<UserModel>.value(
                         value: DatabaseService(uid: widget.user.uid).username,
                         child: TitleWidget(),
                       ),
-
-//                      TitleWidget(user: widget.user),
                       Text("Nice to see you.", style:  TextStyle(backgroundColor: Colors.black.withOpacity(0.5),fontSize: 16.0, color: Colors.white, fontFamily: 'Poppins')),
                       Text("Keep the good work, keep learning.", style: TextStyle(backgroundColor: Colors.black.withOpacity(0.5),fontSize: 16.0, color: Colors.white, fontFamily: 'Poppins'),),
-
                     ],
                   ),
                 ),
-//            StreamBuilder<QuerySnapshot>(
-//              stream: Firestore.instance.collection("deck").snapshots(),
-//              builder: (context, snapshot) {
-//                if(!snapshot.hasData) return LinearProgressIndicator();
-//                final record = Record.fromSnapshot(snapshot.data.documents.elementAt(0));
-//                return Column(
-//                  children: <Widget>[
-//                    InkWell(
-//                      onTap: () => record.reference.updateData({'name': "Deckk"}),
-//                      child: Text("change the name"),
-//                    ),
-//                    Padding(
-//                      padding: EdgeInsets.all(10),
-//                      key: ValueKey(record.name),
-//                      child: Container(
-//                        child: Text(record.description),
-//                      ),
-//                    ),
-//                  ],
-//                );
-//              },
-//            ),
                 Padding(
                   padding: EdgeInsets.fromLTRB(20, 10, 0, 0),
                   child: Text("Last visited", style: TextStyle(backgroundColor:CustomColors.black.withOpacity(0.5), color: CustomColors.White),),
                 ),
-                StreamProvider<List<Deck>>.value(
+                StreamProvider<List<DeckModel>>.value(
                   value: DatabaseService(uid: widget.user.uid).decksSorted,
                   child: Container(
                     height: 300.0,
@@ -134,7 +94,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin{
               ]
           ),
         ),
-//      ),
     ));
   }
 }
@@ -143,43 +102,14 @@ class TitleWidget extends StatelessWidget {
   TitleWidget();
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<User>(context);
-    if(user!=null) {
-//      print("Titlewidget " + user.uid);
-    }
+    final user = Provider.of<UserModel>(context);
     return (user!= null)?Padding(
       padding: const EdgeInsets.fromLTRB(0.0, 16.0, 0.0, 12.0),
-        child: Text("Hello, ${user.username}", style: TextStyle(fontSize: 30.0, color: CustomColors.White, fontFamily: 'Montserrat', fontWeight: FontWeight.bold),)
+        child: Text("Hello, ${user.username}", style: TextStyle(fontSize: 30.0,
+            color: CustomColors.White, fontFamily: 'Montserrat', fontWeight: FontWeight.bold),)
     ):Padding(
       padding: const EdgeInsets.fromLTRB(0.0, 16.0, 0.0, 12.0),
-      child: Text("Hello,", style: TextStyle(fontSize: 30.0, color: CustomColors.White, fontFamily: 'Montserrat', fontWeight: FontWeight.bold),));
+      child: Text("Hello, Stranger", style: TextStyle(fontSize: 30.0, color: CustomColors.White,
+          fontFamily: 'Montserrat', fontWeight: FontWeight.bold),));
   }
 }
-
-
-//class TitleWidget extends StatelessWidget {
-////  final userId = DatabaseService().uid;
-//  final User user;
-//  TitleWidget({this.user});
-//  @override
-//  Widget build(BuildContext context) {
-//    // TODO: implement build
-////    final user = Provider.of<User>(context);
-////    print("user"+ user.username);
-//          return (user!= null)?Padding(
-//            padding: const EdgeInsets.fromLTRB(0.0, 16.0, 0.0, 12.0),
-//            child: StreamBuilder<DocumentSnapshot>(
-//              stream: DatabaseService().users.document(user.uid).snapshots(),
-//              builder: (context, snapshot) {
-//                if(!snapshot.hasData) {
-//                  print("Error snapshot does not have data");
-//                  return Container();
-//                } else if (snapshot.hasData) {
-//                  print("userId " + user.uid);
-//                  return Text("Hello, ${snapshot.data['username']}", style: TextStyle(fontSize: 30.0, color: CustomColors.White, fontFamily: 'Montserrat', fontWeight: FontWeight.bold),);
-//                } else return Container();
-//              }
-//            ),
-//          ):Container(child: Text("user is null"),);
-//  }
-//}

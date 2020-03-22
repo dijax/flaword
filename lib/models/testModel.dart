@@ -1,4 +1,4 @@
-class Test{
+class TestModel{
   final String testId;
   final String deckId;
   final String title;
@@ -6,5 +6,5 @@ class Test{
   final double rating;
   final bool isHidden;
   final int questionsCount;
-  Test({this.testId, this.deckId, this.title, this.completion, this.rating, this.isHidden, this.questionsCount});
+  TestModel({this.testId, this.deckId, this.title, this.completion, this.rating, this.isHidden, this.questionsCount});
 }

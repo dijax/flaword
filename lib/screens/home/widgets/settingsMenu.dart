@@ -1,16 +1,11 @@
-import 'package:flashcards/Test/mockData.dart';
-import 'package:flashcards/models/DeckModel.dart';
-import 'package:flashcards/models/TestModel.dart';
-import 'package:flashcards/models/card.dart';
-import 'package:flashcards/models/deck.dart';
+import 'package:flashcards/models/cardModel.dart';
+import 'package:flashcards/models/deckModel.dart';
 import 'package:flashcards/models/settings.dart';
-import 'package:flashcards/models/test.dart';
-import 'package:flashcards/models/user.dart';
-import 'package:flashcards/screens/home/addCardPage.dart';
-import 'package:flashcards/screens/home/addDeckPage.dart';
-import 'package:flashcards/screens/home/addTest.dart';
-import 'package:flashcards/screens/home/addTestPage.dart';
-import 'package:flashcards/screens/home/adddeck.dart';
+import 'package:flashcards/models/testModel.dart';
+import 'package:flashcards/models/userModel.dart';
+import 'package:flashcards/screens/home/addPages/addCardPage.dart';
+import 'package:flashcards/screens/home/addPages/addDeckPage.dart';
+import 'package:flashcards/screens/home/addPages/addTestPage.dart';
 import 'package:flashcards/services/database.dart';
 import 'package:flashcards/utils/customColors.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +14,7 @@ class SettingsMenu extends StatefulWidget {
   final DeckCallback onSelect;
   final int index;
   final dynamic list;
-  final User user;
+  final UserModel user;
   const SettingsMenu({this.onSelect, this.index, this.list, this.user});
   @override
   _SettingsMenuState createState() => _SettingsMenuState();
@@ -77,22 +72,22 @@ class _SettingsMenuState extends State<SettingsMenu> {
   }
 
   menuColor() {
-    if(list is Deck)
+    if(list is DeckModel)
       return CustomColors.black;
     if(list is CardModel)
       return CustomColors.White;
-    if(list is Test)
+    if(list is TestModel)
       return CustomColors.White;
     return CustomColors.PurpleDark;
   }
 
   toPage() {
-    if(list is Deck)
-      return AddDeck(deck: list as Deck, user: widget.user, edit: true);
+    if(list is DeckModel)
+      return AddDeck(deck: list as DeckModel, user: widget.user, edit: true);
     if(list is CardModel)
       return AddCardPage(card: list as CardModel, edit:true, deckTitle: null, deckIsGiven: false, user: widget.user,);
-    if(list is Test)
-      return AddTest(test: list as Test, edit:true, deckTitle: null,deckIsGiven: false, user: widget.user,);
+    if(list is TestModel)
+      return AddTest(test: list as TestModel, edit:true, deckTitle: null,deckIsGiven: false, user: widget.user,);
     return CustomColors.White;
   }
 
@@ -132,7 +127,7 @@ class _SettingsMenuState extends State<SettingsMenu> {
   }
 
   void hideElement(list) {
-      if(list is Deck) {
+      if(list is DeckModel) {
         DatabaseService(uid: widget.user.uid).updateDeckVisibilty(true, list.deckId);
       }
 
@@ -140,13 +135,13 @@ class _SettingsMenuState extends State<SettingsMenu> {
         DatabaseService(uid: widget.user.uid).updateCardVisibilty(true, list.deckId, list.cardId);
       }
 
-      if(list is Test) {
+      if(list is TestModel) {
         DatabaseService(uid: widget.user.uid).updateTestVisibilty(true, list.deckId, list.testId);
       }
   }
 
   void deleteElement(list) {
-    if(list is Deck) {
+    if(list is DeckModel) {
       DatabaseService(uid: widget.user.uid).removeDeck(list.deckId);
     }
 
@@ -154,7 +149,7 @@ class _SettingsMenuState extends State<SettingsMenu> {
       DatabaseService(uid: widget.user.uid).removeCard(list.deckId, list.cardId);
     }
 
-    if(list is Test) {
+    if(list is TestModel) {
       DatabaseService(uid: widget.user.uid).removeTest(list.deckId, list.testId);
     }
   }

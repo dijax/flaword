@@ -18,13 +18,12 @@ class _AuthenticationState extends  State<Authentication>{
       showLogIn = !showLogIn;
     });
   }
+
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     if(showLogIn)
     return LoginPage(toggleAuthView: toggleAuthView);
     else
       return SignUpPage(toggleAuthView: toggleAuthView);
   }
-
 }

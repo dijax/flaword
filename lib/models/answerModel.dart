@@ -1,4 +1,4 @@
-class Answer{
+class AnswerModel{
   final String testId;
   final String deckId;
   final String questionId;
@@ -6,7 +6,7 @@ class Answer{
   final String answer;
   bool checked;
   final bool correct;
-  Answer({this.testId, this.deckId, this.questionId, this.checked, this.answer,
+  AnswerModel({this.testId, this.deckId, this.questionId, this.checked, this.answer,
     this.correct, this.answerId});
 
   void setChecked(bool checked) {

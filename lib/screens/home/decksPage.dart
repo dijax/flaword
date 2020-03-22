@@ -1,18 +1,15 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flashcards/models/DeckModel.dart';
-import 'package:flashcards/models/deck.dart';
-import 'package:flashcards/models/user.dart';
+import 'package:flashcards/models/deckModel.dart';
+import 'package:flashcards/models/userModel.dart';
+import 'package:flashcards/screens/home/views/deckView.dart';
+import 'package:flashcards/screens/home/widgets/settingsMenu.dart';
 import 'package:flashcards/services/database.dart';
-import 'package:flashcards/views/deckView.dart';
 import 'package:flashcards/utils/customColors.dart';
-import 'package:flashcards/widgets/settingsMenu.dart';
 import 'package:flutter/material.dart';
-import 'package:flashcards/Test/mockData.dart';
 import 'package:provider/provider.dart';
 import 'package:wave_progress_widget/wave_progress.dart';
 
 class DecksPage extends StatefulWidget{
-  final User user;
+  final UserModel user;
   DecksPage({this.user});
 
   @override
@@ -20,7 +17,6 @@ class DecksPage extends StatefulWidget{
 }
 
 class _DecksPageState extends State<DecksPage> with TickerProviderStateMixin{
-//  List<DeckModel> decks = MockData.getDecksList();
 
   @override void dispose() {
     // TODO: implement dispose
@@ -28,8 +24,7 @@ class _DecksPageState extends State<DecksPage> with TickerProviderStateMixin{
   }
   @override
   Widget build(BuildContext context) {
-
-    return StreamProvider<List<Deck>>.value(
+    return StreamProvider<List<DeckModel>>.value(
       value: DatabaseService(uid: widget.user.uid).decks,
       child: Scaffold(
         appBar: AppBar(
@@ -45,7 +40,7 @@ class _DecksPageState extends State<DecksPage> with TickerProviderStateMixin{
 
 
 class DecksList extends StatefulWidget {
-  final User user;
+  final UserModel user;
   DecksList({this.user});
 
   @override
@@ -55,49 +50,24 @@ class DecksList extends StatefulWidget {
 class _DecksListState extends State<DecksList> {
   @override
   Widget build(BuildContext context) {
-    var _progress = 50.0;
-    final decks = Provider.of<List<Deck>>(context);
+    final decks = Provider.of<List<DeckModel>>(context);
     return (decks!= null) ? Container(
       color: Colors.transparent,
-//        decoration: BoxDecoration(
-//          image: DecorationImage(
-//            image: ExactAssetImage('assets/graphics/mountain.jpg'),
-//            fit: BoxFit.cover,
-//            colorFilter: ColorFilter.mode(
-//                Colors.black.withOpacity(0.6),
-//                BlendMode.dstIn
-//            ),
-//          ),
-//
-//        ),
-
       padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
       width: MediaQuery.of(context).size.width,
         child: ListView.builder(
           shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
             itemCount: decks.length,
-//    controller: scrollController,
             scrollDirection: Axis.vertical,
             itemBuilder: (context, index){
-              return GestureDetector(
+              return (!decks[index].isHidden)?GestureDetector(
                   onTap: () {
-//                    MockData.setVisitDate(index, DateTime.now());
                     print(DateTime.now());
                     Navigator.of(context).push(MaterialPageRoute(builder: (context) => DeckView(deckId:decks[index].deckId,deckTitle: decks[index].title, visitDate:DateTime.now(), user: widget.user,)));
                   }, //TODO: the deck widget to implement
                   child: Stack(
                     children: <Widget>[
-//                            Container(
-//                              width: 382,
-//                              height: 150,
-//                              color: CustomColors.White,
-//                            ),
-//                            Container(
-//                              width: 382,
-//                              height: 155,
-//                              color: CustomColors.White,
-//                            ),
                       Container(
                         child: Center(
                           child: Column(
@@ -113,7 +83,7 @@ class _DecksListState extends State<DecksList> {
                                   Container(
                                     width: 65,
                                     height: 65,
-                                    child: WaveProgress(40, CustomColors.White, CustomColors.PurpleDark, _progress),
+                                    child: WaveProgress(40, CustomColors.White, CustomColors.PurpleDark, decks[index].completion),
                                     decoration: const BoxDecoration(
                                       color: CustomColors.White,
                                       borderRadius: BorderRadius.all(Radius.circular(50.0),),
@@ -198,12 +168,10 @@ class _DecksListState extends State<DecksList> {
                         margin: EdgeInsets.all(20),
                         height: 150.0,
                       ),
-//                            padding: EdgeInsets.fromLTRB(120, 10, 20, 0),
                     ],
                   )
-              );}
+              ):Container();}
         ),
-
     ):Container();
   }
 }

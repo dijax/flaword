@@ -1,10 +1,10 @@
-import 'package:flashcards/models/user.dart';
+import 'package:flashcards/models/userModel.dart';
 import 'package:flashcards/utils/customColors.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class StatisticsPage extends StatefulWidget {
-  final User user;
+  final UserModel user;
   StatisticsPage({this.user});
 
   @override
@@ -14,39 +14,39 @@ class StatisticsPage extends StatefulWidget {
 class _StatisticsPageState extends State<StatisticsPage>{
   @override
   Widget build(BuildContext context) {
-    return SfCartesianChart(
-      backgroundColor: Colors.black,
-      zoomPanBehavior: ZoomPanBehavior(enablePanning: true),
-      title: ChartTitle(
-        text: 'Statistics',
-        textStyle: ChartTextStyle(color: CustomColors.NotWhite),
-        alignment: ChartAlignment.center,
-        borderColor: Colors.transparent,
-        borderWidth: 30
-      ),
-      legend: Legend(
-        position: LegendPosition.bottom,
-        borderColor: Colors.white,
-        borderWidth: 0
-      ),
-      primaryXAxis: NumericAxis(
-        visibleMinimum: 300,
-        visibleMaximum: 500,
-        title: AxisTitle(
-          text: 'Learning',
-          textStyle: ChartTextStyle(color: Colors.white),
-          alignment: ChartAlignment.center,
+    return Container(
+      child: Container(
+        padding: EdgeInsets.fromLTRB(0, 30, 10, 30),
+        child: SfCartesianChart(
+          backgroundColor: Colors.black,
+          zoomPanBehavior: ZoomPanBehavior(enablePanning: true),
+//          title: ChartTitle(
+//            text: 'Statistics',
+//            textStyle: ChartTextStyle(color: CustomColors.NotWhite),
+//            alignment: ChartAlignment.center,
+//            borderColor: Colors.transparent,
+//            borderWidth: 30
+//          ),
+          legend: Legend(
+            position: LegendPosition.bottom,
+            borderColor: Colors.white,
+            borderWidth: 0
+          ),
+          primaryXAxis: NumericAxis(
+            visibleMinimum: 300,
+            visibleMaximum: 500,
+//            title: AxisTitle(
+//              text: 'Learning',
+//              textStyle: ChartTextStyle(color: Colors.white),
+//              alignment: ChartAlignment.center,
+//            ),
+          ),
+          primaryYAxis: NumericAxis(
+            labelStyle: ChartTextStyle(color: Colors.white),
+          ),
+          series: getRandomData(),
         ),
       ),
-      primaryYAxis: NumericAxis(
-        labelStyle: ChartTextStyle(color: Colors.white),
-//        title: AxisTitle(
-//          text: 'Hours',
-//          textStyle: ChartTextStyle(color: Colors.white),
-//          alignment: ChartAlignment.center,
-//        ),
-      ),
-      series: getRandomData(),
     );
   }
 

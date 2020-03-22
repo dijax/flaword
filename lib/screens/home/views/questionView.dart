@@ -1,22 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flashcards/models/AnswerModel.dart';
-import 'package:flashcards/models/TestModel.dart';
-import 'package:flashcards/models/answer.dart';
-import 'package:flashcards/models/question.dart';
-import 'package:flashcards/models/test.dart';
-import 'package:flashcards/models/user.dart';
+import 'package:flashcards/models/answerModel.dart';
+import 'package:flashcards/models/questionModel.dart';
+import 'package:flashcards/models/testModel.dart';
+import 'package:flashcards/models/userModel.dart';
 import 'package:flashcards/services/database.dart';
 import 'package:flashcards/utils/customColors.dart';
+import 'package:flashcards/screens/home/widgets/finishDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-GlobalKey<_AnswerWidgetState > globalKey = GlobalKey();
+GlobalKey<_AnswerWidgetState> globalKey = GlobalKey();
 
 class QuestionView extends StatefulWidget {
-  final Test test;
+  final TestModel test;
   final int quIndex;
   final int testIndex;
-  final User user;
+  final UserModel user;
   QuestionView({this.test, this.quIndex, this.testIndex, this.user});
   _QuestionViewState createState() => _QuestionViewState();
 }
@@ -31,11 +30,10 @@ class _QuestionViewState extends State<QuestionView> {
   }
   @override
   Widget build(BuildContext context) {
-//    List<AnswerModel> answers = widget.test.questions.elementAt(_queIndex).answers;
     return MultiProvider(
       providers: [
-        StreamProvider<List<Question>>.value(value: DatabaseService(uid: widget.user.uid, deck_Id: widget.test.deckId, tstId: widget.test.testId).questions),
-        StreamProvider<List<Answer>>.value(value: DatabaseService(uid: widget.user.uid, deck_Id: widget.test.deckId, tstId: widget.test.testId).answers),
+        StreamProvider<List<QuestionModel>>.value(value: DatabaseService(uid: widget.user.uid, deck_Id: widget.test.deckId, tstId: widget.test.testId).questions),
+        StreamProvider<List<AnswerModel>>.value(value: DatabaseService(uid: widget.user.uid, deck_Id: widget.test.deckId, tstId: widget.test.testId).answers),
       ],
       child: Scaffold(
         appBar: AppBar(
@@ -47,7 +45,7 @@ class _QuestionViewState extends State<QuestionView> {
           padding: EdgeInsets.all(20),
           child: Column(
             children: <Widget>[
-              StreamProvider<List<Question>>.value(
+              StreamProvider<List<QuestionModel>>.value(
                 value: DatabaseService(uid: widget.user.uid, deck_Id: widget.test.deckId, tstId: widget.test.testId).questions,
                 child: QuestionWidget(user: widget.user, testId: widget.test.testId, questionIndex: _queIndex, test: widget.test),
               ),
@@ -86,30 +84,37 @@ class _QuestionViewState extends State<QuestionView> {
                     icon: Icon(Icons.arrow_forward_ios),
                     color: CustomColors.PurpleDark,
                     onPressed: (){
-                      print("isCorrect: " + globalKey.currentState.isCorrect().toString());
                       CollectionReference colRef = DatabaseService().deckCollection.document(
                           widget.user.uid).collection("decks").document(widget.test.deckId).
-                      collection("tests").document(widget.test.testId).collection("questions");
-                      if (colRef.getDocuments() != null) {
-                        colRef.getDocuments().then((doc) {
-                          if(globalKey.currentState.isCorrect()){
+                      collection("tests").document(widget.test.testId)?.collection("questions");
+                      if (colRef?.getDocuments() != null) {
+                        colRef?.getDocuments()?.then((doc) {
+                          if(doc != null && globalKey != null && globalKey.currentState != null){
+                            if(globalKey.currentState.isCorrect()){
                               setState(() {
                                 _false = false;
                                 if(_queIndex < doc.documents.length-1) _queIndex = _queIndex +1 ;
                                 else{
-                                  // TODO add animation when the test is finished
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) => FinishDialog(
+                                      title: "Success",
+                                      description:
+                                      "You have finished the test.",
+                                      buttonText: "Okay",
+                                      icon: Icon(Icons.done, color: CustomColors.White,),
+                                    ),
+                                  );
                                 }
                               });
-                          } else{
-                            setState(() {
-                              _false = true;
-                            });
+                            } else{
+                              setState(() {
+                                _false = true;
+                              });
+                            }
                           }
                         });
                       }
-                      //  else setState(() {
-//                          _false = true;
-//                        });
                     },
                   ),
                 ],
@@ -124,9 +129,9 @@ class _QuestionViewState extends State<QuestionView> {
 
 class QuestionWidget extends StatefulWidget {
   final int questionIndex;
-  final User user;
+  final UserModel user;
   final String testId;
-  final Test test;
+  final TestModel test;
 
   QuestionWidget({this.questionIndex, this.user, this.testId, this.test});
 
@@ -138,14 +143,14 @@ class _QuestionWidgetState extends State<QuestionWidget> {
   bool show = false;
   @override
   Widget build(BuildContext context) {
-    final questions = Provider.of<List<Question>>(context);
+    final questions = Provider.of<List<QuestionModel>>(context);
     print(widget.testId + " " + widget.questionIndex.toString() + ' ' + widget.user.uid);
     if(questions!=null) {
       questions.forEach((question){
         print(question.question);
       });
     }
-    return (questions!=null) ? StreamProvider<List<Answer>>.value(
+    return (questions!=null && questions.isNotEmpty) ? StreamProvider<List<AnswerModel>>.value(
       value: DatabaseService(uid: widget.user.uid, deck_Id: widget.test.deckId,
           tstId: widget.test.testId, quId: questions[widget.questionIndex].questionId).answers,
       child: Column(
@@ -170,43 +175,30 @@ class _QuestionWidgetState extends State<QuestionWidget> {
               ),
             ),
           ),
-          SizedBox(height: 40,),
-//          Container(
-//            child:(/*widget.test.questions.elementAt(_queIndex).answers.length == 1*/ true) ? Container(
-//              child: InkWell(
-//                onTap: () {
-//                  setState(() {
-//                    show = !show;
-//                  });
-//                },
-//                child: Column(
-//                  children: <Widget>[
-//                    (!show)?Text("show Answer", style: TextStyle(color: CustomColors.PurpleDark, fontSize: 15),):Text(""),
-//                  ],
-//                ),
-//              ),
-//            ): Container(),
-//          ),
-          (questions!=null)? StreamProvider<List<Answer>>.value(
+          SizedBox(height: 10,),
+          (questions!=null)? StreamProvider<List<AnswerModel>>.value(
             value: DatabaseService(uid: widget.user.uid, deck_Id: widget.test.deckId,
                 tstId: widget.test.testId, quId: questions[widget.questionIndex].questionId).answers,
             child: AnswerWidget(key: globalKey, questionIndex: widget.questionIndex, user: widget.user,
               testId: widget.test.testId, test:widget.test, questionId: questions[widget.questionIndex].questionId,),
           ):Center(),
           show ? SizedBox(height: 20,):SizedBox(),
-
         ],
       ),
-    ):Container();
+    ):Container(
+      child: Center(
+        child: Text("No questions", style: TextStyle(color: CustomColors.LightGrey, fontSize: 25),),
+      ),
+    );
   }
 }
 
 class AnswerWidget extends StatefulWidget {
   final int questionIndex;
   final String questionId;
-  final User user;
+  final UserModel user;
   final String testId;
-  final Test test;
+  final TestModel test;
   final Key key;
   AnswerWidget({this.key, this.questionIndex, this.user, this.testId, this.test, this.questionId});
 
@@ -219,13 +211,7 @@ class _AnswerWidgetState extends State<AnswerWidget> {
   bool show = false;
   @override
   Widget build(BuildContext context) {
-    final answers = Provider.of<List<Answer>>(context);
-    print("hier");
-    if(answers!=null){
-      answers.forEach((answer){
-        print("answer: " + answer.answer);
-      });
-    }
+    final answers = Provider.of<List<AnswerModel>>(context);
     return (answers!=null) ? Column(
       children: <Widget>[
         (_false && answers.length > 1)? Container(
@@ -286,28 +272,22 @@ class _AnswerWidgetState extends State<AnswerWidget> {
         ):(show)? Container(
           child: Text(answers[0].answer, style: TextStyle(fontSize: 16, fontFamily: 'Poppins',),),
         ):Container(),
-
-//        InkWell(
-//          onTap: () {
-//            setState(() {
-//              show = !show;
-//            });
-//          },
-//          child: show? Text("hide Answer", style: TextStyle(color: CustomColors.PurpleDark, fontSize: 15)):Text(""),
-//        ),
       ],
     ):Column();
   }
 
   bool isCorrect(){
-    final answers = Provider.of<List<Answer>>(context, listen:false);
+    final answers = Provider.of<List<AnswerModel>>(context, listen:false);
     bool isCorrect = true;
-    answers.forEach((answer){
-      if(answer.checked != answer.correct) {
-        isCorrect = false;
-      }
-    });
+    if(answers == null || answers.isEmpty)
+      isCorrect = false;
+    else {
+      answers.forEach((answer){
+        if(answer.checked != answer.correct) {
+          isCorrect = false;
+        }
+      });
+    }
     return isCorrect;
   }
-
 }

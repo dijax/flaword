@@ -1,8 +1,7 @@
-import 'package:flashcards/models/CardModel.dart';
-import 'package:flashcards/models/card.dart';
+import 'package:flashcards/models/cardModel.dart';
 import 'package:flashcards/utils/customColors.dart';
-import 'package:flutter/material.dart';
 import 'package:flip_card/flip_card.dart';
+import 'package:flutter/material.dart';
 
 class FlipCardView extends StatefulWidget {
   final CardModel card;
@@ -65,60 +64,6 @@ class _FlipCardViewState extends State<FlipCardView>{
           ),
         ),
       );
-//    return FlipCard(
-//      key: cardKey,
-//      flipOnTouch: false,
-//      back: SizedBox(
-//        height: 400,
-//        child: InkWell(
-//            onTap: () => cardKey.currentState.toggleCard(),
-//            child: Container(
-//              padding: EdgeInsets.all(20),
-//              decoration: BoxDecoration(
-//                  color: CustomColors.White,
-//                  boxShadow: [
-//                    BoxShadow(
-//                      color: CustomColors.LightGrey,
-//                      offset: Offset(5,5),
-//                      blurRadius: 15,
-//                    ),]),
-//              child: Center(
-//                  child: Text(cards.elementAt(_counter)?.front)),
-//            )
-//        ),
-//      ),
-//      front: SizedBox(
-//        height: 400,
-//        child: InkWell(
-//          onTap: () => cardKey.currentState.toggleCard(),
-//          child: Container(
-//            padding: EdgeInsets.all(20),
-//            decoration: BoxDecoration(
-//              color: CustomColors.White,
-//              boxShadow: [
-//                BoxShadow(
-//                  color: CustomColors.LightGrey,
-//                  offset: Offset(5,5),
-//                  blurRadius: 15,
-//                ),
-//              ],
-//            ),
-//            child: Center(
-//                child: Text(cards?.elementAt(_counter)?.back)),
-//          ),
-//        ),
-//      ),
-//    );
   }
-
-//  void pressed() {
-//    setState(() {
-//      if(_counter < cards.length-1) {
-//        _counter++;
-//        return;
-//      }
-//      print("done");
-//    });
-//  }
 
 }

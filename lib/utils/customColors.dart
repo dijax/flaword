@@ -69,6 +69,7 @@ class CustomColors {
 
   static const Color NearlyBlue = Color(0xFF00B6F0);
   static const Color NearlyBlack = Color(0xFF213333);
+  static const Color Nearlyblack = Color(0xDD000000);
   static const Color Grey = Color(0xFF3A5160);
   static const Color VeryLightGrey = Color(0xFFEEEEEE);
   static const Color LightGrey = Color(0xFFBDBDBD);

@@ -1,5 +1,5 @@
-import 'package:flashcards/models/answer.dart';
-import 'package:flashcards/models/question.dart';
+import 'package:flashcards/models/answerModel.dart';
+import 'package:flashcards/models/questionModel.dart';
 import 'package:flashcards/utils/customColors.dart';
 import 'package:flutter/material.dart';
 
@@ -10,16 +10,15 @@ class AddQuestion extends StatefulWidget {
   final TextEditingController answerTextController;
   final List<TextEditingController> controllers;
   final VoidCallback onDeleteSelected;
-//  final String testId;
   const AddQuestion({this.onAddAnswers, this.onAddQuestion, this.onDeleteSelected, this.questionTextController, this.answerTextController, this.controllers});
   _AddQuestionState createState() => _AddQuestionState();
 }
 
 class _AddQuestionState extends State<AddQuestion> {
-  Answer answer;
+  AnswerModel answer;
   int _answersCount = 0;
-  Question question;
-  List<Answer> answers = new List();
+  QuestionModel question;
+  List<AnswerModel> answers = new List();
 
   @override
   Widget build(BuildContext context) {
@@ -31,16 +30,9 @@ class _AddQuestionState extends State<AddQuestion> {
         child: Column(children: <Widget>[
           Padding(padding: EdgeInsets.all(8),),
           TextField(
-//            onChanged: others,
             controller: widget.controllers[answerIndex],
-//            cursorWidth: 300,
             decoration: InputDecoration(
               labelText: 'Enter another answer',
-//                border: OutlineInputBorder(
-//                    borderRadius: const BorderRadius.all(
-//                      const Radius.circular(10.0),
-//                    )
-//                ),
               focusedBorder: OutlineInputBorder(
                 borderSide: const BorderSide(color: CustomColors.DeepBlue, width: 1.5),
                 borderRadius: BorderRadius.circular(25.0),
@@ -70,30 +62,18 @@ class _AddQuestionState extends State<AddQuestion> {
                   TextField(
                     decoration: InputDecoration(
                       labelText: 'Enter a question',
-//                border: OutlineInputBorder(
-//                  borderRadius: const BorderRadius.all(
-//                    const Radius.circular(10.0),
-//                  )
-//                ),
                       focusedBorder: OutlineInputBorder(
                         borderSide: const BorderSide(color: CustomColors.DeepBlue, width: 1.5),
                         borderRadius: BorderRadius.circular(25.0),
                       ),
                     ),
-//                    onChanged: addQuestion(),
                   controller: widget.questionTextController,
                   ),
                   Padding(padding: EdgeInsets.all(8),),
                   TextField(
-//                    onChanged: addAnswer(),
                     controller: widget.answerTextController,
                     decoration: InputDecoration(
                       labelText: 'Enter an answer',
-//                border: OutlineInputBorder(
-//                    borderRadius: const BorderRadius.all(
-//                      const Radius.circular(10.0),
-//                    )
-//                ),
                       focusedBorder: OutlineInputBorder(
                         borderSide: const BorderSide(color: CustomColors.DeepBlue, width: 1.5),
                         borderRadius: BorderRadius.circular(25.0),
@@ -147,9 +127,9 @@ class _AddQuestionState extends State<AddQuestion> {
             right: 0.0,
             child: InkWell(
               onTap: (){
-                setState(() {
-                  _answersCount = _answersCount - 1; //TODO: Fix
-                });
+//                setState(() {
+//                  _answersCount = _answersCount - 1; //TODO: Fix
+//                });
               },
               child: Align(
                 alignment: Alignment.topRight,
@@ -173,29 +153,7 @@ class _AddQuestionState extends State<AddQuestion> {
     });
   }
 
-  addAnswer() {
-//    if(widget.answerTextController.text.trim().isNotEmpty){
-//      answer = Answer(testId: widget.testId, answer: _answerTextController.text, checked: false, correct: true);
-//      answers.add(answer);
-//      widget.onAddAnswers(answers);
-//    }
-  }
-
-  addQuestion() {
-//    if(widget.questionTextController.text.trim().isNotEmpty){
-//      question = Question(testId: widget.testId, question: _questionTextController.text, isHidden: false);
-//      widget.onAddQuestion(question);
-//    }
-  }
-
-  void others(String value) {
-//    if(controllers.isNotEmpty){
-//      answer = Answer(testId: widget.testId, answer: value, checked: false, correct: false);
-//      answers.replaceRange(_answersCount, _answersCount, [answer, answer]);
-//      widget.onAddAnswers(answers);
-//    }
-  }
 }
 
-typedef QuestionCallback = void Function(Question question);
-typedef AnswersCallback = void Function(List<Answer> answers);
+typedef QuestionCallback = void Function(QuestionModel question);
+typedef AnswersCallback = void Function(List<AnswerModel> answers);

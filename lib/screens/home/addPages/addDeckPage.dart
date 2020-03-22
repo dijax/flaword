@@ -1,22 +1,20 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flashcards/models/CardUnderstanding.dart';
-import 'package:flashcards/models/answer.dart';
-import 'package:flashcards/models/card.dart';
-import 'package:flashcards/models/deck.dart';
-import 'package:flashcards/models/question.dart';
-import 'package:flashcards/models/test.dart';
-import 'package:flashcards/models/user.dart';
-import 'package:flashcards/screens/home/addCardPage.dart';
-import 'package:flashcards/screens/home/addTest.dart';
+import 'package:flashcards/models/answerModel.dart';
+import 'package:flashcards/models/cardModel.dart';
+import 'package:flashcards/models/deckModel.dart';
+import 'package:flashcards/models/questionModel.dart';
+import 'package:flashcards/models/testModel.dart';
+import 'package:flashcards/models/userModel.dart';
+import 'package:flashcards/screens/home/addPages/addCardPage.dart';
+import 'package:flashcards/screens/home/addPages/addTestPage.dart';
 import 'package:flashcards/services/database.dart';
 import 'package:flashcards/utils/customColors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class AddDeck extends StatefulWidget {
-  final User user;
+  final UserModel user;
   final bool edit;
-  final Deck deck;
+  final DeckModel deck;
   const AddDeck({this.user, this.edit, this.deck});
 
   @override
@@ -24,9 +22,9 @@ class AddDeck extends StatefulWidget {
 }
 class _AddDeckState extends State<AddDeck> {
   List<String> decks;
-  List<Test> tests = new List();
-  List<Question> questions = new List();
-  List<Answer> answers = new List();
+  List<TestModel> tests = new List();
+  List<QuestionModel> questions = new List();
+  List<AnswerModel> answers = new List();
   List<CardModel> cards = new List();
   String dropDownValue;
   TextEditingController deckTitleEditingController = TextEditingController();
@@ -183,29 +181,27 @@ class _AddDeckState extends State<AddDeck> {
   void addDeck() {
     if(deckTitleEditingController.text.trim().isNotEmpty){
       if(!widget.edit){
-        DatabaseService(uid: widget.user.uid).addDeckToFireStore(deckTitleEditingController.text, 0, 0, 0.0, null, false).then((e){
-          String id = e.documentID;
+        DatabaseService(uid: widget.user.uid).addDeck(deckTitleEditingController.text, 0, 0, 0.0, null, false).then((e){
+          String deckId = e.documentID;
           cards.forEach((card){
-            DatabaseService(uid: widget.user.uid).addCard(/*cardId, */id,
+            DatabaseService(uid: widget.user.uid).addCard(/*cardId, */deckId,
                 card.title, card.front, card.back, card.isHidden, card.cardUnderstanding);
           });
           tests.forEach((test) {
-            DatabaseService(uid: widget.user.uid).addTestToFireStore(
-                id, test.title, test.completion, test.isHidden,
+            DatabaseService(uid: widget.user.uid).addTest(
+                deckId, test.title, test.completion, test.isHidden,
                 test.rating).then((e){
               String testId = e.documentID;
               if (questions.isNotEmpty) {
                 questions.forEach((question) {
-                  DatabaseService(uid: widget.user.uid).addQuestionToFireStore(
-                      testId, id, question.question, question.answer,
+                  DatabaseService(uid: widget.user.uid).addQuestion(
+                      testId, deckId, question.question, question.answer,
                       question.isHidden, question.rating).then((e){
                     String questionId = e.documentID;
                     if (answers.isNotEmpty) {
                       answers.forEach((answer) {
-                        print(answer.answer + " " + answer.answerId + " " +
-                            questionId + " " + testId);
-                        DatabaseService(uid: widget.user.uid).addAnswerToFireStore(
-                            questionId, testId, id,
+                        DatabaseService(uid: widget.user.uid).addAnswer(
+                            questionId, testId, deckId,
                             answer.answer, answer.checked, answer.correct);
                       });
                     }
@@ -245,7 +241,7 @@ class _AddDeckState extends State<AddDeck> {
         Navigator.of(context).push(MaterialPageRoute(builder: (context) =>
             AddTest(
               edit: false,
-              onAddTest: (Test test, List<Question> questions, List<Answer> answers){
+              onAddTest: (TestModel test, List<QuestionModel> questions, List<AnswerModel> answers){
                 tests.add(test);
                 questions.forEach((question){
                   this.questions.add(question);

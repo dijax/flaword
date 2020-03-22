@@ -1,15 +1,13 @@
 import 'dart:ui';
 
-import 'package:flashcards/screens/authentication/signupPage.dart';
 import 'package:flashcards/services/auth.dart';
 import 'package:flashcards/utils/customColors.dart';
 import 'package:flashcards/utils/styles.dart';
-import 'package:flashcards/widgets/loadingWidget.dart';
+import 'package:flashcards/screens/home/widgets/loadingWidget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
-//  final AuthService auth;
   final Function toggleAuthView;
   const LoginPage({this.toggleAuthView});
 
@@ -34,9 +32,6 @@ class _LoginPageState extends State<LoginPage>{
   @override
   Widget build(BuildContext context) {
     return _isLoading ? LoadingWidget():Scaffold(
-//      appBar: AppBar(
-//        backgroundColor: Colors.transparent,
-//      ),
         backgroundColor: Colors.transparent,
         body: SingleChildScrollView(
           child: Container(
@@ -110,35 +105,24 @@ class _LoginPageState extends State<LoginPage>{
                   ),
                   FlatButton(
                     child: Text(
+                      "Anonym",
+                      style: TextStyle(color: CustomColors.PurpleDark, fontSize: 18),
+                    ),
+                    onPressed: signInanon,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(20),
+                  ),
+                  FlatButton(
+                    child: Text(
                       "SIGNUP",
                       style: TextStyle(color: CustomColors.PurpleDark, fontSize: 18),
                     ),
                     onPressed: widget.toggleAuthView,
                   ),
-
                 ],
               ),
             ),
-//            child: FlatButton(
-//              color: Colors.transparent,
-//              disabledColor: Colors.transparent,
-//              child: Container(
-//                width: 200,
-//                height: 40,
-//                decoration: BoxDecoration(
-//                  border: Border.all(color: CustomColors.White),
-//                  borderRadius: BorderRadius.circular(10.0),
-//                ),
-//                child: Center(
-//                  child: Text(
-//                    'Sign in anonymously',
-//                    style: TextStyle(color: CustomColors.White, fontSize: 18),
-//                    textAlign: TextAlign.center,),
-//                ),
-//              ),
-//              onPressed: signInanon,
-//            ),
-
           ),
         )
     );

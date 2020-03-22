@@ -1,21 +1,21 @@
-import 'package:flashcards/models/CardModel.dart';
 import 'package:flashcards/models/CardUnderstanding.dart';
-import 'package:flashcards/models/card.dart';
-import 'package:flashcards/models/user.dart';
+import 'package:flashcards/models/cardModel.dart';
+import 'package:flashcards/models/userModel.dart';
 import 'package:flashcards/services/database.dart';
-import 'package:flashcards/widgets/flipCard.dart';
+import 'package:flashcards/screens/home/widgets/flipCard.dart';
 import 'package:flashcards/utils/customColors.dart';
 import 'package:flutter/material.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 
 class CardView extends StatefulWidget {
-  final User user;
+  final UserModel user;
   final List<CardModel> cards;
   final int cardIndex;
   CardView({this.cards, this.cardIndex, this.user});
   _CardViewState createState() => _CardViewState();
 }
+
 class _CardViewState extends State<CardView> with TickerProviderStateMixin{
   int _cardValue = 0;
   String title;
@@ -29,27 +29,6 @@ class _CardViewState extends State<CardView> with TickerProviderStateMixin{
     else _cardValue = 0;
     title = widget.cards[_cardValue].title;
   }
-//  @override
-//  void initState() {
-//    super.initState();
-//    _controller = AnimationController(
-//      duration: const Duration(seconds: 2),
-//      vsync: this,
-//    );
-//    _offsetAnimation = Tween<Offset>(
-//      begin: Offset.zero,
-//      end: const Offset(1.5, 0.0),
-//    ).animate(CurvedAnimation(
-//      parent: _controller,
-//      curve: Curves.easeOut
-//    ));
-//  }
-//
-//  @override
-//  void dispose(){
-//    super.dispose();
-//    _controller.dispose();
-//  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,8 +42,6 @@ class _CardViewState extends State<CardView> with TickerProviderStateMixin{
           children: <Widget>[
             Expanded(
               child: Stack(
-//                duration: Duration(seconds: 2),
-//                curve: Curves.fastOutSlowIn,
                 children: <Widget>[
                   new Swiper(
                     itemBuilder: (BuildContext context, index) {
@@ -85,10 +62,6 @@ class _CardViewState extends State<CardView> with TickerProviderStateMixin{
                 ],
               ),
             ),
-
-//            RaisedButton(
-//              onPressed: pressed,
-//            ),
             getIconsBar(),
           ],
         )
@@ -168,14 +141,12 @@ class _CardViewState extends State<CardView> with TickerProviderStateMixin{
 
   Widget getUnderstandingIcon(){
     print(_cardValue);
-//    print(widget.cards.elementAt(_cardValue).cardUnderstanding);
     CardUnderstanding cardUnderstanding = enumFromString(widget.cards.elementAt(_cardValue).cardUnderstanding);
     switch(cardUnderstanding){
       case CardUnderstanding.clear:
         return Icon(Icons.sentiment_very_satisfied, size: 30,color: CustomColors.GreenAccent,);
         break;
       case CardUnderstanding.none:
-//        print("no data");
         return Icon(Icons.sentiment_neutral, size: 30,color: CustomColors.White.withOpacity(0.1),);
         break;
       case CardUnderstanding.unsure:
@@ -187,16 +158,6 @@ class _CardViewState extends State<CardView> with TickerProviderStateMixin{
     }
     return Icon(Icons.sentiment_neutral, size: 30,color: CustomColors.White.withOpacity(0.1),);
   }
-
-//  void pressed() {
-//    setState(() {
-////      if(_counter < widget.cards.length-1) {
-////        _counter++;
-//        return;
-////      }
-//      print("done");
-//    });
-//  }
 
   void updateCardIndex(int value) {
     setState(() {

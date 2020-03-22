@@ -1,4 +1,4 @@
-import 'package:flashcards/models/user.dart';
+import 'package:flashcards/models/userModel.dart';
 import 'package:flutter/material.dart';
 import 'package:flashcards/screens/home/homePage.dart';
 import 'package:flashcards/screens/home/decksPage.dart';

@@ -1,4 +1,4 @@
-class Question{
+class QuestionModel{
   final String testId;
   final String deckId;
   final String questionId;
@@ -7,5 +7,5 @@ class Question{
   final double rating;
   final bool isHidden;
   final int answerCount;
-  Question({this.testId, this.deckId, this.questionId, this.question, this.answer, this.rating, this.isHidden, this.answerCount});
+  QuestionModel({this.testId, this.deckId, this.questionId, this.question, this.answer, this.rating, this.isHidden, this.answerCount});
 }
