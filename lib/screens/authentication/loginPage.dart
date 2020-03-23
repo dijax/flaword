@@ -100,19 +100,19 @@ class _LoginPageState extends State<LoginPage>{
                   Text(
                     _error, style: TextStyle(color: Colors.red,),textAlign: TextAlign.center,
                   ),
-                  Padding(
-                    padding: EdgeInsets.all(30),
-                  ),
-                  FlatButton(
-                    child: Text(
-                      "Anonym",
-                      style: TextStyle(color: CustomColors.PurpleDark, fontSize: 18),
-                    ),
-                    onPressed: signInanon,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.all(20),
-                  ),
+//                  Padding(
+//                    padding: EdgeInsets.all(30),
+//                  ),
+//                  FlatButton(
+//                    child: Text(
+//                      "Anonym",
+//                      style: TextStyle(color: CustomColors.PurpleDark, fontSize: 18),
+//                    ),
+//                    onPressed: signInanon,
+//                  ),
+//                  Padding(
+//                    padding: EdgeInsets.all(20),
+//                  ),
                   FlatButton(
                     child: Text(
                       "SIGNUP",

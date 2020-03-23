@@ -82,6 +82,9 @@ class _CardViewState extends State<CardView> with TickerProviderStateMixin{
             IconButton(
               icon: Icon(Icons.sentiment_very_satisfied, size: 50, color: CustomColors.GreenAccent,),
               onPressed: (){
+                String cardUnd = widget.cards[_cardValue].cardUnderstanding;
+                print(cardUnd);
+                if(cardUnd == CardUnderstanding.none.toString()) updateCompletion(cardUnd);
                 DatabaseService(uid: widget.user.uid, deck_Id: widget.cards[_cardValue].deckId)
                     .updateCardUnderstanding(widget.cards[_cardValue].cardId, CardUnderstanding.clear);
                 setState(() {
@@ -101,6 +104,9 @@ class _CardViewState extends State<CardView> with TickerProviderStateMixin{
             IconButton(
               icon: Icon(Icons.sentiment_neutral, size: 50, color: CustomColors.OrangeIcon),
               onPressed: (){
+                String cardUnd = widget.cards[_cardValue].cardUnderstanding;
+                print(cardUnd);
+                if(cardUnd == CardUnderstanding.none.toString()) updateCompletion(cardUnd);
                 DatabaseService(uid: widget.user.uid, deck_Id: widget.cards[_cardValue].deckId)
                     .updateCardUnderstanding(widget.cards[_cardValue].cardId, CardUnderstanding.unsure);
                 setState(() {
@@ -120,6 +126,9 @@ class _CardViewState extends State<CardView> with TickerProviderStateMixin{
             IconButton(
               icon: Icon(Icons.sentiment_very_dissatisfied, size: 50, color: CustomColors.TrashRed),
               onPressed: (){
+                String cardUnd = widget.cards[_cardValue].cardUnderstanding;
+                print(cardUnd);
+                if(cardUnd == CardUnderstanding.none.toString()) updateCompletion(cardUnd);
                 DatabaseService(uid: widget.user.uid, deck_Id: widget.cards[_cardValue].deckId)
                     .updateCardUnderstanding(widget.cards[_cardValue].cardId, CardUnderstanding.problematic);
                 setState(() {
@@ -170,5 +179,22 @@ class _CardViewState extends State<CardView> with TickerProviderStateMixin{
   swiperIndex() {
     if(!indexChanged && widget.cardIndex!=0) return widget.cardIndex;
     else return _cardValue;
+  }
+
+  void updateCompletion(String cardUnd) {
+    print("success");
+    DatabaseService(uid: widget.user.uid).getDecks().then((snapshot){
+      for(int i= 0; i<snapshot.length; i++) {
+        if(snapshot[i].documentID == widget.cards[_cardValue].deckId){
+          print(widget.cards[_cardValue].cardUnderstanding + " hi " + CardUnderstanding.none.toString());
+          if(cardUnd == CardUnderstanding.none.toString()) {
+                        DatabaseService(uid: widget.user.uid).
+                        updateDeckCompletion(widget.cards[_cardValue].deckId, snapshot[i]["cardsCount"], snapshot[i]["testsCount"], snapshot[i]["completion"]);
+            print ("cardsCount "+ snapshot[i]["cardsCount"].toString() + ' ' + snapshot[i]["testsCount"].toString() + " " + snapshot[i]["completion"].toString());
+          }
+          break;
+        }
+      }
+    });
   }
 }

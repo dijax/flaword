@@ -105,6 +105,7 @@ class _QuestionViewState extends State<QuestionView> {
                                       icon: Icon(Icons.done, color: CustomColors.White,),
                                     ),
                                   );
+                                  updateCompletion();
                                 }
                               });
                             } else{
@@ -124,6 +125,19 @@ class _QuestionViewState extends State<QuestionView> {
         ),
       ),
     );
+  }
+
+  void updateCompletion() {
+    DatabaseService(uid: widget.user.uid).getDecks().then((snapshot){
+      for(int i= 0; i<snapshot.length; i++) {
+        if(snapshot[i].documentID == widget.test.deckId){
+            DatabaseService(uid: widget.user.uid).
+            updateDeckCompletion(widget.test.deckId, snapshot[i]["cardsCount"], snapshot[i]["testsCount"], snapshot[i]["completion"]);
+            print ("cardsCount "+ snapshot[i]["cardsCount"].toString() + ' ' + snapshot[i]["testsCount"].toString() + " " + snapshot[i]["completion"].toString());
+          break;
+        }
+      }
+    });
   }
 }
 
@@ -281,6 +295,9 @@ class _AnswerWidgetState extends State<AnswerWidget> {
     bool isCorrect = true;
     if(answers == null || answers.isEmpty)
       isCorrect = false;
+    else if(answers.length == 1){
+      isCorrect = true;
+    }
     else {
       answers.forEach((answer){
         if(answer.checked != answer.correct) {

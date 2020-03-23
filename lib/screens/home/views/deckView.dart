@@ -109,6 +109,14 @@ class _CardsListState extends State<CardsList> {
                         Navigator.of(context).push(MaterialPageRoute(builder: (context) => CardView(cards: cards, cardIndex: null, user: widget.user,)));
                       },
                     ),
+                    IconButton(
+                      icon: Icon(Icons.remove_red_eye, size: 25,),
+                      onPressed: (){
+                        cards.forEach((card){
+                          DatabaseService(uid: widget.user.uid).updateCardVisibilty(false, card.deckId, card.cardId);
+                        });
+                      },
+                    ),
                   ],
                 ),
               ],
@@ -156,11 +164,10 @@ class _CardsListState extends State<CardsList> {
                             SettingsMenu(
                               user: widget.user,
                               list: cards[cardIndex],
-                              onSelect: (dynamic card, bool isHidden) {
-                                setState(() {
-//                            if(hidden){cards[cardIndex].hidden = true;}
-//                            cards = newCards;
-                                });
+                              onSelect: (dynamic card, bool deleted) {
+                                if(deleted){
+                                  DatabaseService(uid: widget.user.uid).updateCardsCount(widget.deckId, false);
+                                }
                               },
                               index: cardIndex,
                             ),
@@ -208,22 +215,27 @@ class _TestsListState extends State<TestsList> {
                   )
                 ],
               ),
-              child: Column(
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: 10),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      // TODO: add number of tests and progressbar and settings menu
-                      Text("Tests", style: TextStyle(fontFamily: 'Poppins', fontSize: 20, fontWeight: FontWeight.bold),),
-                    ],
-                  ),
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(0, 0, 0, 20),
-                  ),
-                ],
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Column(
+                  children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        // TODO: add number of tests and progressbar and settings menu
+                        Text("Tests", style: TextStyle(fontFamily: 'Poppins', fontSize: 20, fontWeight: FontWeight.bold),),
+                        IconButton(
+                            icon: Icon(Icons.remove_red_eye, size: 25,),
+                            onPressed: (){
+                              tests.forEach((test){
+                                DatabaseService(uid: widget.user.uid).updateTestVisibilty(false, test.deckId, test.testId);
+                              });
+                            }
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -272,11 +284,10 @@ class _TestsListState extends State<TestsList> {
                                 SettingsMenu(
                                   user: widget.user,
                                   list: tests[testIndex],
-                                  onSelect: (dynamic test, bool hidden) {
-                                    setState(() {
-//                                    if(hidden){tests.elementAt(testIndex).isHidden = true;}
-//                                    tests = newTests;
-                                    });
+                                  onSelect: (dynamic test, bool deleted) {
+                                    if(deleted){
+                                      DatabaseService(uid: widget.user.uid).updateCardsCount(widget.deckId, false);
+                                    }
                                   },
                                   index: testIndex,
                                 ),

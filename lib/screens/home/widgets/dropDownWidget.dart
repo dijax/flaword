@@ -30,7 +30,7 @@ class _DropDownWidgetState extends State<DropDownWidget> {
       return (widget.decks != null)? new Theme(
           data: (!widget.expand) ? Theme.of(context).copyWith(
           canvasColor: Colors.grey.withOpacity(0.5),
-        ): Container(),
+        ): Theme.of(context),
         child: DropdownButton<DeckModel>(
           isExpanded: widget.expand,
           value: _selectedDeck,

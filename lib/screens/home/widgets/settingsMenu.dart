@@ -59,13 +59,13 @@ class _SettingsMenuState extends State<SettingsMenu> {
         break;
       case Settings.Hide:
         print("Hide has been pressed");
-        widget.onSelect(list, true);
+//        widget.onSelect(list, true);
         hideElement(list);
         break;
       case Settings.Delete:
         print("Delete has been pressed");
         showAlertDialog(context);
-        widget.onSelect(list, false);
+        widget.onSelect(list, true);
         break;
     }
     return null;
@@ -126,17 +126,17 @@ class _SettingsMenuState extends State<SettingsMenu> {
     );
   }
 
-  void hideElement(list) {
-      if(list is DeckModel) {
-        DatabaseService(uid: widget.user.uid).updateDeckVisibilty(true, list.deckId);
+  void hideElement(element) {
+      if(element is DeckModel) {
+        DatabaseService(uid: widget.user.uid).updateDeckVisibilty(true, element.deckId);
       }
 
-      if(list is CardModel) {
-        DatabaseService(uid: widget.user.uid).updateCardVisibilty(true, list.deckId, list.cardId);
+      if(element is CardModel) {
+        DatabaseService(uid: widget.user.uid).updateCardVisibilty(true, element.deckId, element.cardId);
       }
 
-      if(list is TestModel) {
-        DatabaseService(uid: widget.user.uid).updateTestVisibilty(true, list.deckId, list.testId);
+      if(element is TestModel) {
+        DatabaseService(uid: widget.user.uid).updateTestVisibilty(true, element.deckId, element.testId);
       }
   }
 

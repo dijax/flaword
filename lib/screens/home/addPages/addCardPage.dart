@@ -57,7 +57,7 @@ class _AddCardPageState extends State<AddCardPage> {
         ),
         body: SingleChildScrollView(
           child: Container(
-            height: MediaQuery.of(context).size.height,
+//            height: MediaQuery.of(context).size.height,
             decoration: BoxDecoration(
               image: DecorationImage(
                 image: ExactAssetImage('assets/graphics/mountain.jpg'),
@@ -202,7 +202,7 @@ class _AddCardPageState extends State<AddCardPage> {
               cardUnderstanding: CardUnderstanding.none.toString());
           widget.onAddCard(card);
         }else{
-          DatabaseService(
+          if(deckId != null) DatabaseService(
             // give the cardId only if the Deck not saved yet
               uid: widget.user.uid).addCard(/*null, */deckId,
               _cardTitleEC.text,

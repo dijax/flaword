@@ -83,7 +83,7 @@ class _DecksListState extends State<DecksList> {
                                   Container(
                                     width: 65,
                                     height: 65,
-                                    child: WaveProgress(40, CustomColors.White, CustomColors.PurpleDark, decks[index].completion),
+                                    child: WaveProgress(40, CustomColors.White, CustomColors.PurpleDark, decks[index].completion * 100),
                                     decoration: const BoxDecoration(
                                       color: CustomColors.White,
                                       borderRadius: BorderRadius.all(Radius.circular(50.0),),

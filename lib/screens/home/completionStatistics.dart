@@ -1,8 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flashcards/models/deckModel.dart';
 import 'package:flashcards/models/userModel.dart';
 import 'package:flashcards/screens/home/widgets/dropDownWidget.dart';
-import 'package:flashcards/services/database.dart';
 import 'package:flashcards/utils/customColors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +10,8 @@ class CompletionStatisticsPage extends StatefulWidget {
   final UserModel user;
   final List<DeckModel> decks;
   final List<int> clUnPrNo;
-  CompletionStatisticsPage ({this.user, this.decks, this.clUnPrNo});
+  final List<ChartData> chartData;
+  CompletionStatisticsPage ({this.user, this.decks, this.clUnPrNo, this.chartData});
 
   @override
   _CompletionStatisticsPageState createState() => _CompletionStatisticsPageState();
@@ -21,17 +20,9 @@ class CompletionStatisticsPage extends StatefulWidget {
 class _CompletionStatisticsPageState extends State<CompletionStatisticsPage>{
   @override
   Widget build(BuildContext context) {
-    final List<ChartData> chartData = [
-      ChartData('clear cards', 25),
-      ChartData('unsure cards', 38),
-      ChartData('problematic cards', 34),
-      ChartData('Others', 52)
-    ];
+
     String deckId;
 
-    var _queryCat;
-    var _category;
-    var dropDown;
     return Stack(
       children: <Widget>[
         Center(
@@ -46,7 +37,7 @@ class _CompletionStatisticsPageState extends State<CompletionStatisticsPage>{
                 ),
                 series: <CircularSeries>[
                   RadialBarSeries<ChartData, String>(
-                      dataSource: chartData,
+                      dataSource: widget.chartData,
                       xValueMapper: (ChartData data, _) => data.x,
                       yValueMapper: (ChartData data, _) => data.y,
                       // Corner style of radial bar segment
@@ -72,29 +63,6 @@ class _CompletionStatisticsPageState extends State<CompletionStatisticsPage>{
               onSelect:(String id) {
                 deckId = id;
               }): Container(),
-//          child: StreamBuilder<QuerySnapshot>(
-//              stream: DatabaseService(uid: widget.user.uid).deckCollection.document(widget.user.uid).collection("decks").snapshots(),
-//              builder: (context, snapshot) {
-//                List<DeckModel> decks = new List();
-//                if(snapshot.hasError)return Container();
-//                else if(snapshot.data == null)return Container();
-//                else {
-//                  snapshot.data.documents.forEach((doc){
-//                    decks.add(DeckModel().fromSnapshot(doc));
-//                  });
-//                  return DropDownWidget(
-//                    expand: false,
-//                      decks: decks,
-//                      deckTitle: "",
-//                      deckIsGiven : false,
-//                      user: widget.user,
-//                      onSelect:(String id) {
-//                        deckId = id;
-//                      }
-//                  );
-//                }
-//              }
-//          ),
         ),
       ],
     );

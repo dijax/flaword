@@ -36,7 +36,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin{
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        StreamProvider<UserModel>.value(value: DatabaseService(uid: widget.user.uid).username),
+//        StreamProvider<UserModel>.value(value: DatabaseService(uid: widget.user.uid).username),
         StreamProvider<List<DeckModel>>.value(value: DatabaseService(uid: widget.user.uid).decksSorted),
       ],
       child: Scaffold(
@@ -109,7 +109,7 @@ class TitleWidget extends StatelessWidget {
             color: CustomColors.White, fontFamily: 'Montserrat', fontWeight: FontWeight.bold),)
     ):Padding(
       padding: const EdgeInsets.fromLTRB(0.0, 16.0, 0.0, 12.0),
-      child: Text("Hello, Stranger", style: TextStyle(fontSize: 30.0, color: CustomColors.White,
+      child: Text("Hello,", style: TextStyle(fontSize: 30.0, color: CustomColors.White,
           fontFamily: 'Montserrat', fontWeight: FontWeight.bold),));
   }
 }

@@ -1,14 +1,12 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dots_indicator/dots_indicator.dart';
+import 'package:flashcards/models/CardUnderstanding.dart';
 import 'package:flashcards/models/deckModel.dart';
 import 'package:flashcards/models/userModel.dart';
 import 'package:flashcards/screens/home/completionStatistics.dart';
 import 'package:flashcards/screens/home/statisticsPage.dart';
-import 'package:flashcards/screens/home/widgets/dropDownWidget.dart';
 import 'package:flashcards/services/database.dart';
 import 'package:flashcards/utils/customColors.dart';
 import 'package:flutter/material.dart';
-import 'dart:math';
 class WalkthroughNav extends StatefulWidget {
   final UserModel user;
 
@@ -21,9 +19,9 @@ class _WalkthroughNavState extends State<WalkthroughNav> {
   double _currentIndexPage;
   int _pageLength;
   List<DeckModel> decks = new List();
+  List<ChartData> chartData = new List();
   List<int> clUnPrNo = new List(4);
 
-  final _totalDots = 2;
   double _currentPosition = 0.0;
 
   @override
@@ -76,16 +74,44 @@ class _WalkthroughNavState extends State<WalkthroughNav> {
                   }else {
                     decks.clear();
                     for(int i = 0; i<snapshot.data.length; i++){
-                      print(snapshot.data[i]['title']);
                       DeckModel deck = DeckModel().fromSnapshot(snapshot.data[i]);
                       decks.add(deck);
                     }
-                  }
-//                  return Container();
-                return (decks != null ) ? FutureBuilder(
+                    int clear = 0;
+                    int problematic = 0;
+                    int unsure = 0;
+                    int none = 0;
+                    decks.forEach((deck){
+                      DatabaseService(uid: widget.user.uid).getCards(deck.deckId).then((snapshot){
+                        for(int i= 0; i<snapshot.length; i++) {
+                          if (snapshot[i]["cardUnderstanding"] == CardUnderstanding.clear.toString()){
+                            clear ++;
+                          }
+                          if (snapshot[i]["cardUnderstanding"] == CardUnderstanding.none.toString()){
+                            none ++;
+                          }
+                          if (snapshot[i]["cardUnderstanding"] == CardUnderstanding.problematic.toString()){
+                            problematic ++;
+                          }
+                          if (snapshot[i]["cardUnderstanding"] == CardUnderstanding.unsure.toString()){
+                            unsure ++;
+                          }
+                          chartData = [
+                            ChartData('clear cards', clear.toDouble()),
+                            ChartData('unsure cards', unsure.toDouble()),
+                            ChartData('problematic cards', problematic.toDouble()),
+                            ChartData('Others', none.toDouble())];
+                        }
+                      });
 
-                ):Container();
-//                  return (decks!= null) ?  CompletionStatisticsPage(user: widget.user, decks: decks):Container();
+                    });
+
+                  }
+////                  return Container();
+//                return (decks != null ) ? FutureBuilder(
+//
+//                ):Container();
+                  return (decks!= null) ? CompletionStatisticsPage(user: widget.user, decks: decks, chartData: chartData,):Container();
                 },
               ),
               ],
@@ -95,7 +121,7 @@ class _WalkthroughNavState extends State<WalkthroughNav> {
             ),
             Positioned(
               top: MediaQuery.of(context).size.height * 0.75,
-              left: MediaQuery.of(context).size.width * 0.45,
+              left: MediaQuery.of(context).size.width * 0.5,
               child: Center(
                 child: Align(
                   alignment: Alignment.centerRight,
@@ -113,26 +139,5 @@ class _WalkthroughNavState extends State<WalkthroughNav> {
 
     String getCurrentPositionPretty() {
       return (_currentPosition + 1.0).toStringAsPrecision(2);
-    }
-
-
-    Widget _buildRow(List<Widget> widgets) {
-      return Padding(
-        padding: const EdgeInsets.only(bottom: 20.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: widgets,
-        ),
-      );
-    }
-
-    void _updatePosition(double position) {
-      setState(() => _currentPosition = _validPosition(position));
-    }
-
-    double _validPosition(double position) {
-      if (position >= _totalDots) return 0;
-      if (position < 0) return _totalDots - 1.0;
-      return position;
     }
   }

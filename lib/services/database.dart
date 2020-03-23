@@ -160,6 +160,13 @@ class DatabaseService {
     });
   }
 
+  Future updateTestTitle(String testId, String deckId, String title) async{
+    return await deckCollection.document(uid).collection('decks').document(deckId).collection("tests").document(testId).updateData({
+      'title' : title,
+    });
+  }
+
+
   Future updateCard(String cardId, String deckId, String title, String description, String front, String back) async{
     return await deckCollection.document(uid).collection('decks').document(deckId).collection("cards").document(cardId).updateData({
       'title' : title,
@@ -183,6 +190,19 @@ class DatabaseService {
       'description' : deckDescription,
     });
   }
+
+  Future updateDeckCompletion(String deckId, int cardsCount, int testCount, double oldCompletion) async {
+    double completion = calculateCompletion(cardsCount, testCount, oldCompletion);
+    // Firestore reference to the document with uid if not found Firestore create it
+    return await deckCollection.document(uid).collection('decks').document(deckId).updateData({
+      'completion': completion,
+    });
+  }
+
+  double calculateCompletion(int cardsCount, int testCount, oldCompletion) {
+    return oldCompletion + (1/(cardsCount + testCount));
+  }
+
 
   Stream<List<CardModel>> get cards {
     return deckCollection.document(uid).collection("decks").document(deck_Id).collection("cards").snapshots()
@@ -288,6 +308,16 @@ class DatabaseService {
   Future getDecks() async {
     QuerySnapshot qn = await deckCollection.document(uid).collection("decks").getDocuments();
     return qn.documents;
+  }
+
+  Future getCards(String deckId) async {
+    QuerySnapshot qn = await deckCollection.document(uid).collection("decks").document(deckId).collection("cards").getDocuments();
+    return qn.documents;
+  }
+
+  Future getUsername() async {
+    DocumentSnapshot ds = await users.document(uid).get();
+    return ds.data['username'];
   }
 
 }

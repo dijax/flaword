@@ -39,6 +39,9 @@ class _AddTestState extends State<AddTest> {
 
   @override
   Widget build(BuildContext context) {
+    if(widget.edit){
+      _testTitleEC.text = widget.test.title;
+    }
     _questions = new List.generate(_questionCount, (int index) =>
     new AddQuestion(
       answerTextController: answerEC[index],
@@ -108,7 +111,7 @@ class _AddTestState extends State<AddTest> {
                         ),),
                     ),
                   ),
-                  Padding(
+                  (!widget.edit)?Padding(
                     padding: const EdgeInsets.symmetric(
                         vertical: 20, horizontal: 20),
                     child: Container(
@@ -137,7 +140,7 @@ class _AddTestState extends State<AddTest> {
                                 });
                               }
                               return DropDownWidget(
-                                expand: true,
+                                  expand: true,
                                   decks: decks,
                                   deckTitle: widget.deckTitle,
                                   deckIsGiven: widget.deckIsGiven,
@@ -154,7 +157,7 @@ class _AddTestState extends State<AddTest> {
                         user: widget.user,
                       ),
                     ),
-                  ),
+                  ):Container(),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
                     child: Container(
@@ -165,7 +168,7 @@ class _AddTestState extends State<AddTest> {
                       ),
                     ),
                   ),
-                  InkWell(
+                  (!widget.edit) ? InkWell(
                     onTap: addQuestion,
                     child: Container(
                       padding: EdgeInsets.symmetric(
@@ -188,7 +191,7 @@ class _AddTestState extends State<AddTest> {
                         ],
                       ),
                     ),
-                  ),
+                  ): Container(),
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 20),
                   ),
@@ -201,43 +204,49 @@ class _AddTestState extends State<AddTest> {
   }
 
   void addTest() {
-    saveData();
-    print("test added");
-    if (_testTitleEC.text.trim().isNotEmpty) {
-      if(!widget.edit) {
-        if (widget.deckIsGiven) {
-          TestModel test = TestModel(deckId: widget.deckId,
-            title: _testTitleEC.text,
-            completion: 0,
-            rating: 0.0,
-            isHidden: false,);
-          widget.onAddTest(test, questions, answers);
-        } else {
-          DatabaseService(uid: widget.user.uid).addTest(deckId, _testTitleEC.text, 0.0, false, 0.0).then((doc){
-            String testId = doc.documentID;
-            if(questions.isNotEmpty) questions?.forEach((question){
-              DatabaseService(uid: widget.user.uid).addQuestion(testId,
-                  deckId, question.question, question.answer,
-                  question.isHidden, question.rating).then((doc){
-                    String questionId = doc.documentID;
-                if(answers.isNotEmpty){
-                  answers.forEach((answer){
-                    print(answer.answer + " " + " " + questionId+ " " + testId);
-                    DatabaseService(uid: widget.user.uid).addAnswer(questionId,
-                        testId, deckId, answer.answer, answer.checked, answer.correct);
-                  });
-                }
+    if(widget.edit){
+      DatabaseService(uid: widget.user.uid).updateTestTitle(widget.test.testId, widget.test.deckId, _testTitleEC.text);
+      Navigator.of(context).pop();
+    }
+    else {
+      saveData();
+      print("test added");
+      if (_testTitleEC.text.trim().isNotEmpty) {
+        if(!widget.edit) {
+          if (widget.deckIsGiven) {
+            TestModel test = TestModel(deckId: widget.deckId,
+              title: _testTitleEC.text,
+              completion: 0,
+              rating: 0.0,
+              isHidden: false,);
+            widget.onAddTest(test, questions, answers);
+          } else {
+            DatabaseService(uid: widget.user.uid).addTest(deckId, _testTitleEC.text, 0.0, false, 0.0).then((doc){
+              String testId = doc.documentID;
+              if(questions.isNotEmpty) questions?.forEach((question){
+                DatabaseService(uid: widget.user.uid).addQuestion(testId,
+                    deckId, question.question, question.answer,
+                    question.isHidden, question.rating).then((doc){
+                  String questionId = doc.documentID;
+                  if(answers.isNotEmpty){
+                    answers.forEach((answer){
+                      if(answer.questionId == question.questionId)
+                        DatabaseService(uid: widget.user.uid).addAnswer(questionId,
+                            testId, deckId, answer.answer, answer.checked, answer.correct);
+                    });
+                  }
+                });
               });
             });
-            });
           }
+        } else {
+          DatabaseService(uid: widget.user.uid).updateTest(widget.test.testId, widget.test.deckId, _testTitleEC.text, 0.0, 0.0, false);
+        }
+        Navigator.pop(context);
       } else {
-        DatabaseService(uid: widget.user.uid).updateTest(widget.test.testId, widget.test.deckId, _testTitleEC.text, 0.0, 0.0, false);
+        // TODO add error
+        print("test title fehlt");
       }
-      Navigator.pop(context);
-    } else {
-      // TODO add error
-      print("test title fehlt");
     }
   }
 
@@ -246,20 +255,19 @@ class _AddTestState extends State<AddTest> {
     widget.deckIsGiven ? id = widget.deckId : id = deckId;
     print(id);
     if(questionEC.isNotEmpty){
-      questionEC.forEach((ec) {
-        print("Ec " + ec.text + " " + questionEC.indexOf(ec).toString());
-      });
+//      questionEC.forEach((ec) {
+//        print("Ec " + ec.text + " " + questionEC.indexOf(ec).toString());
+//      });
       if(questionEC[_questionCount - 1].text.trim().isNotEmpty){
         questions.add(
             QuestionModel(
-                /*testId: getTestId(), */deckId: id,
+              /*testId: getTestId(), */deckId: id,
                 questionId: "question${questions.length+1}",
                 question: questionEC[_questionCount-1].text, isHidden: false, rating: 0.0
             )
         );
       }
     }
-
 
     if(answerEC.isNotEmpty){
       if(answerEC[_questionCount-1].text.trim().isNotEmpty){
@@ -273,21 +281,21 @@ class _AddTestState extends State<AddTest> {
         );
       }
     }
-      if(answersEC.isNotEmpty) {
-        answersEC.forEach((answerEC) {
-          if(answerEC.text.trim().isNotEmpty){
-            answers.add(
-                AnswerModel(
-                  /*testId: getTestId(), */deckId: id,
+    if(answersEC.isNotEmpty) {
+      answersEC.forEach((answerEC) {
+        if(answerEC.text.trim().isNotEmpty){
+          answers.add(
+              AnswerModel(
+                /*testId: getTestId(), */deckId: id,
                   questionId: questions.last.questionId,
 //                  answerId: "answer${answers.length+1}",
                   answer: answerEC.text, correct: false,
                   checked: false
-                )
-            );
-          }
-        });
-      }
+              )
+          );
+        }
+      });
+    }
   }
 
   void addQuestion() {
